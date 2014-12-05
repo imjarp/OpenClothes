@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.mx.kanjo.openclothes.ModelActivity">
+    tools:context="com.mx.kanjo.openclothes.ui.ModelActivity">
     <item android:id="@+id/action_find"
         android:title="@string/action_find_model"
         android:orderInCategory="100"
