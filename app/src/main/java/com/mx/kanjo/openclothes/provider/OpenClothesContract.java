@@ -22,6 +22,7 @@ public class OpenClothesContract {
         String DATE = "date";
         String IMAGE_PATH ="path";
         String PRICE = "price";
+        String COST = "cost";
     }
 
     interface SizeColumns
@@ -40,12 +41,12 @@ public class OpenClothesContract {
     {
         String ID_PRODUCT= "idProduct";
         String ID_SIZE= "idSize";
-        String quantity="idQuantity";
+        String QUANTITY="idQuantity";
+        String SALE_ID = "idSale";
     }
 
     interface SaleColumns
     {
-        String ID_SALE_ITEM = "idSaleItem";
         String DATE = "date";
         String TOTAL = "total";
     }
@@ -83,11 +84,11 @@ public class OpenClothesContract {
         String ID_PRODUCT= "idProduct";
         String ID_SIZE= "idSize";
         String QUANTITY="idQuantity";
+        String ID_PROMISE="idPromise";
     }
 
     interface PromiseColumns
     {
-        String ID_PROMISE_ITEM = "idSaleItem";
         String DATE = "date";
         String TOTAL = "total";
         String CUSTOMER = "customer";
