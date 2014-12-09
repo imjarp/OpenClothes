@@ -127,6 +127,16 @@ public class OpenClothesContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        public static Uri buildProductUriWithModel(String model)
+        {
+           return CONTENT_URI.buildUpon().appendPath(model).appendPath("model").build();
+        }
+
+        public static String getModelFromUri(Uri uri)
+        {
+            return uri.getPathSegments().get(1);
+        }
+
     }
 
     public static class Size implements SizeColumns, BaseColumns
@@ -161,6 +171,17 @@ public class OpenClothesContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        public static Uri buildStockUriWithModel(String model)
+        {
+            return CONTENT_URI.buildUpon().appendPath(model).appendPath("model").build();
+        }
+
+        public static String getModelFromUri(Uri uri)
+        {
+            return uri.getPathSegments().get(1);
+        }
+
+
     }
 
     public static class SaleItem implements SaleItemColumns, BaseColumns
@@ -176,6 +197,16 @@ public class OpenClothesContract {
         public static Uri buildSaleItemUri(long id)
         {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildSaleItemHeader(long id )
+        {
+            return  CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).appendPath("header").build();
+        }
+
+        public static String getSaleItemHeaderFromUri(Uri uri)
+        {
+            return uri.getPathSegments().get(1);
         }
 
     }
@@ -194,6 +225,27 @@ public class OpenClothesContract {
         {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+        public static Uri buidlSaleIntervalUri(String initialDate, String finalDate)
+        {
+            return CONTENT_URI.buildUpon().appendPath("interval").appendPath(initialDate).appendPath(finalDate).build();
+        }
+
+        public static Uri buildSaleDateUri(String date)
+        {
+            return CONTENT_URI.buildUpon().appendPath(date).appendPath("date").build();
+        }
+
+        public static String getInitialDateFromUri(Uri uri)
+        {
+            return uri.getPathSegments().get(2);
+        }
+
+        public static String getFinalDateFromUri(Uri uri)
+        {
+            return uri.getPathSegments().get(3);
+        }
+
 
     }
 
@@ -224,7 +276,7 @@ public class OpenClothesContract {
         public static final String CONTENT_ITEM_TYPE =
                 "vnd.android.cursor.item/vnd.openclothes.income";
 
-        public static Uri buildIncomeTypeUri(long id)
+        public static Uri buildIncomeUri(long id)
         {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
@@ -258,7 +310,7 @@ public class OpenClothesContract {
         public static final String CONTENT_ITEM_TYPE =
                 "vnd.android.cursor.item/vnd.openclothes.outcome";
 
-        public static Uri buildOutcomeTypeUri(long id)
+        public static Uri buildOutcomeUri(long id)
         {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
@@ -281,6 +333,16 @@ public class OpenClothesContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        public static Uri buildPromiseItemWithHeader(long idHeaderPromise)
+        {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(idHeaderPromise)).appendPath("header_promise").build();
+        }
+
+        public String getPromiseItemHeaderFromUri(Uri uri)
+        {
+            return uri.getPathSegments().get(1);
+        }
+
     }
 
     public static class Promise implements PromiseColumns, BaseColumns
@@ -298,12 +360,48 @@ public class OpenClothesContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        public static Uri buildPromiseUriWithDate(String date)
+        {
+            return CONTENT_URI.buildUpon().appendPath(date).appendPath("date").build();
+        }
+
+        public static Uri buildPromiseUriWithCustomer(String customer)
+        {
+            return CONTENT_URI.buildUpon().appendPath(customer).appendPath("customer").build();
+        }
+
+        public static Uri buildPromiseUriWithIntervalDate(String initialDate, String finalDate)
+        {
+            return CONTENT_URI.buildUpon().appendPath("interval").appendPath(initialDate).appendPath(finalDate).build();
+        }
+
+        public static String getDateFromUri(Uri uri)
+        {
+            return uri.getPathSegments().get(1);
+        }
+
+        public static String getCustomerFromUri(Uri uri)
+        {
+            return uri.getPathSegments().get(1);
+        }
+
+        public static String getInitialDateFromUri(Uri uri)
+        {
+            return uri.getPathSegments().get(2);
+        }
+
+        public static String getFinalDateFromUri(Uri uri)
+        {
+            return uri.getPathSegments().get(3);
+        }
+
+
     }
 
 
     // Format used for storing dates in the database. ALso used for converting those strings
     // back into date objects for comparison/processing.
-    public static final String DATE_FORMAT = "yyyy/MM/dd HH:mm";
+    public static final String DATE_FORMAT = "yyyy/MM/dd";
     /**
      * Converts Date class to a string representation, used for easy comparison and database lookup.
      * @param date The input date
