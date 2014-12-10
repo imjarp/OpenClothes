@@ -126,8 +126,8 @@ public class OpenClothesProvider extends ContentProvider {
     matcher.addURI(authority, "income_type/#", INCOME_TYPE_ID);
 
     //Outcome
-    matcher.addURI(authority, "income", OUTCOME);
-    matcher.addURI(authority, "income/#", OUTCOME_ID);
+    matcher.addURI(authority, "outcome", OUTCOME);
+    matcher.addURI(authority, "outcome/#", OUTCOME_ID);
 
     //Outcome Type
     matcher.addURI(authority, "outcome_type", OUTCOME_TYPE);

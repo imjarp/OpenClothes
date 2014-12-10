@@ -103,10 +103,10 @@ public class OpenClothesContract {
     private static final String PATH_STOCK = "stock";
     private static final String PATH_SALE_ITEM = "sale_item";
     private static final String PATH_SALE = "sale";
-    private static final String PATH_INCOME_TYPE = "sale";
-    private static final String PATH_INCOME = "sale";
-    private static final String PATH_OUTCOME_TYPE = "sale";
-    private static final String PATH_OUTCOME = "sale";
+    private static final String PATH_INCOME_TYPE = "income_type";
+    private static final String PATH_INCOME = "income";
+    private static final String PATH_OUTCOME_TYPE = "outcome_type";
+    private static final String PATH_OUTCOME = "outcome";
     private static final String PATH_PROMISE = "promise";
     private static final String PATH_PROMISE_ITEM = "promise_item";
 
@@ -213,9 +213,9 @@ public class OpenClothesContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildSaleItemHeader(long id , boolean withProduct)
+        public static Uri buildSaleItemHeader(long idHeader , boolean withProduct)
         {
-            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).appendPath("header").appendQueryParameter(WITH_PRODUCT_PARAMETER, withProduct ? "true" : "false").build();
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(idHeader)).appendPath("header").appendQueryParameter(WITH_PRODUCT_PARAMETER, withProduct ? "true" : "false").build();
         }
 
         public static String getSaleItemHeaderFromUri(Uri uri)

@@ -285,7 +285,7 @@ public class TestDB  extends AndroidTestCase{
         return values;
     }
 
-    static ContentValues createOutcomeType(int outcomeDescription)
+    static ContentValues createOutcomeType(String outcomeDescription)
     {
         ContentValues values  = new ContentValues();
         values.put(OpenClothesContract.OutcomeType.DESCRIPTION,outcomeDescription);
