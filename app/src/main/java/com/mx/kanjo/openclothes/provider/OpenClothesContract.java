@@ -94,7 +94,7 @@ public class OpenClothesContract {
         String CUSTOMER = "customer";
     }
 
-    public static final String CONTENT_AUTHORITY = "com.google.samples.apps.iosched";
+    public static final String CONTENT_AUTHORITY = "com.mx.kanjo.openclothes";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
@@ -176,6 +176,17 @@ public class OpenClothesContract {
             return CONTENT_URI.buildUpon().appendPath(model).appendPath("model").build();
         }
 
+        public static Uri buildStockUriWithProductId(int productId)
+        {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(productId)).appendPath("idProduct").build();
+        }
+
+        public static String getProductIdFromUri(Uri uri)
+        {
+            return uri.getPathSegments().get(1);
+        }
+
+
         public static String getModelFromUri(Uri uri)
         {
             return uri.getPathSegments().get(1);
@@ -194,14 +205,17 @@ public class OpenClothesContract {
         public static final String CONTENT_ITEM_TYPE =
                 "vnd.android.cursor.item/vnd.openclothes.sale_item";
 
+
+        public static final String WITH_PRODUCT_PARAMETER = "withProduct";
+
         public static Uri buildSaleItemUri(long id)
         {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildSaleItemHeader(long id )
+        public static Uri buildSaleItemHeader(long id , boolean withProduct)
         {
-            return  CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).appendPath("header").build();
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).appendPath("header").appendQueryParameter(WITH_PRODUCT_PARAMETER, withProduct ? "true" : "false").build();
         }
 
         public static String getSaleItemHeaderFromUri(Uri uri)
@@ -327,18 +341,21 @@ public class OpenClothesContract {
                 "vnd.android.cursor.dir/vnd.openclothes.promise_item";
         public static final String CONTENT_ITEM_TYPE =
                 "vnd.android.cursor.item/vnd.openclothes.promise_item";
+        public static final String WITH_PRODUCT_PARAMETER = "withProduct";
 
         public static Uri buildPromiseItemUri(long id)
         {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildPromiseItemWithHeader(long idHeaderPromise)
+        public static Uri buildPromiseItemWithHeader(long idHeaderPromise, boolean withProduct)
         {
-            return CONTENT_URI.buildUpon().appendPath(String.valueOf(idHeaderPromise)).appendPath("header_promise").build();
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(idHeaderPromise))
+                                           .appendPath("header_promise")
+                                           .appendQueryParameter(WITH_PRODUCT_PARAMETER, withProduct ? "true" : "false").build();
         }
 
-        public String getPromiseItemHeaderFromUri(Uri uri)
+        public static String getPromiseItemHeaderFromUri(Uri uri)
         {
             return uri.getPathSegments().get(1);
         }

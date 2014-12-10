@@ -24,6 +24,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />
         </activity>
+        
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".provider.OpenClothesProvider">
+        </provider>
     </application>
 
 </manifest>

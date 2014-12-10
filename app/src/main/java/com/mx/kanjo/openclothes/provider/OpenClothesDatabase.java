@@ -29,12 +29,36 @@ public class OpenClothesDatabase extends SQLiteOpenHelper {
         String OUTCOME_TYPE = "outcome_type";
         String PROMISE = "promise";
         String PROMISE_ITEM = "promise_item";
+
+        String PRODUCT_JOIN_STOCK = "product "
+                + "INNER JOIN stock ON product._id = stock.idProduct ";
+
+        String SALE_JOIN_SALE_ITEM = "sale "
+                + "INNER JOIN sale_item ON sale._id = sale_item.idSale ";
+
+        String SALE_JOIN_SALE_ITEM_PRODUCT = "sale "
+                + "INNER JOIN sale_item ON sale._id = sale_item.idSale "
+                + "INNER JOIN product ON sale_item.idProduct = product._id ";
+
+        String SALE_ITEM_JOIN_PRODUCT = "product "
+                + "INNER JOIN sale_item ON product._id = sale_item.idProduct ";
+
+        String PROMISE_JOIN_PROMISE_ITEM = "promise "
+                + "INNER JOIN promise_item ON promise._id = promise_item.idPromise ";
+
+        String PROMISE_JOIN_PROMISE_ITEM_PRODUCT = "promise "
+                + "INNER JOIN promise_item ON promise._id = promise_item.idPromise "
+                + "INNER JOIN product ON promise_item.idProduct = product._id ";
+
+
+
     }
 
-    private interface Qualified {
+    interface Qualified {
         //Stock Table
-        String STOCK_PRODUCT_ID = Tables.PRODUCT + "."
-                + OpenClothesContract.Product._ID;
+        String STOCK_PRODUCT_ID = Tables.STOCK + "."
+                + OpenClothesContract.Stock.ID_PRODUCT;
+
         String STOCK_SIZE_ID = Tables.SIZE + "."
                 + OpenClothesContract.Size._ID;
 

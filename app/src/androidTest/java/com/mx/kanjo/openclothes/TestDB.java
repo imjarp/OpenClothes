@@ -209,12 +209,6 @@ public class TestDB  extends AndroidTestCase{
             String columnName = entry.getKey();
             int idx = valueCursor.getColumnIndex(columnName);
             assertFalse(idx == -1);
-            if(entry.getValue()==null)
-            {
-                assertNull(valueCursor.getString(idx));
-                continue;
-            }
-
             String expectedValue = entry.getValue().toString();
             assertEquals(expectedValue, valueCursor.getString(idx));
         }
@@ -231,6 +225,7 @@ public class TestDB  extends AndroidTestCase{
         values.put(OpenClothesContract.Product.IMAGE_PATH, imagePath);
         values.put(OpenClothesContract.Product.IS_ACTIVE, isActive ? 1 : 0);
         values.put(OpenClothesContract.Product.PRICE, price);
+        values.put(OpenClothesContract.Product.MODEL,model);
         values.put(OpenClothesContract.Product.COST, cost);
 
         return  values;

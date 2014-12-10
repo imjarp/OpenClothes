@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
+import com.mx.kanjo.openclothes.util.SelectionBuilder;
+
 import java.util.Arrays;
 
 /**
@@ -23,7 +25,7 @@ public class OpenClothesProvider extends ContentProvider {
     private final static UriMatcher sUriMatcher = buildUriMatcher();
 
     private static final int PRODUCT = 100;
-    private static final int PRODUCT_ID =101;
+    private static final int PRODUCT_ID = 101;
     private static final int PRODUCT_MODEL = 102;
 
     private static final int SIZE = 200;
@@ -32,6 +34,7 @@ public class OpenClothesProvider extends ContentProvider {
     private static final int STOCK = 300;
     private static final int STOCK_ID = 301;
     private static final int STOCK_MODEL = 302;
+    private static final int STOCK_PRODUCT = 304;
 
     private static final int SALE = 400;
     private static final int SALE_ID = 401;
@@ -42,6 +45,7 @@ public class OpenClothesProvider extends ContentProvider {
     private static final int SALE_ITEM = 500;
     private static final int SALE_ITEM_ID = 501;
     private static final int SALE_ITEM_HEADER = 502;
+    private static final int SALE_ITEM_PRODUCT_ID = 503;
 
     private static final int PROMISE = 600;
     private static final int PROMISE_ID = 601;
@@ -52,6 +56,7 @@ public class OpenClothesProvider extends ContentProvider {
     private static final int PROMISE_ITEM = 700;
     private static final int PROMISE_ITEM_ID = 701;
     private static final int PROMISE_ITEM_HEADER_PROMISE = 702;
+    private static final int PROMISE_ITEM_PRODUCT = 703;
 
     private static final int INCOME = 800;
     private static final int INCOME_ID = 801;
@@ -71,58 +76,62 @@ public class OpenClothesProvider extends ContentProvider {
         final String authority = OpenClothesContract.CONTENT_AUTHORITY;
 
         //Product
-        matcher.addURI(authority,"product",PRODUCT);
-        matcher.addURI(authority,"product/#",PRODUCT_ID);
-        matcher.addURI(authority,"product/*/model",PRODUCT_MODEL);
+    matcher.addURI(authority, "product", PRODUCT);
+    matcher.addURI(authority, "product/#", PRODUCT_ID);
+    matcher.addURI(authority, "product/*/model", PRODUCT_MODEL);
 
-        //Size
-        matcher.addURI(authority,"size",SIZE);
-        matcher.addURI(authority,"size/#",SIZE_ID);
+    //Size
+    matcher.addURI(authority, "size", SIZE);
+    matcher.addURI(authority, "size/#", SIZE_ID);
 
-        //Stock
-        matcher.addURI(authority,"stock",STOCK);
-        matcher.addURI(authority,"stock/#",STOCK_ID);
-        matcher.addURI(authority,"stock/*/model",STOCK_MODEL);
-
-        //Sale
-        matcher.addURI(authority,"sale",SALE);
-        matcher.addURI(authority,"sale/#",SALE_ID);
-        matcher.addURI(authority,"sale/*/date   ",SALE_DATE);
-        matcher.addURI(authority,"sale/interval/*/*", SALE_DATE_INTERVAL);
+    //Stock
+    matcher.addURI(authority, "stock", STOCK);
+    matcher.addURI(authority, "stock/#", STOCK_ID);
+    matcher.addURI(authority, "stock/#/idProduct",  STOCK_PRODUCT);
+    matcher.addURI(authority, "stock/*/model", STOCK_MODEL);
 
 
-        //Sale Item
-        matcher.addURI(authority,"sale_item",SALE_ITEM);
-        matcher.addURI(authority,"sale_item/#",SALE_ITEM_ID);
-        matcher.addURI(authority,"sale_item/#/header",SALE_ITEM_HEADER);
+    //Sale
+    matcher.addURI(authority, "sale", SALE);
+    matcher.addURI(authority, "sale/#", SALE_ID);
+    matcher.addURI(authority, "sale/*/date", SALE_DATE);
+    matcher.addURI(authority, "sale/interval/*/*",  SALE_DATE_INTERVAL);
 
-        //Promise
-        matcher.addURI(authority,"promise",PROMISE);
-        matcher.addURI(authority,"promise/#",PROMISE_ID);
-        matcher.addURI(authority,"promise/*/date",PROMISE_DATE);
-        matcher.addURI(authority,"promise/*/customer",PROMISE_CUSTOMER);
-        matcher.addURI(authority,"promise/interval/*/*",PROMISE_DATE_INTERVAL);
 
-        //Promise Item
-        matcher.addURI(authority,"promise_item",PROMISE_ITEM);
-        matcher.addURI(authority,"promise_item/#",PROMISE_ITEM_ID);
-        matcher.addURI(authority,"promise_item/#/header_promise",PROMISE_ITEM_HEADER_PROMISE);
+    //Sale Item
+    matcher.addURI(authority, "sale_item", SALE_ITEM);
+    matcher.addURI(authority, "sale_item/#", SALE_ITEM_ID);
+    matcher.addURI(authority, "sale_item/#/header", SALE_ITEM_HEADER);
+    matcher.addURI(authority, "sale_item/#/idProduct", SALE_ITEM_PRODUCT_ID);
 
-        //Income
-        matcher.addURI(authority,"income",INCOME);
-        matcher.addURI(authority,"income/#",INCOME_ID);
+    //Promise
+    matcher.addURI(authority, "promise", PROMISE);
+    matcher.addURI(authority, "promise/#", PROMISE_ID);
+    matcher.addURI(authority, "promise/*/date", PROMISE_DATE);
+    matcher.addURI(authority, "promise/*/customer", PROMISE_CUSTOMER);
+    matcher.addURI(authority, "promise/interval/*/*", PROMISE_DATE_INTERVAL);
 
-        //Income Type
-        matcher.addURI(authority,"income_type",INCOME_TYPE);
-        matcher.addURI(authority,"income_type/#",INCOME_TYPE_ID);
+    //Promise Item
+    matcher.addURI(authority, "promise_item", PROMISE_ITEM);
+    matcher.addURI(authority, "promise_item/#", PROMISE_ITEM_ID);
+    matcher.addURI(authority, "promise_item/#/header_promise", PROMISE_ITEM_HEADER_PROMISE);
+    matcher.addURI(authority, "promise_item/#/product", PROMISE_ITEM_PRODUCT);
 
-        //Outcome
-        matcher.addURI(authority,"income",OUTCOME);
-        matcher.addURI(authority,"income/#",OUTCOME_ID);
+    //Income
+    matcher.addURI(authority, "income", INCOME);
+    matcher.addURI(authority, "income/#", INCOME_ID);
 
-        //Outcome Type
-        matcher.addURI(authority,"outcome_type",OUTCOME_TYPE);
-        matcher.addURI(authority,"outcome_type/#",OUTCOME_TYPE_ID);
+    //Income Type
+    matcher.addURI(authority, "income_type", INCOME_TYPE);
+    matcher.addURI(authority, "income_type/#", INCOME_TYPE_ID);
+
+    //Outcome
+    matcher.addURI(authority, "income", OUTCOME);
+    matcher.addURI(authority, "income/#", OUTCOME_ID);
+
+    //Outcome Type
+    matcher.addURI(authority, "outcome_type", OUTCOME_TYPE);
+    matcher.addURI(authority, "outcome_type/#", OUTCOME_TYPE_ID);
 
         return matcher;
     }
@@ -136,14 +145,19 @@ public class OpenClothesProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         final SQLiteDatabase dbReadableDatabase = mOpenHelper.getReadableDatabase();
+
         final int match = sUriMatcher.match(uri);
+
         Log.d(TAG, "uri=" + uri + " match=" + match + " proj=" + Arrays.toString(projection) +
                 " selection=" + selection + " args=" + Arrays.toString(selectionArgs) + ")");
-        long id=-1;
+
         Cursor cursor = null;
+
+        SelectionBuilder builder;
 
         switch (match)
         {
+            // "product"
             case  PRODUCT :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.PRODUCT,projection,
                                                                                      selection,
@@ -152,6 +166,7 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                      null,
                                                                                      sortOrder);
                 break;
+            // "product/#"
             case  PRODUCT_ID :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.PRODUCT,projection,
                                                                                      OpenClothesContract.Product._ID + " = '" + ContentUris.parseId(uri) + "'",
@@ -160,8 +175,16 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                      null,
                                                                                      sortOrder);
                 break;
+            // "product/*/model"
             case  PRODUCT_MODEL :
+                cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.PRODUCT,projection,
+                                                                                     OpenClothesContract.Product.MODEL + " LIKE '%" + OpenClothesContract.Product.getModelFromUri(uri) + "%'",
+                                                                                     null,
+                                                                                     null,
+                                                                                     null,
+                                                                                     sortOrder);
                 break;
+            // "size"
             case  SIZE :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.SIZE, projection,
                                                                                    selection,
@@ -170,6 +193,7 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                    null,
                                                                                    sortOrder);
                 break;
+            // "size/#"
             case  SIZE_ID :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.SIZE, projection,
                                                                                    OpenClothesContract.Size._ID + " = '" + ContentUris.parseId(uri) + "'",
@@ -178,6 +202,7 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                    null,
                                                                                    sortOrder);
                 break;
+            // "stock"
             case  STOCK :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.STOCK, projection,
                                                                                     selection,
@@ -186,6 +211,7 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                     null,
                                                                                     sortOrder);
                 break;
+            // "stock/#"
             case  STOCK_ID :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.STOCK, projection,
                                                                                     OpenClothesContract.Stock._ID + " = '" + ContentUris.parseId(uri) + "'",
@@ -194,8 +220,31 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                     null,
                                                                                     sortOrder);
                 break;
+            // "stock/*/model"
             case  STOCK_MODEL :
+                builder = new SelectionBuilder().table(OpenClothesDatabase.Tables.PRODUCT_JOIN_STOCK)
+                                                                          .mapToTable(OpenClothesContract.Product._ID, OpenClothesDatabase.Tables.PRODUCT)
+                                                                          .where(OpenClothesContract.Product.MODEL + "=?", OpenClothesContract.Stock.getModelFromUri(uri));
+
+                    cursor = builder
+                        .where(selection,selectionArgs)
+                        .query(dbReadableDatabase,projection,sortOrder);
+
+
+              break;
+            // "stock/#/idProduct"
+            case STOCK_PRODUCT :
+
+                builder = new SelectionBuilder().table(OpenClothesDatabase.Tables.PRODUCT_JOIN_STOCK)
+                                                        .mapToTable(OpenClothesContract.Product._ID, OpenClothesDatabase.Tables.PRODUCT)
+                                                        .where(OpenClothesDatabase.Qualified.STOCK_PRODUCT_ID + "=?", OpenClothesContract.Stock.getProductIdFromUri(uri));
+
+                cursor = builder
+                        .where(selection,selectionArgs)
+                        .query(dbReadableDatabase,projection,sortOrder);
+
                 break;
+            // "sale"
             case  SALE :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.SALE, projection,
                                                                                    selection,
@@ -204,6 +253,7 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                    null,
                                                                                    sortOrder);
                 break;
+            // "sale/#"
             case  SALE_ID :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.SALE, projection,
                                                                                    OpenClothesContract.Sale._ID + " = '" + ContentUris.parseId(uri) + "'",
@@ -216,6 +266,7 @@ public class OpenClothesProvider extends ContentProvider {
                 break;
             case  SALE_DATE_INTERVAL :
                 break;
+            // "sale_item"
             case  SALE_ITEM :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.SALE_ITEM, projection,
                                                                                         selection,
@@ -224,6 +275,7 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                         null,
                                                                                         sortOrder);
                 break;
+            // "sale_item/#"
             case  SALE_ITEM_ID :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.SALE, projection,
                                                                                    OpenClothesContract.SaleItem._ID + " = '" + ContentUris.parseId(uri) + "'",
@@ -232,8 +284,33 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                    null,
                                                                                    sortOrder);
                 break;
+            // "sale_item/#/header"
             case  SALE_ITEM_HEADER :
+
+                boolean withProduct = Boolean.getBoolean(uri.getQueryParameter(OpenClothesContract.SaleItem.WITH_PRODUCT_PARAMETER));
+                builder = new SelectionBuilder().table( withProduct ? OpenClothesDatabase.Tables.SALE_JOIN_SALE_ITEM_PRODUCT : OpenClothesDatabase.Tables.SALE_JOIN_SALE_ITEM)
+                        .mapToTable(OpenClothesContract.Sale._ID, OpenClothesDatabase.Tables.SALE)
+                        .mapToTable(OpenClothesContract.SaleItem.SALE_ID, OpenClothesDatabase.Tables.SALE_ITEM)
+                        .where(OpenClothesDatabase.Qualified.SALE_ITEM_SALE_ID + "=?", OpenClothesContract.SaleItem.getSaleItemHeaderFromUri(uri));
+
+                cursor = builder
+                        .where(selection,selectionArgs)
+                        .query(dbReadableDatabase,projection,sortOrder);
+
                 break;
+            // "sale_item/#/idProduct"
+            case SALE_ITEM_PRODUCT_ID :
+                builder = new SelectionBuilder().table(OpenClothesDatabase.Tables.SALE_ITEM_JOIN_PRODUCT)
+                        .mapToTable(OpenClothesContract.Product._ID, OpenClothesDatabase.Tables.PRODUCT)
+                        .mapToTable(OpenClothesContract.SaleItem.ID_PRODUCT, OpenClothesDatabase.Tables.SALE_ITEM)
+                        .where(OpenClothesDatabase.Qualified.STOCK_PRODUCT_ID + "=?", OpenClothesContract.Stock.getProductIdFromUri(uri));
+
+                cursor = builder
+                        .where(selection,selectionArgs)
+                        .query(dbReadableDatabase,projection,sortOrder);
+
+                break;
+            // "promise"
             case  PROMISE :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.PROMISE, projection,
                                                                                       selection,
@@ -242,6 +319,8 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                       null,
                                                                                       sortOrder);
                 break;
+
+            // "promise/#"
             case  PROMISE_ID :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.SALE, projection,
                                                                                    OpenClothesContract.Promise._ID + " = '" + ContentUris.parseId(uri) + "'",
@@ -253,6 +332,13 @@ public class OpenClothesProvider extends ContentProvider {
             case  PROMISE_DATE :
                 break;
             case  PROMISE_CUSTOMER :
+                cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.SALE, projection,
+                        OpenClothesContract.PromiseColumns.CUSTOMER + " LIKE '%" + OpenClothesContract.Promise.getCustomerFromUri(uri) + "%'",
+                        null,
+                        null,
+                        null,
+                        sortOrder);
+
                 break;
             case  PROMISE_DATE_INTERVAL :
                 break;
@@ -273,6 +359,22 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                            sortOrder);
                 break;
             case  PROMISE_ITEM_HEADER_PROMISE :
+                withProduct = false;
+                builder = new SelectionBuilder().table( withProduct ? OpenClothesDatabase.Tables.PROMISE_JOIN_PROMISE_ITEM_PRODUCT : OpenClothesDatabase.Tables.PROMISE_JOIN_PROMISE_ITEM)
+                        .mapToTable(OpenClothesContract.Promise._ID, OpenClothesDatabase.Tables.PROMISE)
+                        .mapToTable(OpenClothesContract.PromiseItem.ID_PROMISE, OpenClothesDatabase.Tables.PROMISE_ITEM)
+                        .where(OpenClothesDatabase.Qualified.PROMISE_ITEM_PROMISE_ID + "=?", OpenClothesContract.PromiseItem.getPromiseItemHeaderFromUri(uri));
+
+                if(withProduct) {
+                    builder.mapToTable(OpenClothesContract.Product._ID, OpenClothesDatabase.Tables.PRODUCT);
+                    builder.mapToTable(OpenClothesContract.PromiseItem.ID_PRODUCT, OpenClothesDatabase.Tables.PROMISE_ITEM);
+                }
+
+                cursor = builder
+                        .where(selection,selectionArgs)
+                        .query(dbReadableDatabase,projection,sortOrder);
+
+
                 break;
             case  INCOME :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.INCOME, projection,
@@ -341,6 +443,9 @@ public class OpenClothesProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+
+        getContext().getContentResolver().notifyChange(uri,null);
+
         return cursor;
     }
 
@@ -434,8 +539,8 @@ public class OpenClothesProvider extends ContentProvider {
                 returnUri = OpenClothesContract.Size.buildSizeUri(id);
                 break;
             case  STOCK  :
-                id = dbWritableDatabase.insertOrThrow(OpenClothesDatabase.Tables.PRODUCT, null, values);
-                returnUri = OpenClothesContract.Product.buildProductUri(id);
+                id = dbWritableDatabase.insertOrThrow(OpenClothesDatabase.Tables.STOCK, null, values);
+                returnUri = OpenClothesContract.Stock.buildStockUri(id);
                 break;
             case  SALE :
                 id = dbWritableDatabase.insertOrThrow(OpenClothesDatabase.Tables.SALE, null, values);
@@ -479,9 +584,13 @@ public class OpenClothesProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         final int match = sUriMatcher.match(uri);
+
         final SQLiteDatabase dbWritableDatabase = mOpenHelper.getWritableDatabase();
+
         Log.d(TAG, "delete(uri=" + uri + ", values=" + Arrays.toString(selectionArgs));
+
         int rows=-1;
+
         switch (match)
         {
             case  PRODUCT :
@@ -564,9 +673,13 @@ public class OpenClothesProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 
         final int match = sUriMatcher.match(uri);
+
         final SQLiteDatabase dbWritableDatabase = mOpenHelper.getWritableDatabase();
+
         Log.d(TAG, "update(uri=" + uri +"values=" + values.toString() + ", selectionArgs=" + Arrays.toString(selectionArgs));
+
         int rows=-1;
+
         switch (match)
         {
 
