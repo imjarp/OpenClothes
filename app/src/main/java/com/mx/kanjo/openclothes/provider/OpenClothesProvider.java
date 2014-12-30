@@ -35,6 +35,7 @@ public class OpenClothesProvider extends ContentProvider {
     private static final int STOCK_ID = 301;
     private static final int STOCK_MODEL = 302;
     private static final int STOCK_PRODUCT = 304;
+    private static final int STOCK_PRODUCT_SIZE = 305;
 
     private static final int SALE = 400;
     private static final int SALE_ID = 401;
@@ -76,62 +77,63 @@ public class OpenClothesProvider extends ContentProvider {
         final String authority = OpenClothesContract.CONTENT_AUTHORITY;
 
         //Product
-    matcher.addURI(authority, "product", PRODUCT);
-    matcher.addURI(authority, "product/#", PRODUCT_ID);
-    matcher.addURI(authority, "product/*/model", PRODUCT_MODEL);
+        matcher.addURI(authority, "product", PRODUCT);
+        matcher.addURI(authority, "product/#", PRODUCT_ID);
+        matcher.addURI(authority, "product/*/model", PRODUCT_MODEL);
 
-    //Size
-    matcher.addURI(authority, "size", SIZE);
-    matcher.addURI(authority, "size/#", SIZE_ID);
+        //Size
+        matcher.addURI(authority, "size", SIZE);
+        matcher.addURI(authority, "size/#", SIZE_ID);
 
-    //Stock
-    matcher.addURI(authority, "stock", STOCK);
-    matcher.addURI(authority, "stock/#", STOCK_ID);
-    matcher.addURI(authority, "stock/#/idProduct",  STOCK_PRODUCT);
-    matcher.addURI(authority, "stock/*/model", STOCK_MODEL);
-
-
-    //Sale
-    matcher.addURI(authority, "sale", SALE);
-    matcher.addURI(authority, "sale/#", SALE_ID);
-    matcher.addURI(authority, "sale/*/date", SALE_DATE);
-    matcher.addURI(authority, "sale/interval/*/*",  SALE_DATE_INTERVAL);
+        //Stock
+        matcher.addURI(authority, "stock", STOCK);
+        matcher.addURI(authority, "stock/#", STOCK_ID);
+        matcher.addURI(authority, "stock/#/idProduct",  STOCK_PRODUCT);
+        matcher.addURI(authority, "stock/*/model", STOCK_MODEL);
+        matcher.addURI(authority, "stock/#/idProduct/#/idSize", STOCK_PRODUCT_SIZE);
 
 
-    //Sale Item
-    matcher.addURI(authority, "sale_item", SALE_ITEM);
-    matcher.addURI(authority, "sale_item/#", SALE_ITEM_ID);
-    matcher.addURI(authority, "sale_item/#/header", SALE_ITEM_HEADER);
-    matcher.addURI(authority, "sale_item/#/idProduct", SALE_ITEM_PRODUCT_ID);
+        //Sale
+        matcher.addURI(authority, "sale", SALE);
+        matcher.addURI(authority, "sale/#", SALE_ID);
+        matcher.addURI(authority, "sale/*/date", SALE_DATE);
+        matcher.addURI(authority, "sale/interval/*/*",  SALE_DATE_INTERVAL);
 
-    //Promise
-    matcher.addURI(authority, "promise", PROMISE);
-    matcher.addURI(authority, "promise/#", PROMISE_ID);
-    matcher.addURI(authority, "promise/*/date", PROMISE_DATE);
-    matcher.addURI(authority, "promise/*/customer", PROMISE_CUSTOMER);
-    matcher.addURI(authority, "promise/interval/*/*", PROMISE_DATE_INTERVAL);
 
-    //Promise Item
-    matcher.addURI(authority, "promise_item", PROMISE_ITEM);
-    matcher.addURI(authority, "promise_item/#", PROMISE_ITEM_ID);
-    matcher.addURI(authority, "promise_item/#/header_promise", PROMISE_ITEM_HEADER_PROMISE);
-    matcher.addURI(authority, "promise_item/#/product", PROMISE_ITEM_PRODUCT);
+        //Sale Item
+        matcher.addURI(authority, "sale_item", SALE_ITEM);
+        matcher.addURI(authority, "sale_item/#", SALE_ITEM_ID);
+        matcher.addURI(authority, "sale_item/#/header", SALE_ITEM_HEADER);
+        matcher.addURI(authority, "sale_item/#/idProduct", SALE_ITEM_PRODUCT_ID);
 
-    //Income
-    matcher.addURI(authority, "income", INCOME);
-    matcher.addURI(authority, "income/#", INCOME_ID);
+        //Promise
+        matcher.addURI(authority, "promise", PROMISE);
+        matcher.addURI(authority, "promise/#", PROMISE_ID);
+        matcher.addURI(authority, "promise/*/date", PROMISE_DATE);
+        matcher.addURI(authority, "promise/*/customer", PROMISE_CUSTOMER);
+        matcher.addURI(authority, "promise/interval/*/*", PROMISE_DATE_INTERVAL);
 
-    //Income Type
-    matcher.addURI(authority, "income_type", INCOME_TYPE);
-    matcher.addURI(authority, "income_type/#", INCOME_TYPE_ID);
+        //Promise Item
+        matcher.addURI(authority, "promise_item", PROMISE_ITEM);
+        matcher.addURI(authority, "promise_item/#", PROMISE_ITEM_ID);
+        matcher.addURI(authority, "promise_item/#/header_promise", PROMISE_ITEM_HEADER_PROMISE);
+        matcher.addURI(authority, "promise_item/#/product", PROMISE_ITEM_PRODUCT);
 
-    //Outcome
-    matcher.addURI(authority, "outcome", OUTCOME);
-    matcher.addURI(authority, "outcome/#", OUTCOME_ID);
+        //Income
+        matcher.addURI(authority, "income", INCOME);
+        matcher.addURI(authority, "income/#", INCOME_ID);
 
-    //Outcome Type
-    matcher.addURI(authority, "outcome_type", OUTCOME_TYPE);
-    matcher.addURI(authority, "outcome_type/#", OUTCOME_TYPE_ID);
+        //Income Type
+        matcher.addURI(authority, "income_type", INCOME_TYPE);
+        matcher.addURI(authority, "income_type/#", INCOME_TYPE_ID);
+
+        //Outcome
+        matcher.addURI(authority, "outcome", OUTCOME);
+        matcher.addURI(authority, "outcome/#", OUTCOME_ID);
+
+        //Outcome Type
+        matcher.addURI(authority, "outcome_type", OUTCOME_TYPE);
+        matcher.addURI(authority, "outcome_type/#", OUTCOME_TYPE_ID);
 
         return matcher;
     }
@@ -183,6 +185,9 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                      null,
                                                                                      null,
                                                                                      sortOrder);
+                break;
+            case STOCK_PRODUCT_SIZE:
+                //TODO:IMPLEMENT THIS!!
                 break;
             // "size"
             case  SIZE :
@@ -470,6 +475,8 @@ public class OpenClothesProvider extends ContentProvider {
                 return  OpenClothesContract.Stock.CONTENT_ITEM_TYPE;
             case  STOCK_MODEL :
                 return  OpenClothesContract.Stock.CONTENT_ITEM_TYPE;
+            case STOCK_PRODUCT_SIZE:
+                return OpenClothesContract.Product.CONTENT_ITEM_TYPE;
             case  SALE :
                 return  OpenClothesContract.Sale.CONTENT_TYPE;
             case  SALE_ID :

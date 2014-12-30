@@ -3,52 +3,35 @@ package com.mx.kanjo.openclothes.model;
 /**
  * Created by JARP on 12/9/14.
  */
-public class OutcomeModel {
+public class OutcomeModel extends StockItem {
 
-    StockItem outgoingItem;
-    int quantity;
-    OutcomeType incomeType;
-    String date;
+    OutcomeType outcomeType;
+    String dateOperation;
 
-    public OutcomeModel(StockItem outgoingItem, int quantity, OutcomeType incomeType, String date) {
-        this.outgoingItem = outgoingItem;
-        this.quantity = quantity;
-        this.incomeType = incomeType;
-        this.date = date;
-    }
+
 
     public OutcomeModel() {
     }
 
-    public StockItem getOutgoingItem() {
-        return outgoingItem;
+    public OutcomeModel(ProductModel product, SizeModel size, int quantity, OutcomeType outcomeType, String dateOperation) {
+        super(product, size, quantity);
+        this.outcomeType = outcomeType;
+        this.dateOperation = dateOperation;
     }
 
-    public void setOutgoingItem(StockItem outgoingItem) {
-        this.outgoingItem = outgoingItem;
+    public OutcomeType getOutcomeType() {
+        return outcomeType;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public void setOutcomeType(OutcomeType outcomeType) {
+        this.outcomeType = outcomeType;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public String getDateOperation() {
+        return dateOperation;
     }
 
-    public OutcomeType getIncomeType() {
-        return incomeType;
-    }
-
-    public void setIncomeType(OutcomeType incomeType) {
-        this.incomeType = incomeType;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
+    public void setDateOperation(String dateOperation) {
+        this.dateOperation = dateOperation;
     }
 }

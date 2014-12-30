@@ -6,6 +6,9 @@ package com.mx.kanjo.openclothes.model;
 public class OutcomeType
 {
     int idOutcome;
+
+
+
     String description;
 
     public OutcomeType(int idOutcome, String description) {
@@ -22,5 +25,13 @@ public class OutcomeType
 
     public void setIdOutcome(int idOutcome) {
         this.idOutcome = idOutcome;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

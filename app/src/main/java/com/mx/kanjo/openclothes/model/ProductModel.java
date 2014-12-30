@@ -10,23 +10,29 @@ public class ProductModel
     private int idProduct;
     private String name;
     private String description;
+    private String model;
+    private String date;
     private Uri imagePath;
     private boolean isActive;
     private int price;
     private int cost;
 
-    public ProductModel(int idProduct, String name, String description, Uri imagePath, boolean isActive, int price, int cost) {
+
+    public ProductModel() {
+    }
+
+    public ProductModel(int idProduct, String name, String description, String model, String date, Uri imagePath, boolean isActive, int price, int cost) {
         this.idProduct = idProduct;
         this.name = name;
         this.description = description;
+        this.model = model;
+        this.date = date;
         this.imagePath = imagePath;
         this.isActive = isActive;
         this.price = price;
         this.cost = cost;
     }
 
-    public ProductModel() {
-    }
 
     public int getIdProduct() {
         return idProduct;
@@ -83,4 +89,21 @@ public class ProductModel
     public void setCost(int cost) {
         this.cost = cost;
     }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getDateOperation() {
+        return date;
+    }
+
+    public void setDateOperation(String date) {
+        this.date = date;
+    }
+
 }

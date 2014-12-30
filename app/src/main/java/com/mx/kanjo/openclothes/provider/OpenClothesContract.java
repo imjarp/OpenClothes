@@ -181,6 +181,12 @@ public class OpenClothesContract {
             return CONTENT_URI.buildUpon().appendPath(String.valueOf(productId)).appendPath("idProduct").build();
         }
 
+        public static Uri buildStockUriWithProductIdAndSizeId(int productId, int sizeId)
+        {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(productId)).appendPath("idProduct")
+                                          .appendPath(String.valueOf(sizeId)).appendPath("idSize").build();
+        }
+
         public static String getProductIdFromUri(Uri uri)
         {
             return uri.getPathSegments().get(1);
@@ -192,6 +198,15 @@ public class OpenClothesContract {
             return uri.getPathSegments().get(1);
         }
 
+        public static String getProductIdFromUriWithSize(Uri uri)
+        {
+            return uri.getPathSegments().get(1);
+        }
+
+        public static String getSizeIdFromUriWithProduct(Uri uri)
+        {
+            return uri.getPathSegments().get(3);
+        }
 
     }
 

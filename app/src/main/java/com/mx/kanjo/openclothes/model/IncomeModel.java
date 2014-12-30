@@ -3,37 +3,18 @@ package com.mx.kanjo.openclothes.model;
 /**
  * Created by JARP on 12/9/14.
  */
-public class IncomeModel {
+public class IncomeModel extends StockItem {
 
-    StockItem incomingItem;
-    int quantity;
     IncomeType incomeType;
-    String date;
-
-    public IncomeModel(StockItem incomingItem, int quantity, IncomeType incomeType, String date) {
-        this.incomingItem = incomingItem;
-        this.quantity = quantity;
-        this.incomeType = incomeType;
-        this.date = date;
-    }
+    String dateOperation;
 
     public IncomeModel() {
     }
 
-    public StockItem getIncomingItem() {
-        return incomingItem;
-    }
-
-    public void setIncomingItem(StockItem incomingItem) {
-        this.incomingItem = incomingItem;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public IncomeModel(ProductModel product, SizeModel size, int quantity, IncomeType incomeType, String dateOperation) {
+        super(product, size, quantity);
+        this.incomeType = incomeType;
+        this.dateOperation = dateOperation;
     }
 
     public IncomeType getIncomeType() {
@@ -44,11 +25,15 @@ public class IncomeModel {
         this.incomeType = incomeType;
     }
 
-    public String getDate() {
-        return date;
+    public String getDateOperation() {
+        return dateOperation;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDateOperation(String dateOperation) {
+        this.dateOperation = dateOperation;
     }
+
+
+
+
 }

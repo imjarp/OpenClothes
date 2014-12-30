@@ -181,9 +181,6 @@ public class TestProvider extends AndroidTestCase {
         cursor = resolver.query(returnUri, null, null, null, null);
         TestDB.validateCursor(cursor,values);
 
-
-
-
     }
 
     public void testGetType()
