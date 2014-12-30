@@ -1,5 +1,6 @@
 package com.mx.kanjo.openclothes.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -7,13 +8,19 @@ import java.util.Collection;
  */
 public class NotificationOrderRequest {
 
+    public NotificationOrderRequest()
+    {
+        AvailableProducts = new ArrayList<>();
+        UnavailableProducts = new ArrayList<>();
+    }
+
     public Collection<StockItem> AvailableProducts;
 
-    public Collection<StockItem> UnavailabeProducts;
+    public Collection<StockItem> UnavailableProducts;
 
     public boolean isCompleteOrder()
     {
-        if(UnavailabeProducts.size()>0)
+        if(UnavailableProducts.size()>0)
             return false;
         return true;
     }
