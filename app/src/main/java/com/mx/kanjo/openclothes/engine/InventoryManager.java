@@ -23,6 +23,7 @@ import java.util.Set;
 public class InventoryManager {
 
     private Context mContext;
+
     private ContentResolver resolver;
 
     public InventoryManager(Context context)
@@ -75,6 +76,16 @@ public class InventoryManager {
     public StockItem getStockItemByProductAndSize(int idProduct, int idSize)
     {
         return getStockItemByProduct(idProduct,idSize,resolver);
+    }
+
+    public void removeItemFromStock(StockItem item)
+    {
+        //TODO:
+    }
+
+    public void  addItemToStock(StockItem item)
+    {
+        //TODO:
     }
 
     private static void addIncome(IncomeModel income, ContentResolver resolver)

@@ -10,14 +10,16 @@ public class PromiseSale
     Map<Integer,StockItem> stockItems;
     String customer;
     String datePromise;
+    private int id;
 
     public PromiseSale() {
     }
 
-    public PromiseSale(Map<Integer, StockItem> stockItems, String customer, String datePromise) {
+    public PromiseSale(Map<Integer, StockItem> stockItems, String customer, String datePromise, int id) {
         this.stockItems = stockItems;
         this.customer = customer;
         this.datePromise = datePromise;
+        this.id = id;
     }
 
     public Map<Integer, StockItem> getStockItems() {
@@ -45,4 +47,11 @@ public class PromiseSale
     }
 
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

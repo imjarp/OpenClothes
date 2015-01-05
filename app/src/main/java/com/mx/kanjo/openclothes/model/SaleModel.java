@@ -10,14 +10,24 @@ public class SaleModel
     Map<Integer,StockItem> saleItems;
     String date;
     int total;
+    int id;
 
-    public SaleModel(Map<Integer, StockItem> saleItems, String date, int total) {
+    public SaleModel(Map<Integer, StockItem> saleItems, String date, int total, int id) {
         this.saleItems = saleItems;
         this.date = date;
         this.total = total;
+        this.id = id;
     }
 
     public SaleModel() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Map<Integer, StockItem> getSaleItems() {

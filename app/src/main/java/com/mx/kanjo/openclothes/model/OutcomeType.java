@@ -7,8 +7,6 @@ public class OutcomeType
 {
     int idOutcome;
 
-
-
     String description;
 
     public OutcomeType(int idOutcome, String description) {
