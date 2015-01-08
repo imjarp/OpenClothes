@@ -19,6 +19,7 @@ import com.mx.kanjo.openclothes.model.PromiseSale;
 import com.mx.kanjo.openclothes.model.SaleModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
+import com.mx.kanjo.openclothes.util.Maps;
 
 import java.util.Date;
 import java.util.Map;
@@ -54,14 +55,94 @@ public class SalesManager {
         return createPromise(promiseSale, resolver, configurationOrder);
     }
 
-    public void convertPromiseToSale(PromiseSale promiseSale)
+    public NotificationOrderRequest convertPromiseToSale(PromiseSale promiseSale,ConfigurationOrder configurationOrder)
     {
+        String today = OpenClothesContract.getDbDateString(new Date());
+
+        //TODO : Add a status to sale, so we will not remove the promise
+
+        //Create Sale
+        SaleModel saleModel = new SaleModel(promiseSale.getStockItems(),today,0,0);
+
+        NotificationOrderRequest result = createNewSale(saleModel, configurationOrder);
+
+        if (!configurationOrder.TransactIncompleteOrder && !result.isCompleteOrder())
+            return result;
+
+        //Remove Promise
+        removePromise(promiseSale);
+
+        return result;
 
     }
 
-    public void modifyPromise(int idPromiseSale, final Set<StockItem> itemsToDelete, final Set<StockItem> itemsToUpdate)
+    public void modifyPromise(int idPromise, final Set<StockItem> itemsToDelete, final Set<StockItem> newItems)
     {
 
+        //TODO : create transaction for this operation
+
+        /*
+            Remove promise Items involves to return to the stock , and delete from promise items
+        */
+        Map<Integer, StockItem> stockItems = Maps.newHashMap();
+
+        for(StockItem item : itemsToDelete)
+        {
+            stockItems.put(item.getIdProduct(),item);
+
+            //Add to the stock
+            inventoryManager.addItemToStock(item);
+        }
+
+        deletePromiseItems(stockItems,idPromise);
+
+        for(StockItem item : newItems)
+        {
+            //Remove from the stock
+            inventoryManager.removeItemFromStock(item);
+
+            //Create promise item
+            createPromiseItem(item,idPromise,resolver);
+        }
+
+
+
+    }
+
+
+
+    private void removePromise(PromiseSale promiseSale) {
+
+        deletePromiseItems(promiseSale.getStockItems(), promiseSale.getId());
+
+        deletePromiseHeader(promiseSale);
+
+    }
+
+    private void deletePromiseHeader(PromiseSale promiseSale) {
+
+        Uri promiseUri = OpenClothesContract.Promise.buildPromiseUri(promiseSale.getId());
+
+        final String columnIdPromise = OpenClothesContract.Promise._ID + " = ?";
+
+        int rowsDeleted = resolver.delete(promiseUri, columnIdPromise ,new String[]{String.valueOf(promiseSale.getId())});
+
+        //TODO : this should be an exception
+        /*if(rowsDeleted<1)
+            throw new Exception()*/
+
+    }
+
+    private void deletePromiseItems(Map<Integer, StockItem> stockItems, int idPromise) {
+
+        Uri promiseItemsUri = OpenClothesContract.PromiseItem.buildPromiseItemWithHeader(idPromise,false);
+
+        final String columnIdPromise = OpenClothesContract.PromiseItem.ID_PROMISE + " = ?";
+
+        int rowsDeleted = resolver.delete(promiseItemsUri, columnIdPromise ,new String[]{String.valueOf(idPromise)});
+
+        //This should be an exception
+        //if(stockItems.size()!=rowsDeleted)
     }
 
     private NotificationOrderRequest createNewSale(SaleModel sale, ContentResolver resolver, ConfigurationOrder configurationOrder) {
@@ -120,8 +201,7 @@ public class SalesManager {
         outcomeModel.setDescription(item.getValue().getDescription());
     }
 
-
-    private static NotificationOrderRequest createPromise(PromiseSale promise, ContentResolver resolver, ConfigurationOrder configurationOrder)
+    private  NotificationOrderRequest createPromise(PromiseSale promise, ContentResolver resolver, ConfigurationOrder configurationOrder)
     {
         NotificationOrderRequest result = verifyOrderInStock(promise.getStockItems(), resolver);
 
@@ -134,7 +214,12 @@ public class SalesManager {
 
         for(Map.Entry<Integer,StockItem> item : promise.getStockItems().entrySet())
         {
+            //First Remove from inventory
+            inventoryManager.removeItemFromStock(item.getValue());
+
+            //create promise item
             createPromiseItem(item.getValue(), promise.getId(), resolver);
+
         }
 
         return result;
@@ -207,5 +292,10 @@ public class SalesManager {
         resolver.insert(OpenClothesContract.SaleItem.CONTENT_URI, values);
 
     }
+
+    //TODO :  check if this method is feasible or useful
+    /*
+    private void deletePromiseItem(Map.Entry<Integer, StockItem> stockItemEntry, int idPromise) {}
+    */
 
 }

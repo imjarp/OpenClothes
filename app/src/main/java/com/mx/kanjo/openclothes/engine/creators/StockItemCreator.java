@@ -17,7 +17,7 @@ public class StockItemCreator {
     public static ContentValues getFromStockModel(StockItem model)
     {
         ContentValues values = new ContentValues();
-
+        values.put(OpenClothesContract.Stock._ID,model.getStockItemId());
         values.put(OpenClothesContract.Stock.ID_PRODUCT, model.getIdProduct());
         values.put(OpenClothesContract.Stock.ID_SIZE, model.getSize().getIdSize());
         values.put(OpenClothesContract.Stock.QUANTITY, model.getQuantity());
@@ -44,6 +44,8 @@ public class StockItemCreator {
         SizeModel sizeModel = SizeCreator.getFromId(idSize,resolver);
 
         StockItem model = new StockItem(productModel,sizeModel,quantity);
+
+        model.setStockItemId(id);
 
         return  model;
 

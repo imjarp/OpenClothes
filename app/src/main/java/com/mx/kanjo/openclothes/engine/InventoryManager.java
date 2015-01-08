@@ -1,6 +1,7 @@
 package com.mx.kanjo.openclothes.engine;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -25,6 +26,8 @@ public class InventoryManager {
     private Context mContext;
 
     private ContentResolver resolver;
+
+    private final String whereColumnIdStock = OpenClothesContract.Stock._ID + " = ?";
 
     public InventoryManager(Context context)
     {
@@ -78,14 +81,44 @@ public class InventoryManager {
         return getStockItemByProduct(idProduct,idSize,resolver);
     }
 
-    public void removeItemFromStock(StockItem item)
+    public void removeItemFromStock(StockItem itemToDelete)
     {
-        //TODO:
+        //check how many pieces are left from that item
+        StockItem stockItem = getStockItemByProduct(itemToDelete.getIdProduct(),itemToDelete.getSize().getIdSize(),resolver);
+
+        //TODO : We have to remove all the pieces or update it?
+        if(stockItem.getQuantity() == itemToDelete.getQuantity()){
+
+           deleteStockItem(stockItem);
+            return ;
+        }
+
+        int piecesLeft = stockItem.getQuantity() - itemToDelete.getQuantity();
+
+        stockItem.setQuantity(piecesLeft);
+
+        updateExistingItemInStock(stockItem);
+
     }
 
     public void  addItemToStock(StockItem item)
     {
         //TODO:
+
+        //check how many pieces are left from that item
+        StockItem stockItem = getStockItemByProduct(item.getIdProduct(),item.getSize().getIdSize(),resolver);
+
+        if(null == stockItem)
+        {
+            addNewItemToStock(stockItem);
+        }
+
+        int piecesLeft = stockItem.getQuantity() + item.getQuantity();
+
+        stockItem.setQuantity(piecesLeft);
+
+        updateExistingItemInStock(stockItem);
+
     }
 
     private static void addIncome(IncomeModel income, ContentResolver resolver)
@@ -127,6 +160,39 @@ public class InventoryManager {
 
         return stockItem;
 
+    }
+
+    private void updateExistingItemInStock(StockItem stockItem)
+    {
+        Uri uriStockItem = OpenClothesContract.Stock.buildStockUri(stockItem.getStockItemId());
+
+        ContentValues values = StockItemCreator.getFromStockModel(stockItem);
+
+        int rows = resolver.update(uriStockItem, values, whereColumnIdStock, new String[]{ String.valueOf(stockItem.getStockItemId())});
+    }
+
+    private void addNewItemToStock(StockItem stockItem)
+    {
+
+        ContentValues values = StockItemCreator.getFromStockModel(stockItem);
+
+        Uri result = resolver.insert(OpenClothesContract.Stock.CONTENT_URI, values);
+
+        long id = ContentUris.parseId(result);
+
+            /*if(id<0)
+                throw Exception()*/
+
+    }
+
+    private void deleteStockItem(StockItem stockItem)
+    {
+        Uri uriStockItem = OpenClothesContract.Stock.buildStockUri(stockItem.getStockItemId());
+
+        int rows = resolver.delete(uriStockItem, whereColumnIdStock , new String[]{ String.valueOf(stockItem.getStockItemId())});
+
+            /*if(rows<0)
+                throw Exception();*/
     }
 
 
