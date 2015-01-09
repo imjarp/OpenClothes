@@ -1,6 +1,7 @@
 package com.mx.kanjo.openclothes.engine;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,11 +9,15 @@ import android.net.Uri;
 
 import com.mx.kanjo.openclothes.engine.creators.IncomeTypeCreator;
 import com.mx.kanjo.openclothes.engine.creators.OutcomeTypeCreator;
+import com.mx.kanjo.openclothes.engine.creators.SizeCreator;
 import com.mx.kanjo.openclothes.model.IncomeType;
 import com.mx.kanjo.openclothes.model.OutcomeType;
+import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
+import com.mx.kanjo.openclothes.util.Lists;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -63,7 +68,41 @@ public class ConfigurationInventoryManager {
         return getOutcomeTypesFromResolver(resolver);
     }
 
+    public Set<IncomeType> getIncomesTypesFromResolver(ContentResolver resolver) {
 
+        final Cursor cursor = resolver.query(OpenClothesContract.IncomeType.CONTENT_URI,null,null,null,null);
+
+        Set<IncomeType> incomes = new HashSet<>(cursor.getCount());
+
+        try {
+
+            if (!cursor.moveToFirst())
+            {
+                return  incomes;
+            }
+            while (cursor.moveToNext())
+            {
+                incomes.add(IncomeTypeCreator.getModel(cursor));
+            }
+
+        } finally {
+            cursor.close();
+
+        }
+
+        return incomes;
+
+    }
+
+    public SizeModel addSizeItem(SizeModel sizeModel)
+    {
+        return insertSizeItem(resolver,sizeModel);
+    }
+
+    public List<SizeModel> getSizeCatalogue()
+    {
+        return getSizeCatalogueFromResolver(resolver);
+    }
 
     private static void insertIncomeType(ContentResolver resolver , IncomeType incomeType)
     {
@@ -106,30 +145,17 @@ public class ConfigurationInventoryManager {
 
     }
 
-    public Set<IncomeType> getIncomesTypesFromResolver(ContentResolver resolver) {
+    private static SizeModel insertSizeItem(ContentResolver resolver, SizeModel sizeModel)
+    {
+        ContentValues values = SizeCreator.getFromModel(sizeModel);
 
-        final Cursor cursor = resolver.query(OpenClothesContract.IncomeType.CONTENT_URI,null,null,null,null);
+        Uri uriResult = resolver.insert(OpenClothesContract.Size.CONTENT_URI,values);
 
-        Set<IncomeType> incomes = new HashSet<>(cursor.getCount());
+        long id = ContentUris.parseId(uriResult);
 
-        try {
+        sizeModel.setIdSize((int) id);
 
-            if (!cursor.moveToFirst())
-            {
-                return  incomes;
-            }
-            while (cursor.moveToNext())
-            {
-                incomes.add(IncomeTypeCreator.getModel(cursor));
-            }
-
-        } finally {
-            cursor.close();
-
-        }
-
-        return incomes;
-
+        return sizeModel;
     }
 
     private Set<OutcomeType> getOutcomeTypesFromResolver(ContentResolver resolver) {
@@ -154,5 +180,34 @@ public class ConfigurationInventoryManager {
         }
 
         return outcomeTypes;
+    }
+
+    private static List<SizeModel> getSizeCatalogueFromResolver(ContentResolver resolver)
+    {
+        List sizeModels = Lists.newArrayList();
+
+        Cursor cursor = null;
+
+        try {
+
+            cursor = resolver.query(OpenClothesContract.Size.CONTENT_URI, null, null, null, null, null);
+
+            if(cursor!=null && cursor.getCount()<1)
+            {
+                while (cursor.moveToNext()) {
+                    sizeModels.add(SizeCreator.getFromCursor(cursor));
+                }
+
+            }
+
+        }finally {
+
+            if(null != cursor && !cursor.isClosed())
+                cursor.close();
+            return sizeModels;
+
+        }
+
+
     }
 }

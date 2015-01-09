@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 
 import com.mx.kanjo.openclothes.engine.creators.ProductCreator;
 import com.mx.kanjo.openclothes.model.ProductModel;
@@ -30,9 +31,9 @@ public class CatalogueManager {
         resolver = context.getContentResolver();
     }
 
-    public void addNewProduct(ProductModel product)
+    public Uri addNewProduct(ProductModel product)
     {
-        insertNewProduct(resolver,product);
+        return insertNewProduct(resolver,product);
 
     }
 
@@ -67,10 +68,10 @@ public class CatalogueManager {
         return products;
     }
 
-    private static void insertNewProduct(ContentResolver resolver, ProductModel model)
+    private static Uri insertNewProduct(ContentResolver resolver, ProductModel model)
     {
         ContentValues values = ProductCreator.getFromProduct(model);
-        resolver.insert(OpenClothesContract.Product.CONTENT_URI,values);
+        return resolver.insert(OpenClothesContract.Product.CONTENT_URI,values);
     }
 
 
