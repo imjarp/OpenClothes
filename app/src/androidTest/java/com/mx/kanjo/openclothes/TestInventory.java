@@ -1,15 +1,20 @@
 package com.mx.kanjo.openclothes;
 
 import android.content.ContentUris;
+import android.content.Context;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
+import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
 import com.mx.kanjo.openclothes.engine.InventoryManager;
 import com.mx.kanjo.openclothes.model.ProductModel;
+import com.mx.kanjo.openclothes.model.SizeModel;
+import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,23 +24,41 @@ public class TestInventory extends AndroidTestCase {
 
     public static final String TAG = TestInventory.class.getSimpleName();
 
+    Context context;
+
     ProductModel model1;
     ProductModel model2;
-    private Set<ProductModel> productCataloge;
+
+    SizeModel smallSize ;
+    SizeModel mediumSize;
+
+    StockItem dress1Small;
+    StockItem dress1Medium;
+
+    StockItem dress2Small;
+
+
+    private Set<ProductModel> productCatalogue;
+
+    InventoryManager inventoryManager ;
+
+    ConfigurationInventoryManager configInventoryManager;
 
     @Override
-    public void setUp() throws Exception {
-
+    protected void setUp() throws Exception {
         super.setUp();
 
-        TestProvider testProvider = new TestProvider();
+        context = getContext();
 
-        testProvider.deleteAllRecords();
+        inventoryManager = new InventoryManager(context);
+        configInventoryManager = new ConfigurationInventoryManager(context);
+
     }
+
 
     public void TestAddTwoProducts()
     {
-        CatalogueManager catalogueManager = new CatalogueManager(mContext);
+        CatalogueManager catalogueManager = new CatalogueManager(context);
 
         model1 =  createProductInstance(0,
                 "CB-011",
@@ -69,27 +92,61 @@ public class TestInventory extends AndroidTestCase {
 
         model2.setIdProduct((int) id);
 
-        productCataloge = catalogueManager.getCatalogue();
+        productCatalogue = catalogueManager.getCatalogue();
 
-        assertTrue( productCataloge.size() == 2 );
+        assertTrue( productCatalogue.size() == 2 );
 
 
     }
 
     public void TestAddSizeItems()
     {
+        smallSize = createSizeModel(0,"small");
+        mediumSize = createSizeModel(0,"medium");
+
+        smallSize =  configInventoryManager.addSizeItem(smallSize);
+        mediumSize =  configInventoryManager.addSizeItem(mediumSize);
+
+        List sizeCatalogue = configInventoryManager.getSizeCatalogue();
+
+        assertTrue( sizeCatalogue.size() == 2 );
+
 
     }
 
     public void TestAddProductsToStock() {
 
-        InventoryManager inventoryManager = new InventoryManager(mContext);
+        dress1Small = new StockItem(model1,smallSize,1);
 
+        dress1Medium = new StockItem(model1,mediumSize,2);
 
+        dress2Small = new StockItem(model2,smallSize,1);
 
+        inventoryManager.addItemToStock(dress1Small);
 
+        inventoryManager.addItemToStock(dress1Medium);
 
+        inventoryManager.addItemToStock(dress2Small);
 
+        Set<StockItem> stockItems = inventoryManager.getStock();
+
+        assertTrue( stockItems.size() == 3 );
+
+        StockItem item =  inventoryManager.getStockItemByProductAndSize(dress1Small.getIdProduct(),dress1Small.getSize().getIdSize());
+
+        assertNotNull(item);
+
+        assertEquals(dress1Small.getIdProduct(),item.getIdProduct());
+        assertEquals(dress1Small.getQuantity(),item.getIdProduct());
+        assertEquals(dress1Small.getSize().getIdSize(),item.getSize().getIdSize());
+
+        item =  inventoryManager.getStockItemByProductAndSize(dress1Medium.getIdProduct(),dress1Medium.getSize().getIdSize());
+
+        assertNotNull(item);
+
+        assertEquals(dress1Medium.getIdProduct(),item.getIdProduct());
+        assertEquals(dress1Medium.getQuantity(),item.getIdProduct());
+        assertEquals(dress1Medium.getSize().getIdSize(),item.getSize().getIdSize());
 
     }
 
@@ -100,6 +157,10 @@ public class TestInventory extends AndroidTestCase {
         return new ProductModel(idProduct,name,description,model,date,imagePath,isActive,price,cost);
     }
 
+    public static SizeModel createSizeModel(int idSize, String description)
+    {
+        return new SizeModel(idSize,description);
+    }
 
 
 

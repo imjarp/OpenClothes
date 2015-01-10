@@ -96,6 +96,7 @@ public class ConfigurationInventoryManager {
 
     public SizeModel addSizeItem(SizeModel sizeModel)
     {
+        //TODO:check if it already exists by description?
         return insertSizeItem(resolver,sizeModel);
     }
 
