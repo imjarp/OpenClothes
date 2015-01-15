@@ -53,9 +53,9 @@ public class InventoryManager {
 
     public Set<StockItem> getStock()
     {
-        final Cursor cursor = resolver.query(OpenClothesContract.Stock.CONTENT_URI,null,null,null,null);
+        Cursor cursor = resolver.query(OpenClothesContract.Stock.CONTENT_URI,null,null,null,null);
 
-        Set<StockItem> stockItems = new HashSet<>(cursor.getCount());
+        Set<StockItem> stockItems = new HashSet<>();
 
         try {
 
@@ -63,10 +63,10 @@ public class InventoryManager {
             {
                 return  stockItems;
             }
-            while (cursor.moveToNext())
+            do
             {
-                stockItems.add(StockItemCreator.fromCursor(cursor,resolver));
-            }
+                stockItems.add( StockItemCreator.fromCursor(cursor, resolver) );
+            } while ( cursor.moveToNext() );
 
         } finally {
             cursor.close();
@@ -110,7 +110,8 @@ public class InventoryManager {
 
         if(null == stockItem)
         {
-            addNewItemToStock(stockItem);
+            addNewItemToStock(item);
+            return;
         }
 
         int piecesLeft = stockItem.getQuantity() + item.getQuantity();
@@ -142,18 +143,18 @@ public class InventoryManager {
 
         try
         {
-            //TODO:Test this URI
-            Uri stockUriWithProductIdAndSizeId = OpenClothesContract.Stock.buildStockUriWithProductIdAndSizeId(idProduct,sizeId);
+            //TODO:Insert this Test in TestProvider
+            Uri stockUriWithProductIdAndSizeId = OpenClothesContract.Stock.buildStockUriWithProductIdAndSizeId(idProduct, sizeId);
 
-            cursor = resolver.query(stockUriWithProductIdAndSizeId,null,null,null,null);
+            cursor = resolver.query(stockUriWithProductIdAndSizeId, null, null, null, null);
 
             if(cursor.moveToFirst())
-                stockItem = StockItemCreator.fromCursor(cursor,resolver);
+                stockItem = StockItemCreator.fromCursor(cursor, resolver);
 
         }
         finally {
 
-            if(null != cursor && !cursor.isClosed()) {
+            if( null != cursor && !cursor.isClosed() ) {
                 cursor.close();
             }
         }

@@ -123,11 +123,11 @@ public class TestInventory extends AndroidTestCase {
 
         mediumSize = configInventoryManager.findByDescription("medium");
 
-        dress1Small = new StockItem(model1,smallSize,1);
+        dress1Small = new StockItem(model1, smallSize, 1);
 
-        dress1Medium = new StockItem(model1,mediumSize,2);
+        dress1Medium = new StockItem(model1, mediumSize, 2);
 
-        dress2Small = new StockItem(model2,smallSize,1);
+        dress2Small = new StockItem(model2, smallSize, 1);
 
         inventoryManager.addItemToStock(dress1Small);
 
@@ -139,21 +139,21 @@ public class TestInventory extends AndroidTestCase {
 
         assertTrue( stockItems.size() == 3 );
 
-        StockItem item =  inventoryManager.getStockItemByProductAndSize(dress1Small.getIdProduct(),dress1Small.getSize().getIdSize());
+        StockItem item =  inventoryManager.getStockItemByProductAndSize(dress1Small.getIdProduct(), dress1Small.getSize().getIdSize() );
 
         assertNotNull(item);
 
-        assertEquals(dress1Small.getIdProduct(),item.getIdProduct());
-        assertEquals(dress1Small.getQuantity(),item.getIdProduct());
-        assertEquals(dress1Small.getSize().getIdSize(),item.getSize().getIdSize());
+        assertEquals(dress1Small.getIdProduct(), item.getIdProduct());
+        assertEquals(dress1Small.getQuantity(), item.getIdProduct());
+        assertEquals(dress1Small.getSize().getIdSize(), item.getSize().getIdSize());
 
-        item =  inventoryManager.getStockItemByProductAndSize(dress1Medium.getIdProduct(),dress1Medium.getSize().getIdSize());
+        item =  inventoryManager.getStockItemByProductAndSize(dress1Medium.getIdProduct(), dress1Medium.getSize().getIdSize());
 
         assertNotNull(item);
 
-        assertEquals(dress1Medium.getIdProduct(),item.getIdProduct());
-        assertEquals(dress1Medium.getQuantity(),item.getIdProduct());
-        assertEquals(dress1Medium.getSize().getIdSize(),item.getSize().getIdSize());
+        assertEquals(dress1Medium.getIdProduct(), item.getIdProduct());
+        assertEquals(dress1Medium.getQuantity(), item.getIdProduct());
+        assertEquals(dress1Medium.getSize().getIdSize(), item.getSize().getIdSize());
 
     }
 

@@ -39,10 +39,18 @@ public class SizeCreator {
 
     public static SizeModel getFromId(int idSize , ContentResolver resolver)
     {
-        Uri uriSizeId = OpenClothesContract.Size.buildSizeUri(idSize);
-        Cursor cursor = resolver.query(uriSizeId,null,null,null,null);
-        SizeModel model = getFromCursor(cursor);
-        cursor.close();
+        SizeModel model = null;
+        Cursor cursor = null;
+        try {
+            Uri uriSizeId = OpenClothesContract.Size.buildSizeUri(idSize);
+            cursor = resolver.query(uriSizeId, null, null, null, null);
+            if( cursor.moveToFirst() )
+                model = getFromCursor(cursor);
+        }
+        finally {
+            cursor.close();
+        }
+
         return model;
     }
 }

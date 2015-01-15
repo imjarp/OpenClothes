@@ -61,10 +61,22 @@ public class ProductCreator {
 
     public static  ProductModel getProductModelFromId(int idProduct , ContentResolver resolver)
     {
-        Uri uriProductId = OpenClothesContract.Product.buildProductUri(idProduct);
-        Cursor cursor = resolver.query(uriProductId,null,null,null,null);
-        ProductModel productModel = getProductModelFromCursor(cursor);
-        cursor.close();
+        ProductModel productModel = null;
+        Cursor cursor = null;
+        try {
+            Uri uriProductId = OpenClothesContract.Product.buildProductUri(idProduct);
+             cursor = resolver.query(uriProductId, null, null, null, null);
+
+            if (!cursor.moveToFirst())
+                return null;
+
+            productModel = getProductModelFromCursor(cursor);
+        }finally {
+
+            if(null != cursor && !cursor.isClosed() )
+                cursor.close();
+
+        }
         return productModel;
     }
 

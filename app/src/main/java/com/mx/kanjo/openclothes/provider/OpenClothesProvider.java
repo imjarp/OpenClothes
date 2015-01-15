@@ -187,7 +187,17 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                      sortOrder);
                 break;
             case STOCK_PRODUCT_SIZE:
-                //TODO:IMPLEMENT THIS!!
+                String idProduct = OpenClothesContract.Stock.getProductIdFromUri(uri);
+                String idSize = OpenClothesContract.Stock.getSizeIdFromUriWithProduct(uri);
+                String where = OpenClothesContract.Stock.ID_PRODUCT + " = '" + idProduct + "' AND "
+                             + OpenClothesContract.Stock.ID_SIZE + " = '" + idSize + "' ";
+
+                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.STOCK,projection,
+                                                                                    where,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    sortOrder);
                 break;
             // "size"
             case  SIZE :

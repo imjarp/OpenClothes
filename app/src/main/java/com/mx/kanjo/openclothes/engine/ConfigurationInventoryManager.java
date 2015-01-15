@@ -101,7 +101,9 @@ public class ConfigurationInventoryManager {
 
     public SizeModel addSizeItem(SizeModel sizeModel)
     {
-        //TODO:check if it already exists by description?
+        SizeModel sizeItem =  findByDescription(sizeModel.getSizeDescription(),resolver);
+        if(sizeItem != null)
+            return sizeItem;
         return insertSizeItem(resolver,sizeModel);
     }
 
@@ -229,9 +231,9 @@ public class ConfigurationInventoryManager {
 
         String [] selectionArgs = new String[]{sizeDescription};
 
-        Cursor cursor  = resolver.query(uriSizeDescription,null, selection  ,selectionArgs,null);
+        Cursor cursor  = resolver.query(uriSizeDescription, null, selection  , selectionArgs, null);
 
-        if(!cursor.moveToFirst())
+        if( ! cursor.moveToFirst() )
             return result;
 
         result = SizeCreator.getFromCursor(cursor);
