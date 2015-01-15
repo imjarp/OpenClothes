@@ -38,14 +38,16 @@ public class ConfigurationInventoryManager {
         resolver = context.getContentResolver();
     }
 
-    public void addIncomeType(IncomeType incomeType)
+    public IncomeType addIncomeType(IncomeType incomeType)
     {
-        insertIncomeType(resolver,incomeType);
+        //TODO: search for and income description
+        return insertIncomeType(resolver,incomeType);
     }
 
-    public void addOutcomeType(OutcomeType outcomeType)
+    public OutcomeType addOutcomeType(OutcomeType outcomeType)
     {
-        insertOutcomeType(resolver,outcomeType);
+        //TODO: search for and outcome description
+        return insertOutcomeType(resolver,outcomeType);
     }
 
     public void modifyIncomeType(int idIncomeType, String incomeDescription )
@@ -73,7 +75,7 @@ public class ConfigurationInventoryManager {
         return getOutcomeTypesFromResolver(resolver);
     }
 
-    public Set<IncomeType> getIncomesTypesFromResolver(ContentResolver resolver) {
+    private Set<IncomeType> getIncomesTypesFromResolver(ContentResolver resolver) {
 
         final Cursor cursor = resolver.query(OpenClothesContract.IncomeType.CONTENT_URI,null,null,null,null);
 
@@ -85,10 +87,10 @@ public class ConfigurationInventoryManager {
             {
                 return  incomes;
             }
-            while (cursor.moveToNext())
+            do
             {
                 incomes.add(IncomeTypeCreator.getModel(cursor));
-            }
+            }while (cursor.moveToNext());
 
         } finally {
             cursor.close();
@@ -112,18 +114,25 @@ public class ConfigurationInventoryManager {
         return getSizeCatalogueFromResolver(resolver);
     }
 
-    private static void insertIncomeType(ContentResolver resolver , IncomeType incomeType)
+    private IncomeType insertIncomeType(ContentResolver resolver , IncomeType incomeType)
     {
 
         ContentValues values = IncomeTypeCreator.getIncomeType(incomeType);
-        resolver.insert(OpenClothesContract.IncomeType.CONTENT_URI,values);
-
+        Uri resultUri = resolver.insert(OpenClothesContract.IncomeType.CONTENT_URI,values);
+        long id = ContentUris.parseId(resultUri);
+        incomeType.setIdIncome((int) id);
+        return incomeType;
     }
 
-    private static void insertOutcomeType(ContentResolver resolver , OutcomeType outcomeType)
+    private OutcomeType insertOutcomeType(ContentResolver resolver , OutcomeType outcomeType)
     {
         ContentValues values = OutcomeTypeCreator.getOutcomeType(outcomeType);
-        resolver.insert(OpenClothesContract.Outcome.CONTENT_URI, values);
+        Uri uriResult = resolver.insert(OpenClothesContract.OutcomeType.CONTENT_URI, values);
+        long id = ContentUris.parseId(uriResult);
+        outcomeType.setIdOutcome((int) id);
+
+        return outcomeType;
+
     }
 
     private static void updateIncomeType(ContentResolver resolver, IncomeType incomeType)
@@ -177,10 +186,11 @@ public class ConfigurationInventoryManager {
             {
                 return  outcomeTypes;
             }
-            while (cursor.moveToNext())
+
+            do
             {
                 outcomeTypes.add(OutcomeTypeCreator.getModel(cursor));
-            }
+            }while (cursor.moveToNext());
 
         } finally {
             cursor.close();

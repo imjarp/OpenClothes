@@ -8,6 +8,8 @@ import android.test.AndroidTestCase;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
 import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
 import com.mx.kanjo.openclothes.engine.InventoryManager;
+import com.mx.kanjo.openclothes.model.IncomeType;
+import com.mx.kanjo.openclothes.model.OutcomeType;
 import com.mx.kanjo.openclothes.model.ProductModel;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
@@ -46,6 +48,14 @@ public class TestInventory extends AndroidTestCase {
 
     CatalogueManager catalogueManager ;
 
+    IncomeType incomeTypeNewEntry;
+
+    IncomeType incomeTypeInventoryError;
+
+    private OutcomeType outcomeTypeNewEntry;
+
+    private OutcomeType outcomeTypeInventoryError;
+
 
     public void setUp() {
 
@@ -55,7 +65,51 @@ public class TestInventory extends AndroidTestCase {
         catalogueManager = new CatalogueManager(mContext);
     }
 
-    public void testAddATwoProducts()
+
+    public void testAddIncomeTypes() {
+
+        TestProvider.deleteAllRecords(context.getContentResolver());
+
+        incomeTypeNewEntry = new IncomeType(0, "New Entry");
+
+        incomeTypeInventoryError = new IncomeType(0, "Income Inventory Error");
+
+        incomeTypeNewEntry =  configInventoryManager.addIncomeType(incomeTypeNewEntry);
+
+        assertTrue( incomeTypeNewEntry.getIdIncome() > 0 );
+
+        incomeTypeInventoryError = configInventoryManager.addIncomeType(incomeTypeInventoryError);
+
+        assertTrue( incomeTypeInventoryError.getIdIncome() >0 );
+
+        Set<IncomeType> incomeTypes =  configInventoryManager.getIncomeTypes();
+
+        assertTrue( incomeTypes.size() == 2 );
+
+    }
+
+    public void testAddOutcomeTypes() {
+
+
+        outcomeTypeNewEntry = new OutcomeType(0, "New Entry");
+
+        outcomeTypeInventoryError = new OutcomeType(0, "Outcome Inventory Error");
+
+        outcomeTypeNewEntry =  configInventoryManager.addOutcomeType(outcomeTypeNewEntry);
+
+        assertTrue( outcomeTypeNewEntry.getIdOutcome() > 0 );
+
+        outcomeTypeInventoryError = configInventoryManager.addOutcomeType(outcomeTypeInventoryError);
+
+        assertTrue( outcomeTypeInventoryError.getIdOutcome() >0 );
+
+        Set<OutcomeType> outcomeTypes =  configInventoryManager.getOutcomeTypes();
+
+        assertTrue( outcomeTypes.size() == 2 );
+
+    }
+
+    public void testAddProducts()
     {
         TestProvider.deleteAllRecords(context.getContentResolver());
 
@@ -98,7 +152,7 @@ public class TestInventory extends AndroidTestCase {
 
     }
 
-    public void testAddBSizeItems()
+    public void testAddSizeItems()
     {
         smallSize = createSizeModel(0,"small");
         mediumSize = createSizeModel(0,"medium");
@@ -113,7 +167,7 @@ public class TestInventory extends AndroidTestCase {
 
     }
 
-    public void testAddCProductsToStock() {
+    public void testAddStock() {
 
         model1 = catalogueManager.findProductByModel("CB-011");
 
@@ -144,7 +198,7 @@ public class TestInventory extends AndroidTestCase {
         assertNotNull(item);
 
         assertEquals(dress1Small.getIdProduct(), item.getIdProduct());
-        assertEquals(dress1Small.getQuantity(), item.getIdProduct());
+        assertEquals(dress1Small.getQuantity(), item.getQuantity());
         assertEquals(dress1Small.getSize().getIdSize(), item.getSize().getIdSize());
 
         item =  inventoryManager.getStockItemByProductAndSize(dress1Medium.getIdProduct(), dress1Medium.getSize().getIdSize());
@@ -152,10 +206,35 @@ public class TestInventory extends AndroidTestCase {
         assertNotNull(item);
 
         assertEquals(dress1Medium.getIdProduct(), item.getIdProduct());
-        assertEquals(dress1Medium.getQuantity(), item.getIdProduct());
+        assertEquals(dress1Medium.getQuantity(), item.getQuantity());
         assertEquals(dress1Medium.getSize().getIdSize(), item.getSize().getIdSize());
 
     }
+
+    public void testCreatePromiseOperations()
+    {
+
+        model1 = catalogueManager.findProductByModel("CB-011");
+
+        model2 = catalogueManager.findProductByModel("CB-012");
+
+        smallSize = configInventoryManager.findByDescription("small");
+
+        mediumSize = configInventoryManager.findByDescription("medium");
+
+
+
+
+
+
+    }
+
+    public void testCreateSaleOperations()
+    {
+
+    }
+
+
 
     
 

@@ -19,6 +19,7 @@ public class IncomeCreator {
     {
         ContentValues values = new ContentValues();
 
+
         values.put(OpenClothesContract.Income.ID_INCOME_TYPE, incomeModel.getIncomeType().getIdIncome());
         values.put(OpenClothesContract.Income.ID_PRODUCT, incomeModel.getIdProduct());
         values.put(OpenClothesContract.Income.ID_SIZE, incomeModel.getSize().getIdSize());

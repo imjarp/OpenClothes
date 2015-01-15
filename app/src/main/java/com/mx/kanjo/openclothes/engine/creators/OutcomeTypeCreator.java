@@ -17,7 +17,8 @@ public class OutcomeTypeCreator {
     {
         ContentValues values = new ContentValues();
 
-        values.put(OpenClothesContract.IncomeType._ID, outcomeTypeModel.getIdOutcome());
+        if( outcomeTypeModel.getIdOutcome() > 0 )
+            values.put(OpenClothesContract.IncomeType._ID, outcomeTypeModel.getIdOutcome());
         values.put(OpenClothesContract.IncomeType.DESCRIPTION, outcomeTypeModel.getDescription());
 
         return values;

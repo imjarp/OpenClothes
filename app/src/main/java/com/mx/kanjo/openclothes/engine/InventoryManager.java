@@ -53,9 +53,11 @@ public class InventoryManager {
 
     public Set<StockItem> getStock()
     {
-        Cursor cursor = resolver.query(OpenClothesContract.Stock.CONTENT_URI,null,null,null,null);
+        Cursor cursor = resolver.query(OpenClothesContract.Stock.CONTENT_URI, null, null, null, null);
 
         Set<StockItem> stockItems = new HashSet<>();
+
+        int i = 0 ;
 
         try {
 
@@ -101,6 +103,9 @@ public class InventoryManager {
 
     }
 
+    /*
+        This operation will not add an income
+     */
     public void  addItemToStock(StockItem item)
     {
         //TODO:
