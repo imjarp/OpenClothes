@@ -44,19 +44,20 @@ public class TestInventory extends AndroidTestCase {
 
     ConfigurationInventoryManager configInventoryManager;
 
+    CatalogueManager catalogueManager ;
+
 
     public void setUp() {
 
         context = mContext;
-        TestProvider.deleteAllRecords(context.getContentResolver());
         inventoryManager = new InventoryManager(context);
         configInventoryManager = new ConfigurationInventoryManager(context);
+        catalogueManager = new CatalogueManager(mContext);
     }
 
     public void testAddATwoProducts()
     {
-
-        CatalogueManager catalogueManager = new CatalogueManager(mContext);
+        TestProvider.deleteAllRecords(context.getContentResolver());
 
         model1 =  createProductInstance(0,
                 "CB-011",
@@ -113,6 +114,14 @@ public class TestInventory extends AndroidTestCase {
     }
 
     public void testAddCProductsToStock() {
+
+        model1 = catalogueManager.findProductByModel("CB-011");
+
+        model2 = catalogueManager.findProductByModel("CB-012");
+
+        smallSize = configInventoryManager.findByDescription("small");
+
+        mediumSize = configInventoryManager.findByDescription("medium");
 
         dress1Small = new StockItem(model1,smallSize,1);
 

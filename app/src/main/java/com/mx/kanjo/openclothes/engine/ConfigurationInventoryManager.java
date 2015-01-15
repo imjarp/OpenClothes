@@ -58,6 +58,11 @@ public class ConfigurationInventoryManager {
         updateOutcomeType(resolver, new OutcomeType(idOutcomeType, outcomeDescription));
     }
 
+    public SizeModel findByDescription ( String sizeDescription)
+    {
+        return findByDescription(sizeDescription,resolver);
+    }
+
     public Set<IncomeType> getIncomeTypes()
     {
         return getIncomesTypesFromResolver(resolver);
@@ -211,6 +216,29 @@ public class ConfigurationInventoryManager {
 
         }
 
+
+    }
+
+    private static SizeModel findByDescription(String sizeDescription, ContentResolver resolver)
+    {
+        SizeModel result = null;
+
+        Uri uriSizeDescription = OpenClothesContract.Size.CONTENT_URI;
+
+        String selection = OpenClothesContract.Size.SIZE + " = ? ";
+
+        String [] selectionArgs = new String[]{sizeDescription};
+
+        Cursor cursor  = resolver.query(uriSizeDescription,null, selection  ,selectionArgs,null);
+
+        if(!cursor.moveToFirst())
+            return result;
+
+        result = SizeCreator.getFromCursor(cursor);
+
+        cursor.close();
+
+        return result;
 
     }
 }

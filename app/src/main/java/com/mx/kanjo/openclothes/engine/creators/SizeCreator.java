@@ -24,7 +24,16 @@ public class SizeCreator {
 
     public static SizeModel getFromCursor (Cursor cursor)
     {
-        SizeModel sizeModel = new SizeModel();
+        SizeModel sizeModel = null;
+
+        int idxId = cursor.getColumnIndex(OpenClothesContract.Size._ID);
+        int idxSizeDescription = cursor.getColumnIndex(OpenClothesContract.Size.SIZE);
+
+        int id = cursor.getInt(idxId);
+        String description = cursor.getString(idxSizeDescription);
+
+        sizeModel = new SizeModel(id,description);
+
         return sizeModel;
     }
 

@@ -19,6 +19,7 @@ import java.util.Set;
 public class CatalogueManager {
 
     private Context mContext;
+
     private ContentResolver resolver;
 
     public CatalogueManager(Context context) {
@@ -43,6 +44,11 @@ public class CatalogueManager {
 
     }
 
+    public ProductModel findProductByModel(String model)
+    {
+        return findProduct(model,resolver);
+    }
+
     private Set<ProductModel> getFromResolver() {
 
         final Cursor cursor = resolver.query(OpenClothesContract.Product.CONTENT_URI,null,null,null,null);
@@ -61,8 +67,8 @@ public class CatalogueManager {
             }while (cursor.moveToNext());
 
         } finally {
-            cursor.close();
-
+            if(!cursor.isClosed())
+                cursor.close();
         }
 
         return products;
@@ -74,7 +80,27 @@ public class CatalogueManager {
         return resolver.insert(OpenClothesContract.Product.CONTENT_URI,values);
     }
 
+    private ProductModel findProduct(String model, ContentResolver resolver) {
 
+        ProductModel productModel = null;
 
+        Uri productUri = OpenClothesContract.Product.buildProductUriWithModel(model);
+
+        Cursor cursor = resolver.query(productUri,null,null,null,null);
+
+        try {
+            if (!cursor.moveToFirst())
+                return productModel;
+
+            productModel = ProductCreator.getProductModelFromCursor(cursor);
+        }
+        finally {
+            if(! cursor.isClosed() )
+                cursor.close();
+        }
+
+        return productModel;
+
+    }
 
 }
