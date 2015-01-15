@@ -28,7 +28,7 @@ public class CatalogueManager {
         }
 
         mContext = context;
-        resolver = context.getContentResolver();
+        this.resolver = mContext.getContentResolver();
     }
 
     public Uri addNewProduct(ProductModel product)
@@ -55,10 +55,10 @@ public class CatalogueManager {
             {
                 return  products;
             }
-            while (cursor.moveToNext())
-            {
+
+            do{
                 products.add(ProductCreator.getProductModelFromCursor(cursor));
-            }
+            }while (cursor.moveToNext());
 
         } finally {
             cursor.close();
@@ -68,7 +68,7 @@ public class CatalogueManager {
         return products;
     }
 
-    private static Uri insertNewProduct(ContentResolver resolver, ProductModel model)
+    private Uri insertNewProduct(ContentResolver resolver, ProductModel model)
     {
         ContentValues values = ProductCreator.getFromProduct(model);
         return resolver.insert(OpenClothesContract.Product.CONTENT_URI,values);

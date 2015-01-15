@@ -1,4 +1,4 @@
-package com.mx.kanjo.openclothes;
+    package com.mx.kanjo.openclothes;
 
 import android.content.ContentValues;
 import android.database.Cursor;

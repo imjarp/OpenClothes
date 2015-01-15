@@ -531,7 +531,7 @@ public class OpenClothesProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         final SQLiteDatabase dbWritableDatabase = mOpenHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
+         final int match = sUriMatcher.match(uri);
         Log.d(TAG, "insert(uri=" + uri + ", values=" + values.toString());
         long id=-1;
         Uri returnUri;

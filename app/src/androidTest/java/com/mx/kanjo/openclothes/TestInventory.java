@@ -22,7 +22,7 @@ import java.util.Set;
  */
 public class TestInventory extends AndroidTestCase {
 
-    public static final String TAG = TestInventory.class.getSimpleName();
+    //public static final String TAG = TestInventory.class.getSimpleName();
 
     Context context;
 
@@ -44,21 +44,19 @@ public class TestInventory extends AndroidTestCase {
 
     ConfigurationInventoryManager configInventoryManager;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
 
-        context = getContext();
+    public void setUp() {
 
+        context = mContext;
+        TestProvider.deleteAllRecords(context.getContentResolver());
         inventoryManager = new InventoryManager(context);
         configInventoryManager = new ConfigurationInventoryManager(context);
-
     }
 
-
-    public void TestAddTwoProducts()
+    public void testAddATwoProducts()
     {
-        CatalogueManager catalogueManager = new CatalogueManager(context);
+
+        CatalogueManager catalogueManager = new CatalogueManager(mContext);
 
         model1 =  createProductInstance(0,
                 "CB-011",
@@ -99,7 +97,7 @@ public class TestInventory extends AndroidTestCase {
 
     }
 
-    public void TestAddSizeItems()
+    public void testAddBSizeItems()
     {
         smallSize = createSizeModel(0,"small");
         mediumSize = createSizeModel(0,"medium");
@@ -114,7 +112,7 @@ public class TestInventory extends AndroidTestCase {
 
     }
 
-    public void TestAddProductsToStock() {
+    public void testAddCProductsToStock() {
 
         dress1Small = new StockItem(model1,smallSize,1);
 

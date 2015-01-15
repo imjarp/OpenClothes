@@ -191,15 +191,17 @@ public class ConfigurationInventoryManager {
 
         try {
 
-            cursor = resolver.query(OpenClothesContract.Size.CONTENT_URI, null, null, null, null, null);
+            cursor = resolver.query(OpenClothesContract.Size.CONTENT_URI, null, null, null, null);
 
-            if(cursor!=null && cursor.getCount()<1)
-            {
-                while (cursor.moveToNext()) {
-                    sizeModels.add(SizeCreator.getFromCursor(cursor));
-                }
 
-            }
+            if(!cursor.moveToFirst())
+                return sizeModels;
+
+            do{
+                sizeModels.add(SizeCreator.getFromCursor(cursor));
+              } while (cursor.moveToNext());
+
+
 
         }finally {
 

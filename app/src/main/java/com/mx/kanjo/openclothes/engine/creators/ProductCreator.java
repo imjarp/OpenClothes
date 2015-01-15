@@ -18,14 +18,17 @@ public class ProductCreator {
     {
         ContentValues values = new ContentValues();
 
-        values.put(OpenClothesContract.Product._ID,productModel.getIdProduct());
+        if( productModel.getIdProduct() > 0 )
+            values.put(OpenClothesContract.Product._ID,productModel.getIdProduct());
+
         values.put(OpenClothesContract.Product.NAME,productModel.getName());
         values.put(OpenClothesContract.Product.MODEL,productModel.getModel());
-        values.put(OpenClothesContract.Product.IS_ACTIVE,productModel.isActive());
+        values.put(OpenClothesContract.Product.IS_ACTIVE,productModel.isActive() ? 1 : 0 );
         values.put(OpenClothesContract.Product.DATE,productModel.getDateOperation());
         values.put(OpenClothesContract.Product.IMAGE_PATH, CreatorUtils.UriToString(productModel.getImagePath()));
         values.put(OpenClothesContract.Product.PRICE,productModel.getPrice());
         values.put(OpenClothesContract.Product.COST,productModel.getCost());
+
 
         return values;
     }

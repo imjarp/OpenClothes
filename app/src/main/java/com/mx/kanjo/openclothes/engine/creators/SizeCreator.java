@@ -16,7 +16,8 @@ public class SizeCreator {
     public static ContentValues getFromModel(SizeModel size)
     {
         ContentValues values = new ContentValues();
-        values.put(OpenClothesContract.Size._ID,size.getIdSize());
+        if( size.getIdSize() > 0 )
+            values.put(OpenClothesContract.Size._ID,size.getIdSize());
         values.put(OpenClothesContract.Size.SIZE,size.getSizeDescription());
         return values;
     }

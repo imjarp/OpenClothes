@@ -18,9 +18,9 @@ public class TestProvider extends AndroidTestCase {
 
     public static final String TAG = TestProvider.class.getSimpleName();
 
-    public void deleteAllRecords()
+    public static void deleteAllRecords(ContentResolver resolverContext )
     {
-        ContentResolver resolver = mContext.getContentResolver();
+        ContentResolver resolver = resolverContext;
 
         resolver.delete(OpenClothesContract.Income.CONTENT_URI, null, null);
         resolver.delete(OpenClothesContract.IncomeType.CONTENT_URI, null, null);
@@ -46,7 +46,7 @@ public class TestProvider extends AndroidTestCase {
     {
         ContentResolver resolver = mContext.getContentResolver();
 
-        deleteAllRecords();
+        deleteAllRecords(resolver);
 
         String today = OpenClothesContract.getDbDateString(new Date());
 
