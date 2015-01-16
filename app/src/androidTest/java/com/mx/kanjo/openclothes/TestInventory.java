@@ -8,15 +8,20 @@ import android.test.AndroidTestCase;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
 import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
 import com.mx.kanjo.openclothes.engine.InventoryManager;
+import com.mx.kanjo.openclothes.engine.SalesManager;
+import com.mx.kanjo.openclothes.model.ConfigurationOrder;
 import com.mx.kanjo.openclothes.model.IncomeType;
 import com.mx.kanjo.openclothes.model.OutcomeType;
 import com.mx.kanjo.openclothes.model.ProductModel;
+import com.mx.kanjo.openclothes.model.PromiseSale;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -48,6 +53,8 @@ public class TestInventory extends AndroidTestCase {
 
     CatalogueManager catalogueManager ;
 
+    SalesManager salesManager;
+
     IncomeType incomeTypeNewEntry;
 
     IncomeType incomeTypeInventoryError;
@@ -63,6 +70,7 @@ public class TestInventory extends AndroidTestCase {
         inventoryManager = new InventoryManager(context);
         configInventoryManager = new ConfigurationInventoryManager(context);
         catalogueManager = new CatalogueManager(mContext);
+        salesManager = new SalesManager(mContext);
     }
 
 
@@ -173,9 +181,9 @@ public class TestInventory extends AndroidTestCase {
 
         model2 = catalogueManager.findProductByModel("CB-012");
 
-        smallSize = configInventoryManager.findByDescription("small");
+        smallSize = configInventoryManager.findSizeByDescription("small");
 
-        mediumSize = configInventoryManager.findByDescription("medium");
+        mediumSize = configInventoryManager.findSizeByDescription("medium");
 
         dress1Small = new StockItem(model1, smallSize, 1);
 
@@ -214,14 +222,36 @@ public class TestInventory extends AndroidTestCase {
     public void testCreatePromiseOperations()
     {
 
+        //model1 has 1 qty
         model1 = catalogueManager.findProductByModel("CB-011");
 
         model2 = catalogueManager.findProductByModel("CB-012");
 
-        smallSize = configInventoryManager.findByDescription("small");
+        smallSize = configInventoryManager.findSizeByDescription("small");
 
-        mediumSize = configInventoryManager.findByDescription("medium");
+        mediumSize = configInventoryManager.findSizeByDescription("medium");
 
+        incomeTypeNewEntry = configInventoryManager.findIncomeTypeByDescription("New Entry");
+
+        Map<Integer,StockItem> stockItems = new HashMap<>();
+
+        int idx = 0;
+
+        //This has one product in stock so will be out of stock
+        stockItems.put(idx++, new StockItem(model1, smallSize, 1));
+
+        //This left one item after promise
+        stockItems.put(idx++, new StockItem(model2, mediumSize, 1));
+
+        PromiseSale promiseSale = createPromiseSale(stockItems, "Paola", OpenClothesContract.getDbDateString( new Date() ), 0 );
+        ConfigurationOrder configurationOrder = new ConfigurationOrder();
+
+        configurationOrder.TransactIncompleteOrder = true;
+
+        salesManager.createPromise(promiseSale,configurationOrder);
+
+
+        inventoryManager.getStock();
 
 
 
@@ -246,6 +276,10 @@ public class TestInventory extends AndroidTestCase {
     public static SizeModel createSizeModel(int idSize, String description)
     {
         return new SizeModel(idSize,description);
+    }
+
+    public static PromiseSale createPromiseSale(Map<Integer, StockItem> stockItems, String customer, String date, int id){
+        return  new PromiseSale(stockItems,customer,date,id);
     }
 
 

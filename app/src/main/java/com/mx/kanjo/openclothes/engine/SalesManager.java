@@ -55,6 +55,12 @@ public class SalesManager {
         return createPromise(promiseSale, resolver, configurationOrder);
     }
 
+    public  PromiseSale findPromiseByDate()
+    {
+        return null;
+    }
+
+
     public NotificationOrderRequest convertPromiseToSale(PromiseSale promiseSale,ConfigurationOrder configurationOrder)
     {
         String today = OpenClothesContract.getDbDateString(new Date());

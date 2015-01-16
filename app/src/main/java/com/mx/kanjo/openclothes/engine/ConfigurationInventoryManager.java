@@ -26,6 +26,7 @@ import java.util.Set;
 public class ConfigurationInventoryManager {
 
     private  Context mContext;
+
     private ContentResolver resolver;
 
     public ConfigurationInventoryManager(Context context)
@@ -50,6 +51,16 @@ public class ConfigurationInventoryManager {
         return insertOutcomeType(resolver,outcomeType);
     }
 
+    public IncomeType findIncomeTypeByDescription(String description)
+    {
+        return findIncomeTypeByDescription(description,resolver);
+    }
+
+    public OutcomeType findOutcomeTypeByDescription(String description)
+    {
+        return findOutcomeTypeByDescription(description,resolver);
+    }
+
     public void modifyIncomeType(int idIncomeType, String incomeDescription )
     {
         updateIncomeType(resolver, new IncomeType(idIncomeType,incomeDescription));
@@ -60,7 +71,7 @@ public class ConfigurationInventoryManager {
         updateOutcomeType(resolver, new OutcomeType(idOutcomeType, outcomeDescription));
     }
 
-    public SizeModel findByDescription ( String sizeDescription)
+    public SizeModel findSizeByDescription(String sizeDescription)
     {
         return findByDescription(sizeDescription,resolver);
     }
@@ -253,4 +264,64 @@ public class ConfigurationInventoryManager {
         return result;
 
     }
+
+    private static IncomeType findIncomeTypeByDescription(String description, ContentResolver resolver)
+    {
+        IncomeType result = null;
+
+        Cursor cursor = null;
+
+        Uri uriDescription = OpenClothesContract.IncomeType.CONTENT_URI;
+
+        String selection = OpenClothesContract.IncomeType.DESCRIPTION + " = ? ";
+
+        String [] selectionArgs = new String[]{description};
+        try {
+
+            cursor = resolver.query(uriDescription, null, selection, selectionArgs, null);
+
+            if (!cursor.moveToFirst())
+                return null;
+
+            result = IncomeTypeCreator.getModel(cursor);
+        }
+        finally {
+            if(cursor != null && !cursor.isClosed())
+                cursor.close();
+        }
+
+        return result;
+
+    }
+
+    private static OutcomeType findOutcomeTypeByDescription(String description, ContentResolver resolver)
+    {
+        OutcomeType result = null;
+
+        Cursor cursor = null;
+
+        Uri uriDescription = OpenClothesContract.OutcomeType.CONTENT_URI;
+
+        String selection = OpenClothesContract.OutcomeType.DESCRIPTION + " = ? ";
+
+        String [] selectionArgs = new String[]{description};
+        try {
+
+            cursor = resolver.query(uriDescription, null, selection, selectionArgs, null);
+
+            if (!cursor.moveToFirst())
+                return null;
+
+            result = OutcomeTypeCreator.getModel(cursor);
+        }
+        finally {
+            if(cursor != null && !cursor.isClosed())
+                cursor.close();
+        }
+
+        return result;
+
+    }
+
+
 }
