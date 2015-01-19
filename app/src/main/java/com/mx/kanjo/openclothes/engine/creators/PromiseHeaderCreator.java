@@ -19,6 +19,9 @@ public class PromiseHeaderCreator {
     public static ContentValues createPromiseHeader(PromiseSale promiseSale)
     {
         ContentValues values = new ContentValues();
+        if( promiseSale.getId() > 0 )
+            values.put(OpenClothesContract.Promise._ID, promiseSale.getId());
+
         values.put(OpenClothesContract.Promise.DATE, promiseSale.getDatePromise());
         values.put(OpenClothesContract.Promise.TOTAL, getTotal(promiseSale.getStockItems()));
         values.put(OpenClothesContract.Promise.CUSTOMER, promiseSale.getCustomer());

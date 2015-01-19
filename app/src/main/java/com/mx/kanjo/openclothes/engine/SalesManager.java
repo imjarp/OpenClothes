@@ -49,9 +49,9 @@ public class SalesManager {
         inventoryManager = new InventoryManager(context);
     }
 
-    public NotificationOrderRequest  createNewSale(SaleModel sale, ConfigurationOrder configurationOrder)
+    public NotificationOrderRequest createNewSale(SaleModel sale, ConfigurationOrder configurationOrder)
     {
-        return createNewSale(sale, resolver, configurationOrder);
+        return createNewSale(sale, resolver, configurationOrder ,false );
     }
 
     public NotificationOrderRequest createPromise(PromiseSale promiseSale, ConfigurationOrder configurationOrder)
@@ -63,6 +63,7 @@ public class SalesManager {
     {
         return null;
     }
+
     public  Collection<PromiseSale> findPromiseByCustomer(String customer)
     {
         return findPromiseSaleByCustomer(customer,resolver);
@@ -78,10 +79,10 @@ public class SalesManager {
         //Create Sale
         SaleModel saleModel = new SaleModel(promiseSale.getStockItems(),today,0,0);
 
-        NotificationOrderRequest result = createNewSale(saleModel, configurationOrder);
+        NotificationOrderRequest result = this.createNewSale(saleModel, resolver, configurationOrder, true);
 
-        if (!configurationOrder.TransactIncompleteOrder && !result.isCompleteOrder())
-            return result;
+        /*if (!configurationOrder.TransactIncompleteOrder && !result.isCompleteOrder())
+            return result;*/
 
         //Remove Promise
         removePromise(promiseSale);
@@ -159,10 +160,15 @@ public class SalesManager {
         //if(stockItems.size()!=rowsDeleted)
     }
 
-    private NotificationOrderRequest createNewSale(SaleModel sale, ContentResolver resolver, ConfigurationOrder configurationOrder) {
+    private NotificationOrderRequest createNewSale(SaleModel sale, ContentResolver resolver, ConfigurationOrder configurationOrder, boolean isPromiseSale) {
 
         //Check the inventory
-        NotificationOrderRequest result = verifyOrderInStock(sale.getSaleItems(), resolver);
+        NotificationOrderRequest result  = null;
+
+        //If is promiseSale the products have been already taken from stock
+        if( ! isPromiseSale ) {
+            result = verifyOrderInStock(sale.getSaleItems(), resolver);
+        }
 
         OutcomeModel outcomeModel = new OutcomeModel();
 
@@ -170,7 +176,7 @@ public class SalesManager {
 
         String today = OpenClothesContract.getDbDateString(new Date());
 
-        if (!configurationOrder.TransactIncompleteOrder && !result.isCompleteOrder())
+        if ( ! isPromiseSale && !configurationOrder.TransactIncompleteOrder && ! result.isCompleteOrder() )
             return result;
 
         // TODO: put this on a transaction
@@ -178,6 +184,7 @@ public class SalesManager {
 
         for (Map.Entry<Integer,StockItem> item : sale.getSaleItems().entrySet())
         {
+            //TODO: check if if the item is in the stock
             inventoryManager.removeItemFromStock(item.getValue());
 
             createSaleItem(item.getValue(),sale.getId(),resolver);
@@ -286,6 +293,8 @@ public class SalesManager {
 
     }
 
+
+
     private static SaleModel createSaleHeader ( SaleModel saleModel, ContentResolver resolver)
     {
         ContentValues values = SaleHeaderCreator.createSaleModel(saleModel);
@@ -346,25 +355,28 @@ public class SalesManager {
 
             } while (cursor.moveToNext());
 
-            for(PromiseSale sale  : listPromiseSale)
-            {
 
-                stockPromiseItems = findPromiseItemsByIdPromise(sale.getId(),resolver);
-
-                sale.setStockItems(stockPromiseItems);
-
-            }
 
         } finally {
 
-            {
-                if (null != cursor && !cursor.isClosed())
-                    cursor.close();
+            if (null != cursor && !cursor.isClosed())
+                cursor.close();
+
+
+        }
+
+        for (PromiseSale sale : listPromiseSale) {
+
+            stockPromiseItems = findPromiseItemsByIdPromise(sale.getId(), resolver);
+
+            if( stockPromiseItems.size() > 0  ) {
+                sale.setStockItems(stockPromiseItems);
             }
 
+        }
 
             return listPromiseSale;
-        }
+
     }
 
     public static Map<Integer,StockItem> findPromiseItemsByIdPromise(int idHeaderPromise, ContentResolver resolver)

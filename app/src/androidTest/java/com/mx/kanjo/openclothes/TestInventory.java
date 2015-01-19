@@ -12,6 +12,7 @@ import com.mx.kanjo.openclothes.model.IncomeModel;
 import com.mx.kanjo.openclothes.engine.SalesManager;
 import com.mx.kanjo.openclothes.model.ConfigurationOrder;
 import com.mx.kanjo.openclothes.model.IncomeType;
+import com.mx.kanjo.openclothes.model.NotificationOrderRequest;
 import com.mx.kanjo.openclothes.model.OutcomeType;
 import com.mx.kanjo.openclothes.model.ProductModel;
 import com.mx.kanjo.openclothes.model.PromiseSale;
@@ -64,6 +65,11 @@ public class TestInventory extends AndroidTestCase {
 
     private OutcomeType outcomeTypeInventoryError;
 
+    ConfigurationOrder configurationOrder = new ConfigurationOrder();
+
+
+
+
 
     public void setUp() {
 
@@ -72,6 +78,7 @@ public class TestInventory extends AndroidTestCase {
         configInventoryManager = new ConfigurationInventoryManager(context);
         catalogueManager = new CatalogueManager(mContext);
         salesManager = new SalesManager(mContext);
+        configurationOrder.TransactIncompleteOrder = true;
     }
 
 
@@ -245,9 +252,6 @@ public class TestInventory extends AndroidTestCase {
 
         PromiseSale promiseSale = createPromiseSale(stockItems, "Paola", OpenClothesContract.getDbDateString( new Date() ), 0 );
         
-        ConfigurationOrder configurationOrder = new ConfigurationOrder();
-
-        configurationOrder.TransactIncompleteOrder = true;
 
         salesManager.createPromise(promiseSale,configurationOrder);
 
@@ -261,10 +265,21 @@ public class TestInventory extends AndroidTestCase {
     public void testCreateSaleOperationsFromPromise()
     {
 
+
+        int PROMISE_SALE_PAOLA_IDX = 0 ;
         //Create from test ope
         List<PromiseSale> promiseSales = (List<PromiseSale>) salesManager.findPromiseByCustomer("Paola");
 
         assertTrue( promiseSales.size() == 1 );
+
+
+        PromiseSale promiseSalePaola  = promiseSales.get(PROMISE_SALE_PAOLA_IDX );
+
+        NotificationOrderRequest resultOrderRequest = salesManager.convertPromiseToSale(promiseSalePaola,configurationOrder);
+
+        assertTrue(resultOrderRequest.isCompleteOrder());
+
+
 
     }
 
