@@ -5,17 +5,23 @@ package com.mx.kanjo.openclothes.model;
  */
 public class IncomeModel extends StockItem {
 
+    int idIncomeModel;
     IncomeType incomeType;
     String dateOperation;
 
     public IncomeModel() {
     }
 
-    public IncomeModel(ProductModel product, SizeModel size, int quantity, IncomeType incomeType, String dateOperation) {
+    public IncomeModel(int idIncomeModel, ProductModel product, SizeModel size, int quantity, IncomeType incomeType, String dateOperation) {
         super(product, size, quantity);
         this.incomeType = incomeType;
         this.dateOperation = dateOperation;
+        this.idIncomeModel = idIncomeModel;
     }
+
+    public int getIdIncomeModel() { return idIncomeModel ; }
+
+    public void setIdIncomeModel(int idIncomeModel) { this.idIncomeModel = idIncomeModel;}
 
     public IncomeType getIncomeType() {
         return incomeType;

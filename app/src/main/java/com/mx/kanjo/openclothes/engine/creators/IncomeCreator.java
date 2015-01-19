@@ -19,6 +19,8 @@ public class IncomeCreator {
     {
         ContentValues values = new ContentValues();
 
+        if(incomeModel.getIdIncomeModel() > 0)
+            values.put(OpenClothesContract.Income._ID, incomeModel.getIdIncomeModel());
 
         values.put(OpenClothesContract.Income.ID_INCOME_TYPE, incomeModel.getIncomeType().getIdIncome());
         values.put(OpenClothesContract.Income.ID_PRODUCT, incomeModel.getIdProduct());
@@ -55,7 +57,7 @@ public class IncomeCreator {
 
         SizeModel sizeModel = SizeCreator.getFromId(idSize,resolver);
 
-        IncomeModel incomeModel = new IncomeModel(productModel,sizeModel,quantity,incomeType,date);
+        IncomeModel incomeModel = new IncomeModel(id,productModel,sizeModel,quantity,incomeType,date);
 
         return incomeModel;
     }

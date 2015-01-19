@@ -8,6 +8,7 @@ import android.test.AndroidTestCase;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
 import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
 import com.mx.kanjo.openclothes.engine.InventoryManager;
+import com.mx.kanjo.openclothes.model.IncomeModel;
 import com.mx.kanjo.openclothes.model.IncomeType;
 import com.mx.kanjo.openclothes.model.OutcomeType;
 import com.mx.kanjo.openclothes.model.ProductModel;
@@ -111,7 +112,6 @@ public class TestInventory extends AndroidTestCase {
 
     public void testAddProducts()
     {
-        TestProvider.deleteAllRecords(context.getContentResolver());
 
         model1 =  createProductInstance(0,
                 "CB-011",
@@ -246,6 +246,11 @@ public class TestInventory extends AndroidTestCase {
     public static SizeModel createSizeModel(int idSize, String description)
     {
         return new SizeModel(idSize,description);
+    }
+
+    public  static IncomeModel createIncomeInstance(int idIncome ,ProductModel product,SizeModel size,  int quantity, IncomeType incomeType, String dateOperation)
+    {
+        return  new IncomeModel(idIncome, product, size, quantity, incomeType, dateOperation);
     }
 
 
