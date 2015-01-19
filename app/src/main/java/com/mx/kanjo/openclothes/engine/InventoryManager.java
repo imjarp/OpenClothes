@@ -53,7 +53,12 @@ public class InventoryManager {
 
     public Set<StockItem> getStock()
     {
-        Cursor cursor = resolver.query(OpenClothesContract.Stock.CONTENT_URI, null, null, null, null);
+
+        String selection = OpenClothesContract.Stock.QUANTITY  + " > 0";
+
+        //String [] selectionArgs ;
+
+        Cursor cursor = resolver.query(OpenClothesContract.Stock.CONTENT_URI, null, selection , null, null);
 
         Set<StockItem> stockItems = new HashSet<>();
 
