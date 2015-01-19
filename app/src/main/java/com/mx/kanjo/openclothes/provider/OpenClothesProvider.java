@@ -347,7 +347,7 @@ public class OpenClothesProvider extends ContentProvider {
             case  PROMISE_DATE :
                 break;
             case  PROMISE_CUSTOMER :
-                cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.SALE, projection,
+                cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.PROMISE, projection,
                         OpenClothesContract.PromiseColumns.CUSTOMER + " LIKE '%" + OpenClothesContract.Promise.getCustomerFromUri(uri) + "%'",
                         null,
                         null,

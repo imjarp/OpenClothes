@@ -241,7 +241,7 @@ public class TestInventory extends AndroidTestCase {
         stockItems.put(idx++, new StockItem(model1, smallSize, 1));
 
         //This left one item after promise
-        stockItems.put(idx++, new StockItem(model2, mediumSize, 1));
+        stockItems.put(idx++, new StockItem(model2, smallSize, 1));
 
         PromiseSale promiseSale = createPromiseSale(stockItems, "Paola", OpenClothesContract.getDbDateString( new Date() ), 0 );
         
@@ -251,14 +251,20 @@ public class TestInventory extends AndroidTestCase {
 
         salesManager.createPromise(promiseSale,configurationOrder);
 
+        Set<StockItem> stock =  inventoryManager.getStock();
 
-        inventoryManager.getStock();
+        assertTrue(stock.size() == 1);
 
 
     }
 
-    public void testCreateSaleOperations()
+    public void testCreateSaleOperationsFromPromise()
     {
+
+        //Create from test ope
+        List<PromiseSale> promiseSales = (List<PromiseSale>) salesManager.findPromiseByCustomer("Paola");
+
+        assertTrue( promiseSales.size() == 1 );
 
     }
 

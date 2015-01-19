@@ -19,9 +19,13 @@ import com.mx.kanjo.openclothes.model.PromiseSale;
 import com.mx.kanjo.openclothes.model.SaleModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
+import com.mx.kanjo.openclothes.util.Lists;
 import com.mx.kanjo.openclothes.util.Maps;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,9 +59,13 @@ public class SalesManager {
         return createPromise(promiseSale, resolver, configurationOrder);
     }
 
-    public  PromiseSale findPromiseByDate()
+    public Collection<PromiseSale> findPromiseByDate()
     {
         return null;
+    }
+    public  Collection<PromiseSale> findPromiseByCustomer(String customer)
+    {
+        return findPromiseSaleByCustomer(customer,resolver);
     }
 
 
@@ -303,5 +311,102 @@ public class SalesManager {
     /*
     private void deletePromiseItem(Map.Entry<Integer, StockItem> stockItemEntry, int idPromise) {}
     */
+
+    private static Collection<PromiseSale> findPromiseSaleByDate(String date,ContentResolver resolver)
+    {
+        return  null;
+
+    }
+
+    private static List<PromiseSale> findPromiseSaleByCustomer(String customer,ContentResolver resolver) {
+
+        ArrayList<PromiseSale> listPromiseSale = Lists.newArrayList();
+
+        Uri uri = OpenClothesContract.Promise.buildPromiseUriWithCustomer(customer);
+
+        Cursor cursor = null;
+
+        PromiseSale promiseSaleTemp = null;
+
+        Map<Integer,StockItem> stockPromiseItems = null ;
+
+        try {
+
+            cursor = resolver.query(uri, null, null, null, null);
+
+            if (!cursor.moveToFirst()) {
+                return listPromiseSale;
+            }
+
+            do {
+
+                promiseSaleTemp = PromiseHeaderCreator.createPromiseHeaderFromCursor(cursor);
+
+                listPromiseSale.add(promiseSaleTemp);
+
+            } while (cursor.moveToNext());
+
+            for(PromiseSale sale  : listPromiseSale)
+            {
+
+                stockPromiseItems = findPromiseItemsByIdPromise(sale.getId(),resolver);
+
+                sale.setStockItems(stockPromiseItems);
+
+            }
+
+        } finally {
+
+            {
+                if (null != cursor && !cursor.isClosed())
+                    cursor.close();
+            }
+
+
+            return listPromiseSale;
+        }
+    }
+
+    public static Map<Integer,StockItem> findPromiseItemsByIdPromise(int idHeaderPromise, ContentResolver resolver)
+    {
+        Map<Integer,StockItem> promiseItems = Maps.newHashMap();
+
+        StockItem stockItem = null;
+
+        int idx = 0;
+
+        Cursor cursor = null;
+
+        try {
+
+            Uri uri = OpenClothesContract.PromiseItem.buildPromiseItemWithHeader(idHeaderPromise,false);
+
+            cursor = resolver.query(uri,null,null,null,null);
+
+            if( !cursor.moveToFirst() )
+                return promiseItems;
+
+            do {
+
+                stockItem = PromiseItemCreator.createPromiseItemFromIdPromise(cursor,resolver);
+
+                promiseItems.put(idx++, stockItem);
+
+            }while (cursor.moveToNext());
+
+        }
+        finally {
+             if( null != cursor && ! cursor.isClosed())
+             {
+                cursor.close();;
+             }
+        }
+
+        return  promiseItems;
+
+    }
+
+
+
 
 }
