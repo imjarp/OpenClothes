@@ -279,8 +279,6 @@ public class TestInventory extends AndroidTestCase {
 
         assertTrue(resultOrderRequest.isCompleteOrder());
 
-
-
     }
 
 

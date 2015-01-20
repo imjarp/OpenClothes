@@ -83,9 +83,6 @@ public class SalesManager {
 
         NotificationOrderRequest result = this.createNewSale(saleModel, resolver, configurationOrder, true);
 
-        /*if (!configurationOrder.TransactIncompleteOrder && !result.isCompleteOrder())
-            return result;*/
-
         //Remove Promise
         removePromise(promiseSale);
 
@@ -185,6 +182,10 @@ public class SalesManager {
 
         // TODO: put this on a transaction
         sale = createSaleHeader(sale,resolver);
+        if( null == result ) {
+            result = new NotificationOrderRequest();
+            result.AvailableProducts = Lists.newArrayList();
+        }
 
         for (Map.Entry<Integer,StockItem> item : sale.getSaleItems().entrySet())
         {
@@ -200,6 +201,8 @@ public class SalesManager {
             createOutcome(outcomeModel, saleOutcomeType, today, item);
 
             inventoryManager.addOutcome(outcomeModel);
+
+            result.AvailableProducts.add(item.getValue());
 
         }
 
