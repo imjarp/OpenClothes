@@ -184,9 +184,6 @@ public class SalesManager {
 
         for (Map.Entry<Integer,StockItem> item : sale.getSaleItems().entrySet())
         {
-            //TODO: check if if the item is in the stock
-            inventoryManager.removeItemFromStock(item.getValue());
-
             createSaleItem(item.getValue(),sale.getId(),resolver);
 
             createOutcome(outcomeModel, saleOutcomeType, today, item);
