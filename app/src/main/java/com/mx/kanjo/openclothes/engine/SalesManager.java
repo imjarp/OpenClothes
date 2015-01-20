@@ -15,6 +15,8 @@ import com.mx.kanjo.openclothes.model.ConfigurationOrder;
 import com.mx.kanjo.openclothes.model.NotificationOrderRequest;
 import com.mx.kanjo.openclothes.model.OutcomeModel;
 import com.mx.kanjo.openclothes.model.OutcomeType;
+import com.mx.kanjo.openclothes.model.OutcomeTypeSale;
+import com.mx.kanjo.openclothes.model.ProductModel;
 import com.mx.kanjo.openclothes.model.PromiseSale;
 import com.mx.kanjo.openclothes.model.SaleModel;
 import com.mx.kanjo.openclothes.model.StockItem;
@@ -86,6 +88,7 @@ public class SalesManager {
 
         //Remove Promise
         removePromise(promiseSale);
+
 
         return result;
 
@@ -170,9 +173,10 @@ public class SalesManager {
             result = verifyOrderInStock(sale.getSaleItems(), resolver);
         }
 
-        OutcomeModel outcomeModel = new OutcomeModel();
 
-        OutcomeType saleOutcomeType  = new OutcomeType();
+        OutcomeModel outcomeModel = null;
+
+        final OutcomeType saleOutcomeType  = OutcomeTypeSale.OutcomeTypeSale();
 
         String today = OpenClothesContract.getDbDateString(new Date());
 
@@ -185,6 +189,13 @@ public class SalesManager {
         for (Map.Entry<Integer,StockItem> item : sale.getSaleItems().entrySet())
         {
             createSaleItem(item.getValue(),sale.getId(),resolver);
+
+            outcomeModel = new OutcomeModel(0,
+                                            item.getValue(),
+                                            item.getValue().getSize(),
+                                            item.getValue().getQuantity(),
+                                            saleOutcomeType,
+                                            today);
 
             createOutcome(outcomeModel, saleOutcomeType, today, item);
 
@@ -305,11 +316,15 @@ public class SalesManager {
         return  saleModel;
     }
 
-    private static void createSaleItem(StockItem item , int idSale, ContentResolver resolver)
+    private static long createSaleItem(StockItem item , int idSale, ContentResolver resolver)
     {
         ContentValues values = SaleItemCreator.createSaleModel(item, idSale);
 
-        resolver.insert(OpenClothesContract.SaleItem.CONTENT_URI, values);
+        Uri result = resolver.insert(OpenClothesContract.SaleItem.CONTENT_URI, values);
+
+        long id = ContentUris.parseId(result);
+
+        return id;
 
     }
 

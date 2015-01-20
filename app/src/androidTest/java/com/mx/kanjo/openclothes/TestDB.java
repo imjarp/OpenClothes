@@ -176,7 +176,18 @@ public class TestDB  extends AndroidTestCase{
 
         Log.d(TAG, "Income type created with id " + outcomeTypeId);
 
-        cursor = db.query(OpenClothesDatabase.Tables.OUTCOME_TYPE,null,null,null,null,null,null);
+
+        String selection = OpenClothesContract.OutcomeType._ID + " = ?";
+
+        String[] selectionArgs = new String[]{ String.valueOf( outcomeTypeId ) };
+
+        cursor = db.query(OpenClothesDatabase.Tables.OUTCOME_TYPE,
+                                                             null,
+                                                             selection ,
+                                                             selectionArgs ,
+                                                             null ,
+                                                             null ,
+                                                             null);
 
         validateCursor(cursor,values);
 
