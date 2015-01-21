@@ -9,16 +9,7 @@ public class StockItem extends ProductModel
 
     SizeModel size;
 
-    public int getStockItemId() {
-        return stockItemId;
-    }
-
-    public void setStockItemId(int stockItemId) {
-        this.stockItemId = stockItemId;
-    }
-
     int stockItemId;
-
 
     public StockItem() {
     }
@@ -30,6 +21,14 @@ public class StockItem extends ProductModel
         this.quantity = quantity;
         this.size = size;
 
+    }
+
+    public int getStockItemId() {
+        return stockItemId;
+    }
+
+    public void setStockItemId(int stockItemId) {
+        this.stockItemId = stockItemId;
     }
 
     public int getQuantity() {

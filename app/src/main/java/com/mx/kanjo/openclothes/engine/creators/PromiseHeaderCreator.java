@@ -1,9 +1,7 @@
 package com.mx.kanjo.openclothes.engine.creators;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.net.Uri;
 
 import com.mx.kanjo.openclothes.model.PromiseSale;
 import com.mx.kanjo.openclothes.model.StockItem;
@@ -19,6 +17,9 @@ public class PromiseHeaderCreator {
     public static ContentValues createPromiseHeader(PromiseSale promiseSale)
     {
         ContentValues values = new ContentValues();
+        if(promiseSale.getId() > 0)
+            values.put(OpenClothesContract.Promise._ID, promiseSale.getId());
+
         values.put(OpenClothesContract.Promise.DATE, promiseSale.getDatePromise());
         values.put(OpenClothesContract.Promise.TOTAL, getTotal(promiseSale.getStockItems()));
         values.put(OpenClothesContract.Promise.CUSTOMER, promiseSale.getCustomer());

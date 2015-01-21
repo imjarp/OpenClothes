@@ -17,6 +17,10 @@ public class PromiseItemCreator {
     public static ContentValues createPromiseItem(StockItem item, int idPromise)
     {
         ContentValues values = new ContentValues();
+
+        if(item.getStockItemId() > 0)
+            values.put(OpenClothesContract.PromiseItem._ID, item.getStockItemId());
+
         values.put(OpenClothesContract.PromiseItem.ID_PRODUCT, item.getIdProduct());
         values.put(OpenClothesContract.PromiseItem.ID_PROMISE, idPromise);
         values.put(OpenClothesContract.PromiseItem.ID_SIZE, item.getSize().getIdSize());
