@@ -5,6 +5,8 @@ package com.mx.kanjo.openclothes.model;
  */
 public class OutcomeModel extends StockItem {
 
+
+    int idOutcomeModel;
     OutcomeType outcomeType;
     String dateOperation;
 
@@ -13,11 +15,17 @@ public class OutcomeModel extends StockItem {
     public OutcomeModel() {
     }
 
-    public OutcomeModel(ProductModel product, SizeModel size, int quantity, OutcomeType outcomeType, String dateOperation) {
+    public OutcomeModel(int idOutcomeModel, ProductModel product, SizeModel size, int quantity, OutcomeType outcomeType, String dateOperation) {
         super(product, size, quantity);
         this.outcomeType = outcomeType;
         this.dateOperation = dateOperation;
+        this.idOutcomeModel = idOutcomeModel;
     }
+
+    public int getIdOutcomeModel() {return idOutcomeModel;}
+
+    public void setIdOutcomeModel(int idOutcomeModel) {this.idOutcomeModel = idOutcomeModel;}
+
 
     public OutcomeType getOutcomeType() {
         return outcomeType;

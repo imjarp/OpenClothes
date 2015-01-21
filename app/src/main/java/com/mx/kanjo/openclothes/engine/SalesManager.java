@@ -15,13 +15,19 @@ import com.mx.kanjo.openclothes.model.ConfigurationOrder;
 import com.mx.kanjo.openclothes.model.NotificationOrderRequest;
 import com.mx.kanjo.openclothes.model.OutcomeModel;
 import com.mx.kanjo.openclothes.model.OutcomeType;
+import com.mx.kanjo.openclothes.model.OutcomeTypeSale;
+import com.mx.kanjo.openclothes.model.ProductModel;
 import com.mx.kanjo.openclothes.model.PromiseSale;
 import com.mx.kanjo.openclothes.model.SaleModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
+import com.mx.kanjo.openclothes.util.Lists;
 import com.mx.kanjo.openclothes.util.Maps;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,9 +51,9 @@ public class SalesManager {
         inventoryManager = new InventoryManager(context);
     }
 
-    public NotificationOrderRequest  createNewSale(SaleModel sale, ConfigurationOrder configurationOrder)
+    public NotificationOrderRequest createNewSale(SaleModel sale, ConfigurationOrder configurationOrder)
     {
-        return createNewSale(sale, resolver, configurationOrder);
+        return createNewSale(sale, resolver, configurationOrder ,false );
     }
 
     public NotificationOrderRequest createPromise(PromiseSale promiseSale, ConfigurationOrder configurationOrder)
@@ -55,9 +61,14 @@ public class SalesManager {
         return createPromise(promiseSale, resolver, configurationOrder);
     }
 
-    public  PromiseSale findPromiseByDate()
+    public Collection<PromiseSale> findPromiseByDate()
     {
         return null;
+    }
+
+    public  Collection<PromiseSale> findPromiseByCustomer(String customer)
+    {
+        return findPromiseSaleByCustomer(customer,resolver);
     }
 
 
@@ -70,13 +81,11 @@ public class SalesManager {
         //Create Sale
         SaleModel saleModel = new SaleModel(promiseSale.getStockItems(),today,0,0);
 
-        NotificationOrderRequest result = createNewSale(saleModel, configurationOrder);
-
-        if (!configurationOrder.TransactIncompleteOrder && !result.isCompleteOrder())
-            return result;
+        NotificationOrderRequest result = this.createNewSale(saleModel, resolver, configurationOrder, true);
 
         //Remove Promise
         removePromise(promiseSale);
+
 
         return result;
 
@@ -151,32 +160,49 @@ public class SalesManager {
         //if(stockItems.size()!=rowsDeleted)
     }
 
-    private NotificationOrderRequest createNewSale(SaleModel sale, ContentResolver resolver, ConfigurationOrder configurationOrder) {
+    private NotificationOrderRequest createNewSale(SaleModel sale, ContentResolver resolver, ConfigurationOrder configurationOrder, boolean isPromiseSale) {
 
         //Check the inventory
-        NotificationOrderRequest result = verifyOrderInStock(sale.getSaleItems(), resolver);
+        NotificationOrderRequest result  = null;
 
-        OutcomeModel outcomeModel = new OutcomeModel();
+        //If is promiseSale the products have been already taken from stock
+        if( ! isPromiseSale ) {
+            result = verifyOrderInStock(sale.getSaleItems(), resolver);
+        }
 
-        OutcomeType saleOutcomeType  = new OutcomeType();
+
+        OutcomeModel outcomeModel = null;
+
+        final OutcomeType saleOutcomeType  = OutcomeTypeSale.OutcomeTypeSale();
 
         String today = OpenClothesContract.getDbDateString(new Date());
 
-        if (!configurationOrder.TransactIncompleteOrder && !result.isCompleteOrder())
+        if ( ! isPromiseSale && !configurationOrder.TransactIncompleteOrder && ! result.isCompleteOrder() )
             return result;
 
         // TODO: put this on a transaction
         sale = createSaleHeader(sale,resolver);
+        if( null == result ) {
+            result = new NotificationOrderRequest();
+            result.AvailableProducts = Lists.newArrayList();
+        }
 
         for (Map.Entry<Integer,StockItem> item : sale.getSaleItems().entrySet())
         {
-            inventoryManager.removeItemFromStock(item.getValue());
-
             createSaleItem(item.getValue(),sale.getId(),resolver);
+
+            outcomeModel = new OutcomeModel(0,
+                                            item.getValue(),
+                                            item.getValue().getSize(),
+                                            item.getValue().getQuantity(),
+                                            saleOutcomeType,
+                                            today);
 
             createOutcome(outcomeModel, saleOutcomeType, today, item);
 
             inventoryManager.addOutcome(outcomeModel);
+
+            result.AvailableProducts.add(item.getValue());
 
         }
 
@@ -278,6 +304,8 @@ public class SalesManager {
 
     }
 
+
+
     private static SaleModel createSaleHeader ( SaleModel saleModel, ContentResolver resolver)
     {
         ContentValues values = SaleHeaderCreator.createSaleModel(saleModel);
@@ -291,11 +319,15 @@ public class SalesManager {
         return  saleModel;
     }
 
-    private static void createSaleItem(StockItem item , int idSale, ContentResolver resolver)
+    private static long createSaleItem(StockItem item , int idSale, ContentResolver resolver)
     {
         ContentValues values = SaleItemCreator.createSaleModel(item, idSale);
 
-        resolver.insert(OpenClothesContract.SaleItem.CONTENT_URI, values);
+        Uri result = resolver.insert(OpenClothesContract.SaleItem.CONTENT_URI, values);
+
+        long id = ContentUris.parseId(result);
+
+        return id;
 
     }
 
@@ -303,5 +335,105 @@ public class SalesManager {
     /*
     private void deletePromiseItem(Map.Entry<Integer, StockItem> stockItemEntry, int idPromise) {}
     */
+
+    private static Collection<PromiseSale> findPromiseSaleByDate(String date,ContentResolver resolver)
+    {
+        return  null;
+
+    }
+
+    private static List<PromiseSale> findPromiseSaleByCustomer(String customer,ContentResolver resolver) {
+
+        ArrayList<PromiseSale> listPromiseSale = Lists.newArrayList();
+
+        Uri uri = OpenClothesContract.Promise.buildPromiseUriWithCustomer(customer);
+
+        Cursor cursor = null;
+
+        PromiseSale promiseSaleTemp = null;
+
+        Map<Integer,StockItem> stockPromiseItems = null ;
+
+        try {
+
+            cursor = resolver.query(uri, null, null, null, null);
+
+            if (!cursor.moveToFirst()) {
+                return listPromiseSale;
+            }
+
+            do {
+
+                promiseSaleTemp = PromiseHeaderCreator.createPromiseHeaderFromCursor(cursor);
+
+                listPromiseSale.add(promiseSaleTemp);
+
+            } while (cursor.moveToNext());
+
+
+
+        } finally {
+
+            if (null != cursor && !cursor.isClosed())
+                cursor.close();
+
+
+        }
+
+        for (PromiseSale sale : listPromiseSale) {
+
+            stockPromiseItems = findPromiseItemsByIdPromise(sale.getId(), resolver);
+
+            if( stockPromiseItems.size() > 0  ) {
+                sale.setStockItems(stockPromiseItems);
+            }
+
+        }
+
+            return listPromiseSale;
+
+    }
+
+    public static Map<Integer,StockItem> findPromiseItemsByIdPromise(int idHeaderPromise, ContentResolver resolver)
+    {
+        Map<Integer,StockItem> promiseItems = Maps.newHashMap();
+
+        StockItem stockItem = null;
+
+        int idx = 0;
+
+        Cursor cursor = null;
+
+        try {
+
+            Uri uri = OpenClothesContract.PromiseItem.buildPromiseItemWithHeader(idHeaderPromise,false);
+
+            cursor = resolver.query(uri,null,null,null,null);
+
+            if( !cursor.moveToFirst() )
+                return promiseItems;
+
+            do {
+
+                stockItem = PromiseItemCreator.createPromiseItemFromIdPromise(cursor,resolver);
+
+                promiseItems.put(idx++, stockItem);
+
+            }while (cursor.moveToNext());
+
+        }
+        finally {
+             if( null != cursor && ! cursor.isClosed())
+             {
+                cursor.close();;
+             }
+        }
+
+        return  promiseItems;
+
+    }
+
+
+
 
 }

@@ -52,7 +52,7 @@ public class OutcomeCreator {
 
         SizeModel sizeModel = SizeCreator.getFromId(idSize,resolver);
 
-        OutcomeModel model = new OutcomeModel(productModel,sizeModel,quantity,outcomeType,date);
+        OutcomeModel model = new OutcomeModel(id,productModel,sizeModel,quantity,outcomeType,date);
 
         return model;
 

@@ -192,7 +192,11 @@ public class OpenClothesDatabase extends SQLiteOpenHelper {
                 + OpenClothesContract.OutcomeColumns.QUANTITY + " INTEGER NOT NULL,"
                 + OpenClothesContract.OutcomeColumns.DATE + " INTEGER NOT NULL )");
 
-        //  TODO: Add default outcometype 'sale'
+        // Insert a sale outcome
+        db.execSQL("INSERT INTO " + Tables.OUTCOME_TYPE
+                   + " ( " + BaseColumns._ID + "," + OpenClothesContract.OutcomeTypeColumns.DESCRIPTION + " ) "
+                   + " VALUES "
+                   + "( 0 , 'Sale')");
 
     }
 

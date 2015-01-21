@@ -8,9 +8,11 @@ import android.test.AndroidTestCase;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
 import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
 import com.mx.kanjo.openclothes.engine.InventoryManager;
+import com.mx.kanjo.openclothes.model.IncomeModel;
 import com.mx.kanjo.openclothes.engine.SalesManager;
 import com.mx.kanjo.openclothes.model.ConfigurationOrder;
 import com.mx.kanjo.openclothes.model.IncomeType;
+import com.mx.kanjo.openclothes.model.NotificationOrderRequest;
 import com.mx.kanjo.openclothes.model.OutcomeType;
 import com.mx.kanjo.openclothes.model.ProductModel;
 import com.mx.kanjo.openclothes.model.PromiseSale;
@@ -63,6 +65,11 @@ public class TestInventory extends AndroidTestCase {
 
     private OutcomeType outcomeTypeInventoryError;
 
+    ConfigurationOrder configurationOrder = new ConfigurationOrder();
+
+
+
+
 
     public void setUp() {
 
@@ -71,6 +78,7 @@ public class TestInventory extends AndroidTestCase {
         configInventoryManager = new ConfigurationInventoryManager(context);
         catalogueManager = new CatalogueManager(mContext);
         salesManager = new SalesManager(mContext);
+        configurationOrder.TransactIncompleteOrder = true;
     }
 
 
@@ -119,7 +127,6 @@ public class TestInventory extends AndroidTestCase {
 
     public void testAddProducts()
     {
-        TestProvider.deleteAllRecords(context.getContentResolver());
 
         model1 =  createProductInstance(0,
                 "CB-011",
@@ -241,26 +248,36 @@ public class TestInventory extends AndroidTestCase {
         stockItems.put(idx++, new StockItem(model1, smallSize, 1));
 
         //This left one item after promise
-        stockItems.put(idx++, new StockItem(model2, mediumSize, 1));
+        stockItems.put(idx++, new StockItem(model2, smallSize, 1));
 
         PromiseSale promiseSale = createPromiseSale(stockItems, "Paola", OpenClothesContract.getDbDateString( new Date() ), 0 );
-        ConfigurationOrder configurationOrder = new ConfigurationOrder();
-
-        configurationOrder.TransactIncompleteOrder = true;
+        
 
         salesManager.createPromise(promiseSale,configurationOrder);
 
+        Set<StockItem> stock =  inventoryManager.getStock();
 
-        inventoryManager.getStock();
-
-
-
+        assertTrue(stock.size() == 1);
 
 
     }
 
-    public void testCreateSaleOperations()
+    public void testCreateSaleOperationsFromPromise()
     {
+
+
+        int PROMISE_SALE_PAOLA_IDX = 0 ;
+        //Create from test ope
+        List<PromiseSale> promiseSales = (List<PromiseSale>) salesManager.findPromiseByCustomer("Paola");
+
+        assertTrue( promiseSales.size() == 1 );
+
+
+        PromiseSale promiseSalePaola  = promiseSales.get(PROMISE_SALE_PAOLA_IDX );
+
+        NotificationOrderRequest resultOrderRequest = salesManager.convertPromiseToSale(promiseSalePaola,configurationOrder);
+
+        assertTrue(resultOrderRequest.isCompleteOrder());
 
     }
 
@@ -278,10 +295,15 @@ public class TestInventory extends AndroidTestCase {
         return new SizeModel(idSize,description);
     }
 
-    public static PromiseSale createPromiseSale(Map<Integer, StockItem> stockItems, String customer, String date, int id){
-        return  new PromiseSale(stockItems,customer,date,id);
+
+    public  static IncomeModel createIncomeInstance(int idIncome ,ProductModel product,SizeModel size,  int quantity, IncomeType incomeType, String dateOperation)
+    {
+        return  new IncomeModel(idIncome, product, size, quantity, incomeType, dateOperation);
     }
 
+    public static PromiseSale createPromiseSale(Map<Integer, StockItem> stockItems, String customer, String date, int id){
+        return  new PromiseSale(stockItems,customer,date,id);
 
+    }
 
 }
