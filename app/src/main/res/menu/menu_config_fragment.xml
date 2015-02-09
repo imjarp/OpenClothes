@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/add_size_item"
+        android:title="@string/menu_add_size_title"
+        android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/add_item_income_type"
+        android:title="@string/menu_add_income_type_item"
+        android:orderInCategory="200" app:showAsAction="never" />
+
+    <item android:id="@+id/add_item_outcome_type"
+        android:title="@string/menu_add_outcome_type_item"
+        android:orderInCategory="300" app:showAsAction="never" />
+
+</menu>

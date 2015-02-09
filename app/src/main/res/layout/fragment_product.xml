@@ -1,0 +1,13 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mx.kanjo.openclothes.ui.fragments.ProductFragment">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycle_view_list_product"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent">
+
+    </android.support.v7.widget.RecyclerView>
+</FrameLayout>
