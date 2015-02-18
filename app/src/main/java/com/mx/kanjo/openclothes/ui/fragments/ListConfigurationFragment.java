@@ -1,12 +1,17 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Activity;
-import android.support.v4.app.ListFragment;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.mx.kanjo.openclothes.R;
 
 import java.util.ArrayList;
 
@@ -21,25 +26,34 @@ public class ListConfigurationFragment extends ListFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_TITLE = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String ARG_PARAM_ITEMS = "configuration_items";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private String mParamTitle;
     private String mParam2;
     private ArrayList<String> configurationItems;
 
+    View headerView;
+
 
     private OnFragmentInteractionListener mListener;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+         return super.onCreateView(inflater, container, savedInstanceState);
+
+    }
 
     // TODO: Rename and change types of parameters
     public static ListConfigurationFragment newInstance(String param1, String param2, ArrayList<String> items) {
         ListConfigurationFragment fragment = new ListConfigurationFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_TITLE, param1);
         args.putString(ARG_PARAM2, param2);
-        args.putStringArrayList(ARG_PARAM_ITEMS,items);
+        args.putStringArrayList(ARG_PARAM_ITEMS, items);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,7 +70,7 @@ public class ListConfigurationFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParamTitle = getArguments().getString(ARG_TITLE);
             mParam2 = getArguments().getString(ARG_PARAM2);
             configurationItems = getArguments().getStringArrayList(ARG_PARAM_ITEMS);
         }
@@ -64,6 +78,28 @@ public class ListConfigurationFragment extends ListFragment {
         // TODO: Change Adapter to display your content
         setListAdapter(new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, configurationItems));
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(null == configurationItems || configurationItems.isEmpty()) {
+            setEmptyText(getString(R.string.empty_configuration_list));
+        }
+
+        if(TextUtils.isEmpty(mParamTitle))
+            return;
+
+        headerView = getActivity().getLayoutInflater().inflate( R.layout.title_configuration_item, getListView(), false);
+
+        TextView titleView = (TextView) headerView.findViewById(R.id.title_configuration_list_view );
+
+        titleView.setText(mParamTitle);
+
+        getListView().addHeaderView(headerView);
+
     }
 
 

@@ -1,6 +1,7 @@
 package com.mx.kanjo.openclothes.ui;
 
-import android.app.FragmentTransaction;
+
+import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -14,8 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.mx.kanjo.openclothes.R;
+import com.mx.kanjo.openclothes.ui.fragments.ListProductFragment;
 import com.mx.kanjo.openclothes.ui.fragments.NavigationFragment;
-import com.mx.kanjo.openclothes.ui.fragments.ProductFragment;
 import com.mx.kanjo.openclothes.ui.fragments.StockFragment;
 
 public class MainActivity2 extends ActionBarActivity implements
@@ -44,7 +45,8 @@ public class MainActivity2 extends ActionBarActivity implements
     private void configureToolbar() {
         Toolbar mainToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mainToolbar);
-        getSupportActionBar().setTitle("Sliding");
+        getSupportActionBar().setTitle("Open Clothes");
+        
 
         mainToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,8 +119,8 @@ public class MainActivity2 extends ActionBarActivity implements
             startActivity(new Intent(this,ConfigurationActivity.class));
             return;
         }
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        ProductFragment fragment = ProductFragment.newInstance("","");
+        FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
+        ListProductFragment fragment = ListProductFragment.newInstance("", "");
         transaction.replace(R.id.sample_content_fragment, fragment);
         transaction.commit();
     }

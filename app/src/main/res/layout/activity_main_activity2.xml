@@ -1,5 +1,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +12,8 @@
         android:layout_width="match_parent"
         android:minHeight="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         />
 
     <android.support.v4.widget.DrawerLayout
@@ -33,7 +35,9 @@
             android:layout_width="@dimen/navigation_drawer_width"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:name="com.mx.kanjo.openclothes.ui.fragments.NavigationFragment"/>
+            android:name="com.mx.kanjo.openclothes.ui.fragments.NavigationFragment"
+
+            />
 
     </android.support.v4.widget.DrawerLayout>
 </LinearLayout>

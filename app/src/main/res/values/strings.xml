@@ -74,6 +74,17 @@
     <string name="menu_add_size_title">Add size</string>
     <string name="menu_add_income_type_item">Add income type</string>
     <string name="menu_add_outcome_type_item">Add outcome type</string>
+    <string name="empty_configuration_list">Currently there is no items</string>
+    <string name="title_list_configuration_size_items">Size items</string>
+    <string name="title_list_configuration_income_type_items">Income Type items</string>
+    <string name="title_list_configuration_outcome_type_items">Outcome Type items</string>
+    <string name="title_activity_product">Product</string>
+
+    <!--Product Fragment -->
+    <string name="message_pick_image">Pick the model image</string>
+    <string name="validation_cost_product">Cost is required</string>
+    <string name="validation_model_product">Model is required</string>
+    <string name="validation_price_product">Price is required</string>
 
 
 </resources>

@@ -1,17 +1,21 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:divider="@android:color/transparent"
     android:dividerHeight="0dp"
-    android:background="@color/theme_light"
-    tools:context="com.mx.kanjo.openclothes.ui.fragments.NavigationFragment" >
+    android:background="@color/primary"
+    tools:context="com.mx.kanjo.openclothes.ui.fragments.NavigationFragment"
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
 
     <ListView
         android:id="@+id/list_ops"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        >
 
         </ListView>
 

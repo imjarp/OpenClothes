@@ -9,6 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
+import com.mx.kanjo.openclothes.model.LeanProductModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -18,20 +22,30 @@ import butterknife.InjectView;
  */
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
-    private static final int ANIMATED_ITEMS_COUNT = 2;
+    private static final int ANIMATED_ITEMS_COUNT = 4;
 
     private Context context;
     private int lastAnimatedPosition = -1;
-    private int itemsCount = 2;
+    private int itemsCount = 0;
+    private List<LeanProductModel> leanProductModelList;
+    private static LeanProductModel tempModelProduct = null;
 
     public ProductAdapter(Context context) {
         this.context = context;
     }
 
+
+
+    public ProductAdapter(Context context, ArrayList<LeanProductModel> products){
+        this.context = context;
+        leanProductModelList = products;
+        itemsCount = products.size();
+    }
+
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        final View view = LayoutInflater.from(context).inflate(R.layout.product_card, parent, false);
+        final View view = LayoutInflater.from(context).inflate(R.layout.product_cell, parent, false);
         return new ProductViewHolder(view);
     }
 
@@ -40,7 +54,19 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         ProductViewHolder holder = (ProductViewHolder) viewHolder;
 
-        holder.imageViewModel.setImageResource(R.drawable.cb_002);
+        tempModelProduct = leanProductModelList.get(position);
+
+        if( null != tempModelProduct.ImagePath) {
+            holder.imageViewModel.setImageURI(tempModelProduct.ImagePath);
+        }
+
+        holder.textViewModel.setText(tempModelProduct.Model);
+
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return leanProductModelList.get(position).ID;
     }
 
     @Override
@@ -54,11 +80,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         @InjectView(R.id.text_view_model)
         TextView textViewModel;
 
-        @InjectView(R.id.text_view_cost)
-        TextView textViewCost;
-
-        @InjectView(R.id.text_view_price)
-        TextView textViewPrice;
 
         @InjectView(R.id.image_view_product)
         ImageView imageViewModel;
@@ -69,5 +90,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             super(itemView);
             ButterKnife.inject(this,itemView);
         }
+
     }
 }

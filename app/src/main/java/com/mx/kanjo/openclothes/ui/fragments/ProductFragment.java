@@ -1,169 +1,270 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.mx.kanjo.openclothes.R;
-import com.mx.kanjo.openclothes.ui.ProductAdapter;
+import com.mx.kanjo.openclothes.model.ProductModel;
+import com.mx.kanjo.openclothes.provider.OpenClothesContract;
+import com.mx.kanjo.openclothes.util.PictureUtils;
+import com.mx.kanjo.openclothes.util.StorageUtil;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
- * Use the {@link ProductFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A placeholder fragment containing a simple view.
  */
 public class ProductFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
-    private static final String TAG = ProductFragment.class.getSimpleName();
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private OnFragmentProductListener mProductListener;
 
-    private RecyclerView mRecyclerViewProducts;
+    private String pathFile, model, price, description, cost;
+    private Uri uriImage;
+    Boolean isActiveProduct;
 
-    private LinearLayoutManager mLinearLayoutManager;
+    //TODO: Implement on screen change
 
-    private enum LayoutManagerType {
-        GRID_LAYOUT_MANAGER,
-        LINEAR_LAYOUT_MANAGER
+
+    private static final String keyPathFile, keyModel, keyPrice, keyDescription, keyIsActiveProduct, keyCost;
+
+    private boolean productCompliant;
+
+    static {
+
+        keyPathFile = "keyPathFile";
+        keyModel = "keyModel";
+        keyPrice = "keyPrice";
+        keyDescription = "keyDescription";
+        keyIsActiveProduct = "keyIsActiveProduct";
+        keyCost = "keyCost";
     }
 
-    protected LayoutManagerType mCurrentLayoutManagerType;
+    @InjectView(R.id.edit_product_model)EditText editTextModel;
 
-    protected RecyclerView.LayoutManager mLayoutManager;
+    @InjectView(R.id.edit_product_cost) EditText editTextCost;
 
-    private static final int SPAN_COUNT = 2;
+    @InjectView(R.id.edit_product_price) EditText editTextPrice;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProductFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProductFragment newInstance(String param1, String param2) {
-        ProductFragment fragment = new ProductFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @InjectView(R.id.edit_product_description) EditText editTextDescription;
+
+    @InjectView(R.id.check_product_active) CheckBox checkBoxActiveProduct;
+
+    @InjectView(R.id.img_new_product) ImageButton imageProduct;
+
+
+    private static final int REQUEST_PICK_IMAGE = 1001;
+
+
+    @OnClick(R.id.img_new_product)
+    public void onClickImageProduct(View view)
+    {
+        startActivityForResult( Intent.createChooser(makeIntentPickImage(),
+                                                    getString(R.string.message_pick_image)),
+                                REQUEST_PICK_IMAGE);
+    }
+
+    private Intent makeIntentPickImage()
+    {
+        Intent intentPickImage = new Intent();
+        intentPickImage.setAction(Intent.ACTION_PICK);
+        intentPickImage.setType("image/*");
+        return intentPickImage;
+
     }
 
     public ProductFragment() {
-        // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if( Activity.RESULT_OK != resultCode )
+            return;
+
+        if( REQUEST_PICK_IMAGE != requestCode )
+            return;
+
+        if ( null != data && null != ( uriImage = data.getData() ) )
+        {
+            pathFile = StorageUtil.getPath(getActivity(), uriImage);
+
+            //TODO: Validate image
+            PictureUtils.setImageScaled(getActivity(), imageProduct, pathFile, PictureUtils.SizeImage.IMAGE_192x192);
+
         }
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_product, container, false);
-
-        view.setTag(TAG);
-
-        mRecyclerViewProducts = (RecyclerView) view.findViewById(R.id.recycle_view_list_product);
-
-        mLinearLayoutManager = new LinearLayoutManager(getActivity());
-
-        mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER ;
-
-        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
-
-        ProductAdapter adapter = new ProductAdapter(getActivity());
-
-        mRecyclerViewProducts.setAdapter(adapter);
-
-        return view;
-    }
-
-    /**
-     * Set RecyclerView's LayoutManager to the one given.
-     *
-     * @param layoutManagerType Type of layout manager to switch to.
-     */
-    public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
-        int scrollPosition = 0;
-
-        // If a layout manager has already been set, get current scroll position.
-        if (mRecyclerViewProducts.getLayoutManager() != null) {
-            scrollPosition = ((LinearLayoutManager) mRecyclerViewProducts.getLayoutManager())
-                    .findFirstCompletelyVisibleItemPosition();
-        }
-
-        switch (layoutManagerType) {
-            case GRID_LAYOUT_MANAGER:
-                mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
-                mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
-                break;
-            case LINEAR_LAYOUT_MANAGER:
-                mLayoutManager = new LinearLayoutManager(getActivity());
-                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-                break;
-            default:
-                mLayoutManager = new LinearLayoutManager(getActivity());
-                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-        }
-
-        mRecyclerViewProducts.setLayoutManager(mLayoutManager);
-        mRecyclerViewProducts.scrollToPosition(scrollPosition);
-    }
-
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
 
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        mProductListener = null;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mProductListener = (OnFragmentProductListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentProductListener");
+        }
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_product2, container, false);
+        ButterKnife.inject(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_products,menu);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+        inflater.inflate(R.menu.menu_product, menu);
 
-        switch (item.getItemId())
-        {
-            case R.id.add_new_product :
-                Toast.makeText(getActivity(),"You press + ", Toast.LENGTH_SHORT).show();
-                return true;
+        MenuItem add =  menu.findItem(R.id.action_new_product);
+
+        if(null != add.getActionView()) {
+            (add.getActionView().findViewById(R.id.btn_menu_add_new_product)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(isProductCompliant())
+                        callParentActivity();
+                }
+            });
         }
-        return super.onOptionsItemSelected(item);
+        super.onCreateOptionsMenu(menu, inflater);
     }
+
+    private void callParentActivity() {
+        mProductListener.onAddProductClick(createProductModel());
+    }
+
+
+    public boolean isProductCompliant() {
+
+        Notification resultValidation = new Notification();
+
+        if(TextUtils.isEmpty(editTextCost.getText().toString()))
+        {
+            resultValidation.errors.add(getString(R.string.validation_cost_product));
+        }
+
+        if(TextUtils.isEmpty(editTextModel.getText().toString()))
+        {
+            resultValidation.errors.add(getString(R.string.validation_model_product));
+        }
+
+        if(TextUtils.isEmpty(editTextPrice.getText().toString()))
+        {
+            resultValidation.errors.add(getString(R.string.validation_price_product));
+        }
+
+        //TODO: Check if the model already exists
+        
+        if(resultValidation.hasError())
+            showMessage(resultValidation);
+
+        return !resultValidation.hasError();
+
+    }
+
+    private void showMessage(Notification resultValidation) {
+
+        StringBuilder builderMessage = new StringBuilder();
+
+        for (String error : resultValidation.errors)
+            builderMessage.append(error + "\n");
+
+        Toast.makeText(getActivity(), builderMessage.toString(), Toast.LENGTH_SHORT).show();
+
+    }
+
+    public interface OnFragmentProductListener {
+        public void onAddProductClick(ProductModel productModel);
+    }
+
+    public  ProductModel createProductModel()
+    {
+        //model, price, description;
+        description = editTextDescription.getText().toString();
+
+        model = editTextModel.getText().toString();
+
+        price = editTextPrice.getText().toString();
+
+        cost = editTextCost.getText().toString();
+
+        isActiveProduct = checkBoxActiveProduct.isChecked();
+
+        ProductModel productModel = new ProductModel();
+        productModel.setIdProduct(0);
+        //productModel.setName();
+        productModel.setDescription(description);
+        productModel.setModel(model);
+        productModel.setDateOperation(OpenClothesContract.getDbDateString(new Date()));
+        productModel.setImagePath(uriImage);
+        productModel.setActive(isActiveProduct);
+        productModel.setPrice(Integer.parseInt(price));
+        productModel.setCost( Integer.parseInt( cost ) );
+
+        return productModel;
+
+    }
+
+    private class Notification
+    {
+
+        public Notification()
+        {
+            errors = new ArrayList<>();
+        }
+
+        public Boolean  hasError()
+        {
+            return ! errors.isEmpty();
+        }
+
+        public List<String> errors;
+
+    }
+
 }

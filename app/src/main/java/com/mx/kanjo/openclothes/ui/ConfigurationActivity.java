@@ -24,6 +24,7 @@ import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.ui.fragments.ListConfigurationFragment;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -70,19 +71,6 @@ public class ConfigurationActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        switch (id)
-        {
-            case R.id.add_size_item :
-                break;
-
-            case R.id.add_item_income_type :
-                break;
-
-            case R.id.add_item_outcome_type :
-                break;
-
-        }
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -102,8 +90,12 @@ public class ConfigurationActivity extends ActionBarActivity {
 
         private static final int REQUEST_OUTCOME_TYPE = 2 ;
 
+        private int currentConfigurationItem;
+
+        ArrayList<String> items = new ArrayList<>();
+
         @InjectView(R.id.fragment_detail_container)
-        FrameLayout fragemntContainer;
+        FrameLayout fragmentContainer;
 
         ConfigurationInventoryManager configurationInventoryManager ;
 
@@ -121,7 +113,8 @@ public class ConfigurationActivity extends ActionBarActivity {
                 String size = data.getStringExtra(DialogSizeFragment.EXTRA_SIZE);
                 if( !TextUtils.isEmpty( size ) )
                 {
-                    configurationInventoryManager.addSizeItem(new SizeModel(0,size));
+                    configurationInventoryManager.addSizeItem(new SizeModel(0, size));
+
                 }
 
             }
@@ -146,6 +139,7 @@ public class ConfigurationActivity extends ActionBarActivity {
                     configurationInventoryManager.addOutcomeType( new OutcomeType( 0, description ) );
                 }
             }
+            updateCurrentFragment();
         }
 
         @Override
@@ -161,10 +155,10 @@ public class ConfigurationActivity extends ActionBarActivity {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, 
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_configuration, container, false);
-            ButterKnife.inject(this,rootView);
+            ButterKnife.inject(this, rootView);
             return rootView;
         }
 
@@ -176,7 +170,7 @@ public class ConfigurationActivity extends ActionBarActivity {
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
             super.onCreateOptionsMenu(menu, inflater);
-            inflater.inflate(R.menu.menu_config_fragment,menu);
+            inflater.inflate(R.menu.menu_config_fragment, menu);
         }
 
         @Override
@@ -185,15 +179,15 @@ public class ConfigurationActivity extends ActionBarActivity {
             switch (item.getItemId()){
 
                 case R.id.add_size_item :
-                        showFragment(DialogSizeFragment.createInstace(), DialogSizeFragment.TAG);
+                    showFragment(DialogSizeFragment.createInstace(), DialogSizeFragment.TAG, REQUEST_SIZE);
                     return true;
 
                 case R.id.add_item_income_type :
-                    showFragment(DialogIncomeTypeFragment.createInstace(), DialogIncomeTypeFragment.TAG);
+                    showFragment(DialogIncomeTypeFragment.createInstace(), DialogIncomeTypeFragment.TAG, REQUEST_INCOME_TYPE);
                     return true;
 
                 case R.id.add_item_outcome_type :
-                    showFragment(DialogOutcomeTypeFragment.createInstace(), DialogOutcomeTypeFragment.TAG);
+                    showFragment(DialogOutcomeTypeFragment.createInstace(), DialogOutcomeTypeFragment.TAG, REQUEST_OUTCOME_TYPE);
                     return true;
 
                 default:
@@ -202,52 +196,89 @@ public class ConfigurationActivity extends ActionBarActivity {
 
         }
 
-        private void showFragment(android.support.v4.app.DialogFragment dialogFragment, String TAG)
+        private void showFragment(android.support.v4.app.DialogFragment dialogFragment, String TAG, int requestCode)
         {
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-            dialogFragment.setTargetFragment(PlaceholderFragment.this,0);
-            dialogFragment.show(fm,TAG);
+            dialogFragment.setTargetFragment(PlaceholderFragment.this, requestCode);
+            dialogFragment.show(fm, TAG);
 
         }
 
-        @OnClick({R.id.btn_size, R.id.btn_income_type,R.id.btn_outcome_type})
-        public void onClickButtonSize(View view)
+        private void showSizeItems(ArrayList<String> items )
         {
+            Iterator<SizeModel> iteratorSize =  configurationInventoryManager.getSizeCatalogue().iterator();
 
-            ArrayList<String> items = new ArrayList<>();
+            if( null != iteratorSize ) {
+                while (iteratorSize.hasNext()) {
+                    items.add(iteratorSize.next().getSizeDescription());
+                }
+            }
+            displayItemsInFragment(getString(R.string.title_list_configuration_size_items), items);
+        }
+
+        private void showIncomeTypeItems(ArrayList<String> items) {
+            Iterator<IncomeType> iteratorIncome =  configurationInventoryManager.getIncomeTypes().iterator();
+            if( null != iteratorIncome ) {
+                while (iteratorIncome.hasNext()) {
+                    items.add(iteratorIncome.next().getDescription());
+                }
+            }
+            displayItemsInFragment(getString(R.string.title_list_configuration_income_type_items), items);
+        }
+
+        private void showOutcomeTypeItems(ArrayList<String> items) {
+            Iterator<OutcomeType> iteratorOutcome  =  configurationInventoryManager.getOutcomeTypes().iterator();
+            if( null != iteratorOutcome ) {
+                while (iteratorOutcome.hasNext()) {
+                    items.add(iteratorOutcome.next().getDescription());
+                }
+            }
+            displayItemsInFragment(getString(R.string.title_list_configuration_outcome_type_items), items);
+        }
+
+
+        private void updateCurrentFragment()
+        {
+            items.clear();
+            if(currentConfigurationItem==0)
+                showSizeItems(items);
+            else if(currentConfigurationItem==1)
+                showIncomeTypeItems(items);
+            else if(currentConfigurationItem==2)
+                showOutcomeTypeItems(items);
+        }
+
+        @OnClick({R.id.btn_size, R.id.btn_income_type, R.id.btn_outcome_type})
+        public void onClickButton(View view)
+        {
+            items.clear();
+
             switch (view.getId()){
-
                 case R.id.btn_size :
-                    items.add("1");
-                    items.add("2");
-                    items.add("3");
-                    displayItemsInFragment(items);
+                        showSizeItems(items);
+                        currentConfigurationItem=0;
                     break;
                 case R.id.btn_income_type :
-                    items.add("4");
-                    items.add("5");
-                    items.add("6");
-                    displayItemsInFragment(items);
+                        showIncomeTypeItems(items);
+                        currentConfigurationItem=1;
                     break;
                 case R.id.btn_outcome_type :
-                    items.add("7");
-                    items.add("8");
-                    items.add("9");
-                    displayItemsInFragment(items);
+                        showOutcomeTypeItems(items);
+                        currentConfigurationItem=2;
                     break;
             }
         }
 
-        private void displayItemsInFragment(ArrayList<String> items)
+        private void displayItemsInFragment(String title , ArrayList<String> items)
         {
 
-            ListConfigurationFragment listConfigurationFragment = ListConfigurationFragment.newInstance("","",items);
+            ListConfigurationFragment listConfigurationFragment = ListConfigurationFragment.newInstance(title, "", items);
 
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
 
             FragmentTransaction transaction = fm.beginTransaction();
 
-            transaction.replace(R.id.fragment_detail_container,listConfigurationFragment);
+            transaction.replace(R.id.fragment_detail_container, listConfigurationFragment);
 
             transaction.commit();
 

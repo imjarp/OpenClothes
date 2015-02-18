@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:com.mx.kanjo.openclothes="http://schemas.android.com/apk/res-auto"
+    tools:context="com.mx.kanjo.openclothes.ui.ProductActivity">
+
+    <item
+        android:id="@+id/action_new_product"
+        android:orderInCategory="100"
+        android:title="Add"
+        com.mx.kanjo.openclothes:actionLayout="@layout/menu_add_item"
+        com.mx.kanjo.openclothes:showAsAction="always"
+        />
+
+
+</menu>

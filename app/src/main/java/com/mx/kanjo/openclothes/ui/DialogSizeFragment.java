@@ -63,6 +63,8 @@ public class DialogSizeFragment extends DialogFragment {
 
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
 
+        dismiss();
+
     }
 
 

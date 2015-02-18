@@ -62,13 +62,15 @@ public class DialogIncomeTypeFragment extends DialogFragment {
 
         getTargetFragment().onActivityResult( getTargetRequestCode(), resultCode, i );
 
+        dismiss();
+
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate( R.layout.dialog_new_income_type, container, false );
-        ButterKnife.inject( view );
+        ButterKnife.inject( this, view );
         return view;
     }
 
