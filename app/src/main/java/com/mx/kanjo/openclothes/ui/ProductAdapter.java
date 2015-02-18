@@ -45,7 +45,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        final View view = LayoutInflater.from(context).inflate(R.layout.product_cell, parent, false);
+        final View view = LayoutInflater.from(context).inflate(R.layout.product_card, parent, false);
         return new ProductViewHolder(view);
     }
 
@@ -60,7 +60,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             holder.imageViewModel.setImageURI(tempModelProduct.ImagePath);
         }
 
-        holder.textViewModel.setText(tempModelProduct.Model);
+        holder.textViewModel.setText("Model : " + tempModelProduct.Model);
+        holder.textViewPrice.setText("$" + tempModelProduct.Price);
 
     }
 
@@ -83,6 +84,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         @InjectView(R.id.image_view_product)
         ImageView imageViewModel;
+
+        @InjectView(R.id.text_view_price)
+        TextView textViewPrice;
 
 
         public ProductViewHolder(View itemView) {

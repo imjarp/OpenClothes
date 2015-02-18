@@ -12,4 +12,6 @@ public class LeanProductModel {
     public String Model;
 
     public Uri ImagePath;
+
+    public int Price;
 }

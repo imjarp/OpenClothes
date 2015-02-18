@@ -64,7 +64,8 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         public static String [] COLUMNS = {
                 OpenClothesContract.Product._ID,
                 OpenClothesContract.Product.MODEL,
-                OpenClothesContract.Product.IMAGE_PATH
+                OpenClothesContract.Product.IMAGE_PATH,
+                OpenClothesContract.Product.PRICE
 
         };
     }
@@ -73,6 +74,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         public static final int COL_PRODUCT_ID = 0;
         public static final int COL_PRODUCT_MODEL = 1;
         public static final int COL_IMAGE_PATH = 2;
+        public static final int COL_PRICE = 3;
 
     }
 
@@ -100,9 +102,12 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         LeanProductModel model = new LeanProductModel();
         model.ID = cursor.getInt(ProductColumnsOrder.COL_PRODUCT_ID);
         model.Model = cursor.getString(ProductColumnsOrder.COL_PRODUCT_MODEL);
+        model.Price  = cursor.getInt( ProductColumnsOrder.COL_PRICE);
         model.ImagePath =  ! cursor.isNull(ProductColumnsOrder.COL_IMAGE_PATH) ?
                 Uri.parse(cursor.getString(ProductColumnsOrder.COL_IMAGE_PATH)):
                 null;
+
+
 
         return model;
     }
