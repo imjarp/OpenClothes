@@ -46,16 +46,11 @@ public class ConfigurationActivity extends ActionBarActivity {
 
     }
 
-
     private void configureToolbar() {
         Toolbar mainToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle(getString(R.string.title_tool_bar_config_activity));
     }
-
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

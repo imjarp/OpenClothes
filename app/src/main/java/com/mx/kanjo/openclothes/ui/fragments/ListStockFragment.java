@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,15 +28,30 @@ import butterknife.OnClick;
  * Use the {@link ListStockFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListStockFragment extends Fragment implements LoaderManager.LoaderCallbacks<CursorLoader> {
+public class ListStockFragment extends Fragment //implements LoaderManager.LoaderCallbacks<CursorLoader>
+{
 
 
     private static final String TAG = ListStockFragment.class.getSimpleName();
+
+    private static final int SPAN_COUNT = 5;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private RecyclerView mRecyclerView;
+
+    protected LayoutManagerType mCurrentLayoutManagerType;
+
+    private LinearLayoutManager mLinearLayoutManager;
+
+    protected RecyclerView.LayoutManager mLayoutManager;
+
+    private enum LayoutManagerType {
+        GRID_LAYOUT_MANAGER,
+        LINEAR_LAYOUT_MANAGER
+    }
+
 
 
     // TODO: Rename and change types of parameters
@@ -79,7 +97,13 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
         view.setTag(TAG);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_view_stock_fragment);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_view_list);
+
+        mLinearLayoutManager = new LinearLayoutManager(getActivity());
+
+        mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER ;
+
+        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
         ButterKnife.inject(this,view);
 
@@ -109,6 +133,7 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         //mListener = null;
     }
 
+    /*
     @Override
     public Loader<CursorLoader> onCreateLoader(int id, Bundle args) {
         return null;
@@ -122,7 +147,7 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onLoaderReset(Loader<CursorLoader> loader) {
 
-    }
+    }*/
 
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -134,6 +159,14 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     @OnClick(R.id.btnCreateStock)
     public void createStockCard(View view)
     {
+        showFragment(DialogAddStockItem.newInstance("",""),DialogAddStockItem.TAG,0);
+    }
+
+    private void showFragment(android.support.v4.app.DialogFragment dialogFragment, String TAG, int requestCode)
+    {
+        android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+        dialogFragment.setTargetFragment(this, requestCode);
+        dialogFragment.show(fm, TAG);
 
     }
 
@@ -150,6 +183,33 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
      */
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
+    }
+
+    public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
+        int scrollPosition = 0;
+
+        // If a layout manager has already been set, get current scroll position.
+        if (mRecyclerView.getLayoutManager() != null) {
+            scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
+                    .findFirstCompletelyVisibleItemPosition();
+        }
+
+        switch (layoutManagerType) {
+            case GRID_LAYOUT_MANAGER:
+                mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
+                mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
+                break;
+            case LINEAR_LAYOUT_MANAGER:
+                mLayoutManager = new LinearLayoutManager(getActivity());
+                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                break;
+            default:
+                mLayoutManager = new LinearLayoutManager(getActivity());
+                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        }
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.scrollToPosition(scrollPosition);
     }
 
 }

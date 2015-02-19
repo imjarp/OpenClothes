@@ -205,7 +205,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
         view.setTag(TAG);
 
-        mRecyclerViewProducts = (RecyclerView) view.findViewById(R.id.recycle_view_list);
+        mRecyclerViewProducts = (RecyclerView) view.findViewById(R.id.recycle_view_list_product);
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
 

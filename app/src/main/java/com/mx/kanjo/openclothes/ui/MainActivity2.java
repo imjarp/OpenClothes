@@ -121,9 +121,24 @@ public class MainActivity2 extends ActionBarActivity implements
             FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.sample_content_fragment, listStockFragment);
             transaction.commit();
+            return;
 
 
         }
+
+        if(position == 1)
+        {
+
+            ListProductFragment listProductFragment = ListProductFragment.newInstance("", "");
+            FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.sample_content_fragment, listProductFragment);
+            transaction.commit();
+            return;
+
+
+        }
+
+
 
         if(position==4)
         {

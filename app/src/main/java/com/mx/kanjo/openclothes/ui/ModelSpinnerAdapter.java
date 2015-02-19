@@ -3,6 +3,9 @@ package com.mx.kanjo.openclothes.ui;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
@@ -137,11 +140,18 @@ public class ModelSpinnerAdapter implements SpinnerAdapter {
 
         String filePath = list.get(position).ImagePath.toString();
 
-        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(res, filePath );
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
-        roundedBitmapDrawable.setCornerRadius(5f);
+        RoundedBitmapDrawable roundedBitmap =
+                RoundedBitmapDrawableFactory.create(res,bitmap);
 
-        holder.mImageModel.setImageBitmap(roundedBitmapDrawable.getBitmap());
+        roundedBitmap.setCornerRadius(Math.min(roundedBitmap.getMinimumWidth(), roundedBitmap.getMinimumHeight()));
+
+        holder.mImageModel.setImageBitmap(roundedBitmap.getBitmap());
+
+
+
+        //holder.mImageModel.setImageURI(list.get(position).ImagePath);
 
         holder.mTextModel.setText("Test");
 
