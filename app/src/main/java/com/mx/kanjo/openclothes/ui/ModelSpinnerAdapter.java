@@ -6,6 +6,7 @@ import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
@@ -17,8 +18,10 @@ import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
+import com.mx.kanjo.openclothes.util.StorageUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,15 +35,20 @@ public class ModelSpinnerAdapter implements SpinnerAdapter {
 
     private ArrayList<LeanProductModel> list;
 
+    private HashMap<Integer,Drawable> images;
+
     LayoutInflater mInflater;
 
     Resources res;
+
+    private static LeanProductModel temp;
 
     public ModelSpinnerAdapter(Context context, ArrayList<LeanProductModel> list) {
         this.mContext = context;
         this.list = list;
         this.mInflater  = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.res = mContext.getResources();
+        images = new HashMap<>();
     }
 
     @Override
@@ -112,11 +120,6 @@ public class ModelSpinnerAdapter implements SpinnerAdapter {
 
     }
 
-    public static RoundedBitmapDrawable create(Resources res, String filePath)
-    {
-        return RoundedBitmapDrawableFactory.create(res  ,filePath);
-    }
-
     public View getCustomView(int position, View convertView, ViewGroup parent)
     {
         View view   = null;
@@ -137,25 +140,50 @@ public class ModelSpinnerAdapter implements SpinnerAdapter {
 
         ViewHolderModel holder = (ViewHolderModel) view.getTag();
 
+        holder.mTextModel.setText(list.get(position).Model);
 
-        String filePath = list.get(position).ImagePath.toString();
+        Drawable bmImage;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+        temp = list.get(position);
 
-        RoundedBitmapDrawable roundedBitmap =
-                RoundedBitmapDrawableFactory.create(res,bitmap);
+        if( null != images.get(temp.ID)) {
+            bmImage = images.get(temp.ID);
+        }
+        else {
+            String filePath = StorageUtil.getPath(mContext, temp.ImagePath);
+            bmImage = getRoundedBitmap(filePath);
+            images.put(temp.ID,bmImage);
+        }
 
-        roundedBitmap.setCornerRadius(Math.min(roundedBitmap.getMinimumWidth(), roundedBitmap.getMinimumHeight()));
+        holder.mImageModel.setImageDrawable(bmImage);
 
-        holder.mImageModel.setImageBitmap(roundedBitmap.getBitmap());
-
-
-
-        //holder.mImageModel.setImageURI(list.get(position).ImagePath);
-
-        holder.mTextModel.setText("Test");
 
         return view;
+    }
+
+    public Drawable getRoundedBitmap(String filePath)
+    {
+
+        Bitmap src = BitmapFactory.decodeFile(filePath);
+
+        //TODO : Set a default image
+        /*if( null == src )
+        {
+
+        }*/
+        Bitmap dst;
+        if (src.getWidth() >= src.getHeight()){
+            dst = Bitmap.createBitmap(src, src.getWidth()/2 - src.getHeight()/2, 0, src.getHeight(), src.getHeight()
+            );
+        }else{
+            dst = Bitmap.createBitmap(src, 0, src.getHeight()/2 - src.getWidth()/2, src.getWidth(), src.getWidth()
+            );
+        }
+        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(res, dst);
+        roundedBitmapDrawable.setCornerRadius(dst.getWidth() / 2);
+        roundedBitmapDrawable.setAntiAlias(true);
+        return roundedBitmapDrawable;
+
     }
 
 

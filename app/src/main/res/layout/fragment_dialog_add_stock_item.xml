@@ -26,6 +26,7 @@
         android:paddingBottom="48dp"
         android:paddingLeft="48dp"
         android:paddingRight="48dp"
+        android:gravity="bottom"
         >
 
 
@@ -33,24 +34,24 @@
             android:id="@+id/spin_model"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:layout_width="96dp"
             android:layout_weight="1"
 
             />
 
-        <!--SpinnerCompat
+        <Spinner
             android:id="@+id/spin_size"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            /-->
+            />
 
         <EditText
             android:id="@+id/et_quantity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_quantity_stock"
             android:layout_weight="1"
+            android:hint="@string/hint_quantity_stock"
+
             />
     </LinearLayout>
 

@@ -1,24 +1,31 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
+import android.app.Dialog;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.internal.widget.AdapterViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 
+import com.facebook.rebound.ui.Util;
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
 import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
+import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 import com.mx.kanjo.openclothes.ui.ModelSpinnerAdapter;
 import com.mx.kanjo.openclothes.util.Lists;
@@ -43,15 +50,33 @@ public class DialogAddStockItem extends DialogFragment implements AdapterViewCom
 
 
     @InjectView(R.id.spin_model) Spinner mSpinnerModel;
-    //@InjectView(R.id.spin_size) Spinner mSpinnerSize;
+    @InjectView(R.id.spin_size) Spinner mSpinnerSize;
     @InjectView(R.id.et_quantity) EditText mEditTextQuantity;
 
     private CatalogueManager mCatalogueManager;
     private ConfigurationInventoryManager mConfigInventoryManager;
     private ContentResolver mContentResolver;
+    private ArrayList<SizeModel> listSize  = Lists.newArrayList();
 
     public static final String TAG ="com.mx.kanjo.openclothes.ui.fragments.DialogAddStockItem";
 
+    private interface ProductColumns{
+        public static String [] COLUMNS = {
+                OpenClothesContract.Product._ID,
+                OpenClothesContract.Product.MODEL,
+                OpenClothesContract.Product.IMAGE_PATH,
+                OpenClothesContract.Product.PRICE
+
+        };
+    }
+
+    private interface ProductColumnsOrder{
+        public static final int COL_PRODUCT_ID = 0;
+        public static final int COL_PRODUCT_MODEL = 1;
+        public static final int COL_IMAGE_PATH = 2;
+        public static final int COL_PRICE = 3;
+
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -75,34 +100,18 @@ public class DialogAddStockItem extends DialogFragment implements AdapterViewCom
         // Required empty public constructor
     }
 
-    private interface ProductColumns{
-        public static String [] COLUMNS = {
-                OpenClothesContract.Product._ID,
-                OpenClothesContract.Product.MODEL,
-                OpenClothesContract.Product.IMAGE_PATH,
-                OpenClothesContract.Product.PRICE
-
-        };
-    }
-
-    private interface ProductColumnsOrder{
-        public static final int COL_PRODUCT_ID = 0;
-        public static final int COL_PRODUCT_MODEL = 1;
-        public static final int COL_IMAGE_PATH = 2;
-        public static final int COL_PRICE = 3;
-
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog =  super.onCreateDialog( savedInstanceState );
+        dialog.getWindow().requestFeature( Window.FEATURE_NO_TITLE );
+        return dialog;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        Context context = getActivity();
-        mCatalogueManager = new CatalogueManager(context);
-        mConfigInventoryManager = new ConfigurationInventoryManager(context);
-        mContentResolver = context.getContentResolver();
-        modelAdapter = new ModelSpinnerAdapter(context,getProducts());
-
+        init();
     }
 
     @Override
@@ -110,7 +119,6 @@ public class DialogAddStockItem extends DialogFragment implements AdapterViewCom
         super.onResume();
         mSpinnerModel.setAdapter(modelAdapter);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -187,4 +195,32 @@ public class DialogAddStockItem extends DialogFragment implements AdapterViewCom
         super.onDestroyView();
         ButterKnife.reset( this );
     }
+
+    private void init() {
+        Context context = getActivity();
+        mCatalogueManager = new CatalogueManager(context);
+        mConfigInventoryManager = new ConfigurationInventoryManager(context);
+        mContentResolver = context.getContentResolver();
+        modelAdapter = new ModelSpinnerAdapter(context,getProducts());
+        populateSizeSpinner(context);
+    }
+
+    private  void populateSizeSpinner(Context context )
+    {
+        listSize = (ArrayList<SizeModel>) mConfigInventoryManager.getSizeCatalogue();
+
+        ArrayList<String> simpleList = new ArrayList<>(listSize.size());
+
+        for( SizeModel size : listSize )
+        {
+            simpleList.add(size.getSizeDescription());
+        }
+
+        ArrayAdapter<String> sizeAdapter
+                = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, simpleList);
+
+        mSpinnerSize.setAdapter(sizeAdapter);
+
+    }
+
 }
