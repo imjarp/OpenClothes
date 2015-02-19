@@ -40,6 +40,7 @@
             tools:text="Model: CB-011"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
+            android:textStyle="bold"
             style="@style/TextAppearance.AppCompat.Medium"/>
         <TextView
             android:id="@+id/text_view_price"

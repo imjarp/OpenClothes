@@ -201,11 +201,11 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_product, container, false);
+        View view =  inflater.inflate(R.layout.fragment_productlist, container, false);
 
         view.setTag(TAG);
 
-        mRecyclerViewProducts = (RecyclerView) view.findViewById(R.id.recycle_view_list_product);
+        mRecyclerViewProducts = (RecyclerView) view.findViewById(R.id.recycle_view_list);
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
 

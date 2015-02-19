@@ -16,12 +16,12 @@ import android.view.View;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.ui.fragments.ListProductFragment;
+import com.mx.kanjo.openclothes.ui.fragments.ListStockFragment;
 import com.mx.kanjo.openclothes.ui.fragments.NavigationFragment;
-import com.mx.kanjo.openclothes.ui.fragments.StockFragment;
 
 public class MainActivity2 extends ActionBarActivity implements
         NavigationFragment.NavigationDrawerCallbacks,
-        StockFragment.OnFragmentInteractionListener {
+        ListStockFragment.OnFragmentInteractionListener {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -114,7 +114,18 @@ public class MainActivity2 extends ActionBarActivity implements
     @Override
     public void onNavigationDrawerSelectedItem(int position) {
 
-        if(position==0)
+        if(position == 0)
+        {
+
+            ListStockFragment listStockFragment = ListStockFragment.newInstance("", "");
+            FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.sample_content_fragment, listStockFragment);
+            transaction.commit();
+
+
+        }
+
+        if(position==4)
         {
             startActivity(new Intent(this,ConfigurationActivity.class));
             return;
