@@ -6,7 +6,6 @@
     android:layout_marginLeft="144dp"
     android:layout_marginRight="144dp"
     android:layout_marginTop="60dp"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     tools:context="com.mx.kanjo.openclothes.ui.fragments.ListStockFragment">
 
     <LinearLayout
@@ -14,12 +13,28 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/card_view_product"
-        >
+        android:orientation="horizontal"
+        android:layout_marginBottom="6dp">
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="Hola Soy paquito"
-            android:text="Hola Soy paquito"/>
+            android:text="Product"
+            android:layout_weight="5"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Size"
+            android:layout_weight="3"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Quantity"
+            android:layout_weight="3"
+            android:gravity="center"/>
 
         </LinearLayout>
 

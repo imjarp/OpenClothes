@@ -36,6 +36,7 @@ public class OpenClothesProvider extends ContentProvider {
     private static final int STOCK_MODEL = 302;
     private static final int STOCK_PRODUCT = 304;
     private static final int STOCK_PRODUCT_SIZE = 305;
+    private static final int STOCK_PRODUCT_SIZE_ALL = 306;
 
     private static final int SALE = 400;
     private static final int SALE_ID = 401;
@@ -87,10 +88,12 @@ public class OpenClothesProvider extends ContentProvider {
 
         //Stock
         matcher.addURI(authority, "stock", STOCK);
+        matcher.addURI(authority, "stock/modelAndSize", STOCK_PRODUCT_SIZE_ALL);
         matcher.addURI(authority, "stock/#", STOCK_ID);
         matcher.addURI(authority, "stock/#/idProduct",  STOCK_PRODUCT);
         matcher.addURI(authority, "stock/*/model", STOCK_MODEL);
         matcher.addURI(authority, "stock/#/idProduct/#/idSize", STOCK_PRODUCT_SIZE);
+
 
 
         //Sale
@@ -226,6 +229,21 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                     null,
                                                                                     sortOrder);
                 break;
+
+            //stock/modelAndSize
+            case STOCK_PRODUCT_SIZE_ALL:
+
+                builder = new SelectionBuilder().table(OpenClothesDatabase.Tables.STOCK_JOIN_PRODUCT_JOIN_SIZE)
+                        .mapToTable(OpenClothesContract.Stock._ID,OpenClothesDatabase.Tables.STOCK)
+                        .mapToTable(OpenClothesContract.Product._ID, OpenClothesDatabase.Tables.PRODUCT)
+                        .mapToTable(OpenClothesContract.Size._ID, OpenClothesDatabase.Tables.SIZE);
+                        //.where(OpenClothesDatabase.Qualified.STOCK_PRODUCT_ID + "=?", OpenClothesContract.Stock.getProductIdFromUri(uri));
+
+                cursor = builder
+                        .where(selection,selectionArgs)
+                        .query(dbReadableDatabase,projection,sortOrder);
+
+                break;
             // "stock/#"
             case  STOCK_ID :
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.STOCK, projection,
@@ -247,6 +265,8 @@ public class OpenClothesProvider extends ContentProvider {
 
 
               break;
+
+
             // "stock/#/idProduct"
             case STOCK_PRODUCT :
 

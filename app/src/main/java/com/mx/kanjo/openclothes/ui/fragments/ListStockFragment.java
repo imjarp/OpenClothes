@@ -1,10 +1,12 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -16,6 +18,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mx.kanjo.openclothes.R;
+import com.mx.kanjo.openclothes.engine.InventoryManager;
+import com.mx.kanjo.openclothes.model.SizeModel;
+import com.mx.kanjo.openclothes.model.StockItem;
+import com.mx.kanjo.openclothes.provider.OpenClothesContract;
+import com.mx.kanjo.openclothes.provider.OpenClothesDatabase;
+import com.mx.kanjo.openclothes.ui.StockAdapter;
+import com.mx.kanjo.openclothes.util.Lists;
+
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -28,13 +39,37 @@ import butterknife.OnClick;
  * Use the {@link ListStockFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListStockFragment extends Fragment //implements LoaderManager.LoaderCallbacks<CursorLoader>
+public class ListStockFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
 
 
+    private interface StockColumns{
+        public static String [] COLUMNS = {
+                OpenClothesDatabase.Tables.STOCK + "." +  OpenClothesContract.Stock._ID,
+                OpenClothesDatabase.Tables.PRODUCT + "." +  OpenClothesContract.Product._ID,
+                OpenClothesContract.Product.MODEL,
+                OpenClothesContract.Product.IMAGE_PATH,
+                OpenClothesDatabase.Tables.SIZE + "." +  OpenClothesContract.Size._ID,
+                OpenClothesDatabase.Tables.SIZE + "." +  OpenClothesContract.Size.SIZE,
+
+        };
+    }
+
+    private interface StockColumnsOrder{
+        public static final int COL_STOCK_ID = 0;
+        public static final int COL_PRODUCT_ID = 1;
+        public static final int COL_PRODUCT_MODEL = 2;
+        public static final int COL_IMAGE_PATH = 3;
+        public static final int COL_SIZE_ID = 4;
+        public static final int COL_SIZE = 5;
+
+    }
+
+    private static final int LOADER_STOCK = 998;
+
     private static final String TAG = ListStockFragment.class.getSimpleName();
 
-    private static final int SPAN_COUNT = 5;
+    private static final int SPAN_COUNT = 1;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -46,6 +81,10 @@ public class ListStockFragment extends Fragment //implements LoaderManager.Loade
     private LinearLayoutManager mLinearLayoutManager;
 
     protected RecyclerView.LayoutManager mLayoutManager;
+
+    private StockAdapter adapter;
+
+    private ArrayList<StockItem> stockItems = Lists.newArrayList();
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -111,6 +150,34 @@ public class ListStockFragment extends Fragment //implements LoaderManager.Loade
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(Activity.RESULT_OK != resultCode)
+            return;
+
+        if( requestCode == 0 )
+        {
+            this.onLoaderReset(null);
+
+            InventoryManager manager = new InventoryManager(getActivity());
+
+            int size ;
+            int idProduct ;
+            int qty;
+            getLoaderManager().restartLoader(LOADER_STOCK, null, this);
+
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+
+        super.onActivityCreated(savedInstanceState);
+
+        getLoaderManager().initLoader(LOADER_STOCK,null,this);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
@@ -133,21 +200,71 @@ public class ListStockFragment extends Fragment //implements LoaderManager.Loade
         //mListener = null;
     }
 
-    /*
+
     @Override
-    public Loader<CursorLoader> onCreateLoader(int id, Bundle args) {
-        return null;
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+
+        String sortOrder = null;
+
+        Uri stockUri = OpenClothesContract.Stock.buildStockUriProductSize();
+
+        String selection =  null ;
+
+        //Active
+        String [] selectionArgs =null;// { "1" };
+
+
+        return new CursorLoader( getActivity(),
+                                 stockUri,
+                                 StockColumns.COLUMNS,
+                                 selection,
+                                 selectionArgs,
+                                 sortOrder );
     }
 
     @Override
-    public void onLoadFinished(Loader<CursorLoader> loader, CursorLoader data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        stockItems.clear();
+
+        if( data.getCount() == 0 )
+            return;
+
+        if (!data.moveToFirst())
+            return;
+        do
+        {
+            stockItems.add(getFromCursor(data));
+        }while (data.moveToNext());
+
+        adapter = new StockAdapter(getActivity(),stockItems);
+        if( null != mRecyclerView)
+            mRecyclerView.setAdapter(adapter);
+
 
     }
 
-    @Override
-    public void onLoaderReset(Loader<CursorLoader> loader) {
+    private static StockItem getFromCursor(Cursor data) {
+        StockItem stockItem = new StockItem();
+        stockItem.setStockItemId(data.getInt(StockColumnsOrder.COL_STOCK_ID));
+        stockItem.setIdProduct(data.getInt(StockColumnsOrder.COL_PRODUCT_ID));
+        stockItem.setModel(data.getString(StockColumnsOrder.COL_PRODUCT_MODEL));
+        Uri imagePath = ! data.isNull(StockColumnsOrder.COL_IMAGE_PATH) ?
+                        Uri.parse(data.getString(StockColumnsOrder.COL_IMAGE_PATH)):
+                        null;
+        stockItem.setImagePath(imagePath);
+        int idSize = data.getInt(StockColumnsOrder.COL_SIZE_ID);
+        String descriptionSize = data.getString(StockColumnsOrder.COL_SIZE);
+        stockItem.setSize(new SizeModel(idSize,descriptionSize));
 
-    }*/
+        return stockItem;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
 
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
