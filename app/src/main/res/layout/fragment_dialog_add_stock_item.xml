@@ -83,7 +83,7 @@
 
 
         <Button
-            android:id="@+id/btn_add_income_type"
+            android:id="@+id/btn_add_stock_item"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:text="@string/add_action_title"
@@ -94,7 +94,7 @@
             android:textColor="@color/primary"/>
 
         <Button
-            android:id="@+id/btn_discard_income_type"
+            android:id="@+id/btn_discard_stock_item"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:text="@string/discard_action_title"

@@ -91,5 +91,7 @@
     <string name="title_add_dialog_stock">Add Stock Item</string>
     <string name="hint_quantity_stock">Quantity</string>
     <string name="choose_title">Choose :</string>
+    <string name="message_quantity_validation">Please enter a valid quantity</string>
+
 
 </resources>
