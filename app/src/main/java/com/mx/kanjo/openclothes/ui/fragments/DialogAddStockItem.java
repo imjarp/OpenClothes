@@ -1,7 +1,6 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Dialog;
-import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,13 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 
-import com.facebook.rebound.ui.Util;
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
 import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
@@ -31,7 +28,6 @@ import com.mx.kanjo.openclothes.ui.ModelSpinnerAdapter;
 import com.mx.kanjo.openclothes.util.Lists;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -105,6 +101,7 @@ public class DialogAddStockItem extends DialogFragment implements AdapterViewCom
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog =  super.onCreateDialog( savedInstanceState );
         dialog.getWindow().requestFeature( Window.FEATURE_NO_TITLE );
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         return dialog;
     }
 
@@ -203,6 +200,7 @@ public class DialogAddStockItem extends DialogFragment implements AdapterViewCom
         mContentResolver = context.getContentResolver();
         modelAdapter = new ModelSpinnerAdapter(context,getProducts());
         populateSizeSpinner(context);
+
     }
 
     private  void populateSizeSpinner(Context context )
@@ -217,7 +215,7 @@ public class DialogAddStockItem extends DialogFragment implements AdapterViewCom
         }
 
         ArrayAdapter<String> sizeAdapter
-                = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, simpleList);
+                = new ArrayAdapter<>(context, R.layout.view_size_spinner, simpleList);
 
         mSpinnerSize.setAdapter(sizeAdapter);
 

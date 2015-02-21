@@ -21,40 +21,50 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="74dp"
         android:orientation="horizontal"
-        android:paddingTop="48dp"
-        android:paddingBottom="48dp"
-        android:paddingLeft="48dp"
-        android:paddingRight="48dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
         android:gravity="bottom"
         >
 
 
         <Spinner
+            style="@style/Widget.IOSched.HeaderBar.Spinner"
             android:id="@+id/spin_model"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
 
             />
 
         <Spinner
+            style="@style/Widget.IOSched.HeaderBar.Spinner"
             android:id="@+id/spin_size"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="60dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
             />
 
         <EditText
             android:id="@+id/et_quantity"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
             android:hint="@string/hint_quantity_stock"
+            android:gravity="center_vertical"
+            android:inputType="numberDecimal"
 
             />
     </LinearLayout>
-
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
