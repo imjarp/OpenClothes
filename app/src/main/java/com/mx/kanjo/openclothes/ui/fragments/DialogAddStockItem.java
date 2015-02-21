@@ -1,55 +1,63 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.internal.widget.AdapterViewCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-import com.facebook.rebound.ui.Util;
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
 import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
-import com.mx.kanjo.openclothes.ui.ModelSpinnerAdapter;
+import com.mx.kanjo.openclothes.ui.ProductSpinnerAdapter;
 import com.mx.kanjo.openclothes.util.Lists;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 
-public class DialogAddStockItem extends DialogFragment implements AdapterViewCompat.OnItemSelectedListener {
+public class DialogAddStockItem extends DialogFragment implements AdapterView.OnItemSelectedListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    public static final String EXTRA_ID_PRODUCT = "ID_PRODUCT";
+    public static final String EXTRA_ID_SIZE = "ID_SIZE";
+    public static final String EXTRA_QTY = "QUANTITY";
+
+    int idProduct = 0;
+    int idSize = 0;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private ModelSpinnerAdapter modelAdapter ;
+    private ProductSpinnerAdapter modelAdapter ;
 
 
-    @InjectView(R.id.spin_model) Spinner mSpinnerModel;
+    @InjectView(R.id.spin_model) Spinner mSpinnerProduct;
     @InjectView(R.id.spin_size) Spinner mSpinnerSize;
     @InjectView(R.id.et_quantity) EditText mEditTextQuantity;
 
@@ -117,7 +125,7 @@ public class DialogAddStockItem extends DialogFragment implements AdapterViewCom
     @Override
     public void onResume() {
         super.onResume();
-        mSpinnerModel.setAdapter(modelAdapter);
+        mSpinnerProduct.setAdapter(modelAdapter);
     }
 
     @Override
@@ -167,12 +175,16 @@ public class DialogAddStockItem extends DialogFragment implements AdapterViewCom
     }
 
     @Override
-    public void onItemSelected(AdapterViewCompat<?> adapterViewCompat, View view, int i, long l) {
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+        String stop = "";
+
+        stop = stop;
 
     }
 
     @Override
-    public void onNothingSelected(AdapterViewCompat<?> adapterViewCompat) {
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 
@@ -201,7 +213,8 @@ public class DialogAddStockItem extends DialogFragment implements AdapterViewCom
         mCatalogueManager = new CatalogueManager(context);
         mConfigInventoryManager = new ConfigurationInventoryManager(context);
         mContentResolver = context.getContentResolver();
-        modelAdapter = new ModelSpinnerAdapter(context,getProducts());
+        modelAdapter = new ProductSpinnerAdapter(context,getProducts());
+
         populateSizeSpinner(context);
     }
 
@@ -222,5 +235,64 @@ public class DialogAddStockItem extends DialogFragment implements AdapterViewCom
         mSpinnerSize.setAdapter(sizeAdapter);
 
     }
+
+    @OnClick({R.id.btn_add_stock_item,R.id.btn_discard_stock_item})
+    public void onClickEvent(Button button)
+    {
+        switch (button.getId())
+        {
+            case R.id.btn_add_stock_item :
+                sendResult(Activity.RESULT_OK);
+                break;
+
+            case R.id.btn_discard_stock_item :
+                sendResult(Activity.RESULT_CANCELED);
+                break;
+        }
+    }
+
+    private void sendResult(int resultCode) {
+
+        if (null == getTargetFragment())
+            return;
+
+        if(!isQuantityCompliant(mEditTextQuantity.getText().toString())) {
+            showMessage();
+            return;
+        }
+
+        Intent i  = new Intent();
+
+        int idProduct = (int) mSpinnerProduct.getSelectedItemId();
+        int idSize = listSize.get(mSpinnerSize.getSelectedItemPosition()).getIdSize();
+        int qty = Integer.parseInt(mEditTextQuantity.getText().toString());
+
+        i.putExtra( EXTRA_ID_PRODUCT, idProduct );
+        i.putExtra( EXTRA_ID_SIZE, idSize );
+        i.putExtra( EXTRA_QTY, qty);
+
+        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
+
+        dismiss();
+
+    }
+
+    private void showMessage() {
+        Toast.makeText(getActivity(),getString(R.string.message_quantity_validation),Toast.LENGTH_SHORT).show();
+    }
+
+    private static boolean isQuantityCompliant(String qtyText) {
+        if(TextUtils.isEmpty(qtyText))
+            return false;
+        try
+        {
+            Integer.parseInt(qtyText);
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+
 
 }
