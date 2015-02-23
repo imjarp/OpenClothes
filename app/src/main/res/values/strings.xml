@@ -93,5 +93,9 @@
     <string name="choose_title">Choose :</string>
     <string name="message_quantity_validation">Please enter a valid quantity</string>
 
+    <!--Menu stock list actions-->
+    <string name="title_income_stock">Income</string>
+    <string name="title_outgoing_stock">Outgoing</string>
+
 
 </resources>
