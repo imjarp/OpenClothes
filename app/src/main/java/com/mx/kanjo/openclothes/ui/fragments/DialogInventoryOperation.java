@@ -159,7 +159,6 @@ public class DialogInventoryOperation extends DialogFragment {
 
     }
 
-
     protected AdapterView.OnItemSelectedListener productItemClickListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -171,9 +170,6 @@ public class DialogInventoryOperation extends DialogFragment {
 
         }
     };
-
-
-
 
     private void populateSpinSize(int idProduct)
     {
@@ -187,7 +183,7 @@ public class DialogInventoryOperation extends DialogFragment {
         {
             temp =stockItemIterator.next();
 
-            if( idProduct == temp.getStockItemId())
+            if( idProduct == temp.getIdProduct())
             {
                 sizeModelArrayList.add( temp.getSize() );
                 arraySizeDescriptions.add( temp.getSize().getSizeDescription() );
@@ -206,10 +202,6 @@ public class DialogInventoryOperation extends DialogFragment {
 
 
     }
-
-
-
-
 
     private static LeanProductModel createLeanProduct(StockItem item)
     {

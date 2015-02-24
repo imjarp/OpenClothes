@@ -10,10 +10,15 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.widget.ImageButton;
 
+import com.mx.kanjo.openclothes.R;
+
 /**
  * Created by JARP on 2/15/15.
  */
 public class PictureUtils {
+
+    public static Drawable imageDefault;
+    public static Bitmap bitmapDefaultRounded;
 
     public enum SizeImage {
         IMAGE_192x192,
@@ -66,14 +71,24 @@ public class PictureUtils {
 
     public static Drawable getRoundedBitmap(String filePath, Resources res)
     {
-
         Bitmap src = BitmapFactory.decodeFile(filePath);
 
-        //TODO : Set a default image
-        /*if( null == src )
-        {
+        return getRoundedDrawable(src, res);
+    }
 
-        }*/
+    public static Drawable getImageClotheDefaultRounded(Context context)
+    {
+
+        //Bitmap bitmap  = BitmapFactory.decodeResource(context,) getImageClotheDefault(context)
+        if( null == bitmapDefaultRounded)
+            bitmapDefaultRounded = BitmapFactory.decodeResource(context.getResources(),R.mipmap.ic_default_clother_primary);
+
+        return getRoundedDrawable(bitmapDefaultRounded ,  context.getResources());
+
+    }
+
+    private static Drawable getRoundedDrawable(Bitmap src, Resources res)
+    {
         Bitmap dst;
         if (src.getWidth() >= src.getHeight()){
             dst = Bitmap.createBitmap(src, src.getWidth()/2 - src.getHeight()/2, 0, src.getHeight(), src.getHeight()
@@ -86,6 +101,23 @@ public class PictureUtils {
         roundedBitmapDrawable.setCornerRadius(dst.getWidth() / 2);
         roundedBitmapDrawable.setAntiAlias(true);
         return roundedBitmapDrawable;
+    }
+
+
+    public static Drawable getImageClotheDefault(Context context) {
+
+        if( null ==imageDefault )
+        {
+            imageDefault = context.getResources().getDrawable(R.mipmap.ic_default_clother_primary);
+        }
+
+        return imageDefault;
 
     }
+
+
+
+
+
+
 }

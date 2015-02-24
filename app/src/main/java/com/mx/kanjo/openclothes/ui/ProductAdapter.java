@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
+import com.mx.kanjo.openclothes.util.PictureUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         tempModelProduct = leanProductModelList.get(position);
 
-        if( null != tempModelProduct.ImagePath) {
+        if( null ==tempModelProduct.ImagePath){
+            holder.imageViewModel.setImageDrawable(PictureUtils.getImageClotheDefault(context));
+        }
+        else {
             holder.imageViewModel.setImageURI(tempModelProduct.ImagePath);
         }
 

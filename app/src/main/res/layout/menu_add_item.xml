@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
-        android:text="Add 1"
+        android:text="@string/menu_add_product_title"
         android:layout_marginRight="48dp"
         style="@android:style/TextAppearance.Medium"
         android:gravity="center"
