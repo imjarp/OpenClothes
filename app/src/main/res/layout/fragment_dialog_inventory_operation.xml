@@ -1,0 +1,120 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="96dp"
+        android:gravity="center"
+        android:background="@color/primary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_add_dialog_stock"
+            android:textColor="@color/text_color"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="74dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:gravity="bottom"
+        >
+
+        <Spinner
+            style="@style/Widget.IOSched.HeaderBar.Spinner"
+            android:id="@+id/spin_type"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+
+            />
+
+        <Spinner
+            style="@style/Widget.IOSched.HeaderBar.Spinner"
+            android:id="@+id/spin_model"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+
+            />
+
+        <Spinner
+            style="@style/Widget.IOSched.HeaderBar.Spinner"
+            android:id="@+id/spin_size"
+            android:layout_width="60dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
+            />
+
+        <EditText
+            android:id="@+id/et_quantity"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
+            android:hint="@string/hint_quantity_stock"
+            android:gravity="center_vertical"
+            android:inputType="numberDecimal"
+
+            />
+    </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="4dip"
+        android:layout_marginRight="4dip"
+        android:background="?android:attr/dividerHorizontal"
+        android:layout_alignParentTop="true"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical|right">
+
+
+
+
+        <Button
+            android:id="@+id/btn_add_stock_item"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="@string/add_action_title"
+            android:background="?android:attr/selectableItemBackground"
+            android:minWidth="@dimen/button_min_width"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:textColor="@color/primary"/>
+
+        <Button
+            android:id="@+id/btn_discard_stock_item"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="@string/discard_action_title"
+            android:background="?android:attr/selectableItemBackground"
+            android:minWidth="@dimen/button_min_width"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:textColor="@color/secondary_text"
+
+            />
+
+
+    </LinearLayout>
+
+</LinearLayout>

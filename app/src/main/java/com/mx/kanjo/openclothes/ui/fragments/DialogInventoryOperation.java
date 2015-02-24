@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -20,7 +21,7 @@ import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
 import com.mx.kanjo.openclothes.engine.InventoryManager;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
 import com.mx.kanjo.openclothes.model.OutcomeType;
-import com.mx.kanjo.openclothes.model.ProductModel;
+import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.ui.ProductSpinnerAdapter;
 import com.mx.kanjo.openclothes.util.Lists;
@@ -28,21 +29,23 @@ import com.mx.kanjo.openclothes.util.Maps;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Set;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by JARP on 23/02/2015.
  */
 public class DialogInventoryOperation extends DialogFragment {
 
+    public static final String TAG = "DialogInventoryOperation";
 
-    Spinner mSpinnerModel;
-    Spinner mSpinnerOperationInventory;
-    Spinner mSpinnerSize;
-    TextView mTextboxQty;
+    @InjectView(R.id.spin_model) Spinner mSpinnerModel;
+    @InjectView(R.id.spin_type) Spinner mSpinnerOperationInventory;
+    @InjectView(R.id.spin_size) Spinner mSpinnerSize;
+    @InjectView(R.id.et_quantity) TextView mTextboxQty;
     Context mContext;
     ProductSpinnerAdapter productItemAdapter;
 
@@ -51,6 +54,9 @@ public class DialogInventoryOperation extends DialogFragment {
     ConfigurationInventoryManager mConfigurationInventoryManager ;
 
     ArrayList<OutcomeType> outcomeTypes;
+    Set<StockItem> setItemStock;
+    ArrayList<LeanProductModel> listLeanProducts = Lists.newArrayList();
+    ArrayList<SizeModel> sizeModelArrayList = Lists.newArrayList();
 
     //Defines wether this operation is Incoming or Outgoing from the inventory
     private static final String PARAM_TYPE_OPERATION = "TYPE_OPERATION";
@@ -77,7 +83,7 @@ public class DialogInventoryOperation extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = null; //= inflater.inflate()
+        View view = inflater.inflate(R.layout.fragment_dialog_inventory_operation,container,false);
         ButterKnife.inject(this,view);
         return view;
     }
@@ -132,9 +138,9 @@ public class DialogInventoryOperation extends DialogFragment {
     private void populateSpinModel() {
 
         //We will get only the item stocks that have at least one product
-        Set<StockItem> setItemStock =  mInventoryManager.getStock();
+        setItemStock =  mInventoryManager.getStock();
         HashMap<Integer,StockItem> tempHashMap = Maps.newHashMap();
-        ArrayList<LeanProductModel> listLeanProducts = Lists.newArrayList();
+
         for(StockItem item : setItemStock){
             if( null== tempHashMap.get(item.getIdProduct()))
             {
@@ -144,15 +150,58 @@ public class DialogInventoryOperation extends DialogFragment {
         }
 
         productItemAdapter = new ProductSpinnerAdapter(mContext,listLeanProducts);
+
         mSpinnerModel.setAdapter(productItemAdapter);
 
+        mSpinnerModel.setOnItemClickListener(productItemClickListener);
+
+
+
     }
 
 
-    private void populateSpinSize()
+    protected AdapterView.OnItemClickListener productItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            populateSpinSize(listLeanProducts.get(position).ID);
+        }
+    };
+
+    private void populateSpinSize(int idProduct)
     {
 
+        StockItem temp;
+        sizeModelArrayList.clear();
+        Iterator<StockItem> stockItemIterator =  setItemStock.iterator();
+        ArrayList<String> arraySizeDescriptions = Lists.newArrayList();
+
+        while (stockItemIterator.hasNext())
+        {
+            temp =stockItemIterator.next();
+
+            if( idProduct == temp.getStockItemId())
+            {
+                sizeModelArrayList.add( temp.getSize() );
+                arraySizeDescriptions.add( temp.getSize().getSizeDescription() );
+
+            }
+
+        }
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, R.layout.view_size_spinner, arraySizeDescriptions);
+
+
+        mSpinnerSize.setAdapter(adapter);
+
+
+
+
     }
+
+
+
+
 
     private static LeanProductModel createLeanProduct(StockItem item)
     {

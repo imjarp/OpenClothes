@@ -229,6 +229,7 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
             case R.id.incoming_stock :
                 break   ;
             case R.id.outgoing_stock :
+                showFragment( DialogInventoryOperation.createInstance("",0) , DialogInventoryOperation.TAG, 99 );
                 break   ;
         }
 
