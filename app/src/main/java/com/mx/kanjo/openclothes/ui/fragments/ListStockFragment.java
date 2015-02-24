@@ -14,6 +14,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -69,6 +72,8 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     private static final int LOADER_STOCK = 998;
+    private static final int REQUEST_INCOME_STOCK = 1;
+    private static final int REQUEST_OUTGOING_STOCK = 1;
 
     private static final int REQUEST_NEW_STOCK = 2;
 
@@ -132,6 +137,7 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -206,6 +212,27 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     public void onDetach() {
         super.onDetach();
         //mListener = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_stock_list,menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId())
+        {
+            case R.id.incoming_stock :
+                break   ;
+            case R.id.outgoing_stock :
+                break   ;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 
