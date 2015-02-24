@@ -153,19 +153,27 @@ public class DialogInventoryOperation extends DialogFragment {
 
         mSpinnerModel.setAdapter(productItemAdapter);
 
-        mSpinnerModel.setOnItemClickListener(productItemClickListener);
+        mSpinnerModel.setOnItemSelectedListener(productItemClickListener);
 
 
 
     }
 
 
-    protected AdapterView.OnItemClickListener productItemClickListener = new AdapterView.OnItemClickListener() {
+    protected AdapterView.OnItemSelectedListener productItemClickListener = new AdapterView.OnItemSelectedListener() {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             populateSpinSize(listLeanProducts.get(position).ID);
         }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
     };
+
+
+
 
     private void populateSpinSize(int idProduct)
     {
