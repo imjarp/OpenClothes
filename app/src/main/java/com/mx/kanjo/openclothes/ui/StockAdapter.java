@@ -1,6 +1,7 @@
 package com.mx.kanjo.openclothes.ui;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,12 @@ import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.model.StockItem;
+import com.mx.kanjo.openclothes.util.Maps;
+import com.mx.kanjo.openclothes.util.PictureUtils;
+import com.mx.kanjo.openclothes.util.StorageUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -29,6 +34,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
     private int itemsCount = 0;
     private List<StockItem> stockList;
     private static StockItem tempStock = null;
+    private HashMap<Integer,Drawable> images = Maps.newHashMap();
 
     public StockAdapter(Context context) {
         this.context = context;
@@ -58,14 +64,17 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
         tempStock = stockList.get(position);
 
         if( null != tempStock.getImagePath()) {
-            holder.imageViewModel.setImageURI(tempStock.getImagePath());
+            //holder.imageViewModel.setImageURI(tempStock.getImagePath());
+            String filePath = StorageUtil.getPath(context, tempStock.getImagePath());
+            holder.imageViewModel.setImageDrawable(PictureUtils.getRoundedBitmap(filePath, context.getResources()));
+
         }
 
         holder.textViewSize.setText( tempStock.getSize().getSizeDescription() );
 
         holder.textViewModel.setText( tempStock.getModel() );
 
-        holder.textViewQuantity.setText( tempStock.getQuantity() );
+        holder.textViewQuantity.setText( String.valueOf(tempStock.getQuantity()) );
 
     }
 
@@ -92,7 +101,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
         @InjectView(R.id.text_size)
         TextView textViewSize;
 
-        @InjectView(R.id.text_view_price)
+        @InjectView(R.id.text_qty)
         TextView textViewQuantity;
 
 

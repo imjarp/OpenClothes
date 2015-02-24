@@ -1,9 +1,13 @@
 package com.mx.kanjo.openclothes.util;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.widget.ImageButton;
 
 /**
@@ -57,6 +61,31 @@ public class PictureUtils {
         BitmapDrawable drawable =  new BitmapDrawable(context.getResources(), bitmap);
 
         imageButton.setImageDrawable(drawable);
+
+    }
+
+    public static Drawable getRoundedBitmap(String filePath, Resources res)
+    {
+
+        Bitmap src = BitmapFactory.decodeFile(filePath);
+
+        //TODO : Set a default image
+        /*if( null == src )
+        {
+
+        }*/
+        Bitmap dst;
+        if (src.getWidth() >= src.getHeight()){
+            dst = Bitmap.createBitmap(src, src.getWidth()/2 - src.getHeight()/2, 0, src.getHeight(), src.getHeight()
+            );
+        }else{
+            dst = Bitmap.createBitmap(src, 0, src.getHeight()/2 - src.getWidth()/2, src.getWidth(), src.getWidth()
+            );
+        }
+        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(res, dst);
+        roundedBitmapDrawable.setCornerRadius(dst.getWidth() / 2);
+        roundedBitmapDrawable.setAntiAlias(true);
+        return roundedBitmapDrawable;
 
     }
 }
