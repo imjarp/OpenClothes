@@ -20,8 +20,7 @@ import com.mx.kanjo.openclothes.ui.fragments.ListStockFragment;
 import com.mx.kanjo.openclothes.ui.fragments.NavigationFragment;
 
 public class MainActivity2 extends ActionBarActivity implements
-        NavigationFragment.NavigationDrawerCallbacks,
-        ListStockFragment.OnFragmentInteractionListener {
+        NavigationFragment.NavigationDrawerCallbacks {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -102,13 +101,6 @@ public class MainActivity2 extends ActionBarActivity implements
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-
     }
 
     @Override

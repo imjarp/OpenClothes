@@ -285,7 +285,9 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
         if (null == getTargetFragment())
             return;
 
-        if(!isQuantityCompliant(mEditTextQuantity.getText().toString())) {
+        String textQty = mEditTextQuantity.getText().toString();
+
+        if ( !isQuantityCompliant(textQty) && resultCode == Activity.RESULT_OK ) {
             showMessage();
             return;
         }

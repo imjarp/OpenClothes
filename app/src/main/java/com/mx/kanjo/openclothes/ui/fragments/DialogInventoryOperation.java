@@ -1,5 +1,6 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -38,6 +40,7 @@ import java.util.Set;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Created by JARP on 23/02/2015.
@@ -47,14 +50,15 @@ public class DialogInventoryOperation extends DialogFragment {
     public static final String TAG = "DialogInventoryOperation";
 
     public static final String EXTRA_ID_PRODUCT = "ID_PRODUCT";
-    public static final String EXTRA_ID_SIZE = "ID_PRODUCT";
-    public static final String EXTRA_QTY = "ID_SIZE";
+    public static final String EXTRA_ID_SIZE = "ID_SIZE";
+    public static final String EXTRA_QTY = "QTY";
     public static final String EXTRA_ID_OUTCOME = "ID_OUTCOME";
 
     @InjectView(R.id.spin_model) Spinner mSpinnerModel;
     @InjectView(R.id.spin_type) Spinner mSpinnerOperationInventory;
     @InjectView(R.id.spin_size) Spinner mSpinnerSize;
     @InjectView(R.id.et_quantity) EditText mEditboxQty;
+
     Context mContext;
     ProductSpinnerAdapter productItemAdapter;
 
@@ -117,6 +121,23 @@ public class DialogInventoryOperation extends DialogFragment {
         super.onDestroyView();
         ButterKnife.reset(this);
     }
+
+    @OnClick({R.id.btn_add_outcome,R.id.btn_discard_outcome})
+    public void onClickEvent(View view){
+
+        switch ( view.getId() ) {
+            case R.id.btn_add_outcome :
+                sendResult(Activity.RESULT_OK);
+                break;
+            case R.id.btn_discard_outcome :
+                sendResult(Activity.RESULT_CANCELED);
+                break;
+            default : return;
+        }
+
+    }
+
+
 
     private void init() {
         mContext = getActivity();
@@ -226,7 +247,9 @@ public class DialogInventoryOperation extends DialogFragment {
         if (null == getTargetFragment())
             return;
 
-        if (!isQuantityCompliant(mEditboxQty.getText().toString())) {
+        String textQty = mEditboxQty.getText().toString();
+
+        if ( !isQuantityCompliant(textQty) && resultCode == Activity.RESULT_OK ) {
             showMessage();
             return;
         }
