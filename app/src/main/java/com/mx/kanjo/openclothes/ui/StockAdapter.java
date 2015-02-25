@@ -66,8 +66,11 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
         if( null != tempStock.getImagePath()) {
             //holder.imageViewModel.setImageURI(tempStock.getImagePath());
             String filePath = StorageUtil.getPath(context, tempStock.getImagePath());
-            holder.imageViewModel.setImageDrawable(PictureUtils.getRoundedBitmap(filePath, context.getResources()));
+            holder.imageViewModel.setImageDrawable(PictureUtils.getRoundedBitmap(filePath, context));
 
+        }
+        else {
+            holder.imageViewModel.setImageDrawable(PictureUtils.getImageClotheDefaultRounded(context));;
         }
 
         holder.textViewSize.setText( tempStock.getSize().getSizeDescription() );

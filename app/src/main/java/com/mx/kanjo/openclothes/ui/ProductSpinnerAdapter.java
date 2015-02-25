@@ -3,12 +3,7 @@ package com.mx.kanjo.openclothes.ui;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +13,7 @@ import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
+import com.mx.kanjo.openclothes.util.PictureUtils;
 import com.mx.kanjo.openclothes.util.StorageUtil;
 
 import java.util.ArrayList;
@@ -150,9 +146,14 @@ public class ProductSpinnerAdapter implements SpinnerAdapter {
             bmImage = images.get(temp.ID);
         }
         else {
-            String filePath = StorageUtil.getPath(mContext, temp.ImagePath);
-            bmImage = getRoundedBitmap(filePath);
-            images.put(temp.ID,bmImage);
+            if(null!= temp.ImagePath) {
+                String filePath = StorageUtil.getPath(mContext, temp.ImagePath);
+                bmImage = PictureUtils.getRoundedBitmap(filePath,mContext);
+                images.put(temp.ID, bmImage);
+            }else
+            {
+                bmImage = PictureUtils.getImageClotheDefaultRounded(mContext);
+            }
         }
 
         holder.mImageModel.setImageDrawable(bmImage);
@@ -160,31 +161,4 @@ public class ProductSpinnerAdapter implements SpinnerAdapter {
 
         return view;
     }
-
-    public Drawable getRoundedBitmap(String filePath)
-    {
-
-        Bitmap src = BitmapFactory.decodeFile(filePath);
-
-        //TODO : Set a default image
-        /*if( null == src )
-        {
-
-        }*/
-        Bitmap dst;
-        if (src.getWidth() >= src.getHeight()){
-            dst = Bitmap.createBitmap(src, src.getWidth()/2 - src.getHeight()/2, 0, src.getHeight(), src.getHeight()
-            );
-        }else{
-            dst = Bitmap.createBitmap(src, 0, src.getHeight()/2 - src.getWidth()/2, src.getWidth(), src.getWidth()
-            );
-        }
-        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(res, dst);
-        roundedBitmapDrawable.setCornerRadius(dst.getWidth() / 2);
-        roundedBitmapDrawable.setAntiAlias(true);
-        return roundedBitmapDrawable;
-
-    }
-
-
 }

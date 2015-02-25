@@ -69,17 +69,19 @@ public class PictureUtils {
 
     }
 
-    public static Drawable getRoundedBitmap(String filePath, Resources res)
+    public static Drawable getRoundedBitmap(String filePath,  Context context)
     {
         Bitmap src = BitmapFactory.decodeFile(filePath);
+        if(src == null)
+            return getImageClotheDefaultRounded(context);
 
-        return getRoundedDrawable(src, res);
+
+        return getRoundedDrawable(src, context.getResources());
     }
 
     public static Drawable getImageClotheDefaultRounded(Context context)
     {
 
-        //Bitmap bitmap  = BitmapFactory.decodeResource(context,) getImageClotheDefault(context)
         if( null == bitmapDefaultRounded)
             bitmapDefaultRounded = BitmapFactory.decodeResource(context.getResources(),R.mipmap.ic_default_clother_primary);
 

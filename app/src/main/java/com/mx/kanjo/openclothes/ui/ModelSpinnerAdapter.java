@@ -147,7 +147,7 @@ public class ModelSpinnerAdapter implements SpinnerAdapter {
         }
         else {
             String filePath = StorageUtil.getPath(mContext, temp.ImagePath);
-            bmImage = PictureUtils.getRoundedBitmap( filePath, res );
+            bmImage = PictureUtils.getRoundedBitmap( filePath, mContext );
             images.put(temp.ID,bmImage);
         }
 

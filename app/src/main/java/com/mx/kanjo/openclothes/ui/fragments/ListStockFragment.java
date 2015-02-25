@@ -13,6 +13,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -286,9 +287,11 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         stockItem.setStockItemId(data.getInt(StockColumnsOrder.COL_STOCK_ID));
         stockItem.setIdProduct(data.getInt(StockColumnsOrder.COL_PRODUCT_ID));
         stockItem.setModel(data.getString(StockColumnsOrder.COL_PRODUCT_MODEL));
-        Uri imagePath = ! data.isNull(StockColumnsOrder.COL_IMAGE_PATH) ?
-                        Uri.parse(data.getString(StockColumnsOrder.COL_IMAGE_PATH)):
-                        null;
+        Uri imagePath =  data.isNull(StockColumnsOrder.COL_IMAGE_PATH) ?
+                        null:
+                        TextUtils.isEmpty(data.getString(StockColumnsOrder.COL_IMAGE_PATH))?
+                        null :
+                        Uri.parse(data.getString(StockColumnsOrder.COL_IMAGE_PATH));
         stockItem.setImagePath(imagePath);
         int idSize = data.getInt(StockColumnsOrder.COL_SIZE_ID);
         String descriptionSize = data.getString(StockColumnsOrder.COL_SIZE);

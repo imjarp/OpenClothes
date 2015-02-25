@@ -196,9 +196,12 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
         model.ID = cursor.getInt(ProductColumnsOrder.COL_PRODUCT_ID);
         model.Model = cursor.getString(ProductColumnsOrder.COL_PRODUCT_MODEL);
         model.Price  = cursor.getInt( ProductColumnsOrder.COL_PRICE);
-        model.ImagePath =  ! cursor.isNull(ProductColumnsOrder.COL_IMAGE_PATH) ?
-                Uri.parse(cursor.getString(ProductColumnsOrder.COL_IMAGE_PATH)):
-                null;
+        model.ImagePath =  cursor.isNull(ProductColumnsOrder.COL_IMAGE_PATH) ?
+                null:
+                TextUtils.isEmpty(cursor.getString(ProductColumnsOrder.COL_IMAGE_PATH))?
+                null:
+                Uri.parse(cursor.getString(ProductColumnsOrder.COL_IMAGE_PATH))
+                ;
 
 
 
