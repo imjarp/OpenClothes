@@ -110,7 +110,7 @@ public class OpenClothesDatabase extends SQLiteOpenHelper {
 
     public OpenClothesDatabase(Context context)
     {
-        super(context,DATABASE_NAME,null,CUR_DATABASE_VERSION);
+        super(context, DATABASE_NAME, null, CUR_DATABASE_VERSION);
         mContext=context;
     }
 
@@ -201,6 +201,12 @@ public class OpenClothesDatabase extends SQLiteOpenHelper {
                    + " ( " + BaseColumns._ID + "," + OpenClothesContract.OutcomeTypeColumns.DESCRIPTION + " ) "
                    + " VALUES "
                    + "( 0 , 'Sale')");
+
+        // Insert a purchase income
+        db.execSQL("INSERT INTO " + Tables.INCOME_TYPE
+                + " ( " + BaseColumns._ID + "," + OpenClothesContract.IncomeTypeColumns.DESCRIPTION + " ) "
+                + " VALUES "
+                + "( 0 , 'Purchase')");
 
     }
 

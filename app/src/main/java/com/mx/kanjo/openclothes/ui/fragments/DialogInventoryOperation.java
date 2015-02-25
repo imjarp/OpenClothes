@@ -2,18 +2,22 @@ package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
@@ -42,10 +46,15 @@ public class DialogInventoryOperation extends DialogFragment {
 
     public static final String TAG = "DialogInventoryOperation";
 
+    public static final String EXTRA_ID_PRODUCT = "ID_PRODUCT";
+    public static final String EXTRA_ID_SIZE = "ID_PRODUCT";
+    public static final String EXTRA_QTY = "ID_SIZE";
+    public static final String EXTRA_ID_OUTCOME = "ID_OUTCOME";
+
     @InjectView(R.id.spin_model) Spinner mSpinnerModel;
     @InjectView(R.id.spin_type) Spinner mSpinnerOperationInventory;
     @InjectView(R.id.spin_size) Spinner mSpinnerSize;
-    @InjectView(R.id.et_quantity) TextView mTextboxQty;
+    @InjectView(R.id.et_quantity) EditText mEditboxQty;
     Context mContext;
     ProductSpinnerAdapter productItemAdapter;
 
@@ -58,9 +67,10 @@ public class DialogInventoryOperation extends DialogFragment {
     ArrayList<LeanProductModel> listLeanProducts = Lists.newArrayList();
     ArrayList<SizeModel> sizeModelArrayList = Lists.newArrayList();
 
-    //Defines wether this operation is Incoming or Outgoing from the inventory
+    //Defines whether this operation is Incoming or Outgoing from the inventory
     private static final String PARAM_TYPE_OPERATION = "TYPE_OPERATION";
     private static int operation = 0;
+
 
     public static DialogFragment createInstance(String param, int typeOperation)
     {
@@ -129,7 +139,7 @@ public class DialogInventoryOperation extends DialogFragment {
             outcomeList.add( item.getDescription() );
         }
 
-        ArrayAdapter<String> outcomeAdapter = new ArrayAdapter<>(mContext, R.layout.view_size_spinner, outcomeList);
+        ArrayAdapter<String> outcomeAdapter = new ArrayAdapter<>(mContext, R.layout.view_item_spinner, outcomeList);
 
         mSpinnerOperationInventory.setAdapter(outcomeAdapter);
 
@@ -171,8 +181,7 @@ public class DialogInventoryOperation extends DialogFragment {
         }
     };
 
-    private void populateSpinSize(int idProduct)
-    {
+    private void populateSpinSize(int idProduct){
 
         StockItem temp;
         sizeModelArrayList.clear();
@@ -193,7 +202,7 @@ public class DialogInventoryOperation extends DialogFragment {
         }
 
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, R.layout.view_size_spinner, arraySizeDescriptions);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, R.layout.view_item_spinner, arraySizeDescriptions);
 
 
         mSpinnerSize.setAdapter(adapter);
@@ -203,13 +212,64 @@ public class DialogInventoryOperation extends DialogFragment {
 
     }
 
-    private static LeanProductModel createLeanProduct(StockItem item)
-    {
+    private static LeanProductModel createLeanProduct(StockItem item){
         LeanProductModel leanProductModel = new LeanProductModel();
         leanProductModel.ID = item.getIdProduct();
         leanProductModel.ImagePath = item.getImagePath();
         leanProductModel.Model = item.getModel();
         leanProductModel.Price = item.getPrice();
         return leanProductModel;
+    }
+
+    private void sendResult(int resultCode) {
+
+        if (null == getTargetFragment())
+            return;
+
+        if (!isQuantityCompliant(mEditboxQty.getText().toString())) {
+            showMessage();
+            return;
+        }
+
+        Intent i = getIntentExtras();
+
+        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
+
+        dismiss();
+
+    }
+
+    public Intent getIntentExtras() {
+        Intent intentExtras = new Intent();
+
+        //mSpinnerModel
+        int idProduct = (int) mSpinnerModel.getSelectedItemId();
+        int idSize = sizeModelArrayList.get(mSpinnerSize.getSelectedItemPosition()).getIdSize();
+        int qty = Integer.parseInt(mEditboxQty.getText().toString());
+        int idOutcomeType =  outcomeTypes.get(mSpinnerOperationInventory.getSelectedItemPosition()).getIdOutcome();
+
+        intentExtras.putExtra( EXTRA_ID_PRODUCT, idProduct );
+        intentExtras.putExtra( EXTRA_ID_SIZE, idSize );
+        intentExtras.putExtra( EXTRA_QTY, qty);
+        intentExtras.putExtra( EXTRA_ID_OUTCOME, idOutcomeType);
+
+        return intentExtras;
+    }
+
+    private static boolean isQuantityCompliant(String qtyText) {
+        if(TextUtils.isEmpty(qtyText))
+            return false;
+        try
+        {
+            Integer.parseInt(qtyText);
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void showMessage() {
+        Toast.makeText(getActivity(), getString(R.string.message_quantity_validation), Toast.LENGTH_SHORT).show();
     }
 }

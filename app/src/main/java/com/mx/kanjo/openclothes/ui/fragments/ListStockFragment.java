@@ -23,6 +23,8 @@ import android.view.ViewGroup;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.engine.InventoryManager;
+import com.mx.kanjo.openclothes.model.IncomeModel;
+import com.mx.kanjo.openclothes.model.IncomeType;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
@@ -31,18 +33,12 @@ import com.mx.kanjo.openclothes.ui.StockAdapter;
 import com.mx.kanjo.openclothes.util.Lists;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ListStockFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ListStockFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ListStockFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
 
@@ -102,13 +98,9 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         LINEAR_LAYOUT_MANAGER
     }
 
-
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -129,6 +121,25 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
     public ListStockFragment() {
         // Required empty public constructor
+    }
+
+    private static StockItem getFromCursor(Cursor data) {
+        StockItem stockItem = new StockItem();
+        stockItem.setStockItemId(data.getInt(StockColumnsOrder.COL_STOCK_ID));
+        stockItem.setIdProduct(data.getInt(StockColumnsOrder.COL_PRODUCT_ID));
+        stockItem.setModel(data.getString(StockColumnsOrder.COL_PRODUCT_MODEL));
+        Uri imagePath =  data.isNull(StockColumnsOrder.COL_IMAGE_PATH) ?
+                null:
+                TextUtils.isEmpty(data.getString(StockColumnsOrder.COL_IMAGE_PATH))?
+                        null :
+                        Uri.parse(data.getString(StockColumnsOrder.COL_IMAGE_PATH));
+        stockItem.setImagePath(imagePath);
+        int idSize = data.getInt(StockColumnsOrder.COL_SIZE_ID);
+        String descriptionSize = data.getString(StockColumnsOrder.COL_SIZE);
+        stockItem.setSize(new SizeModel(idSize,descriptionSize));
+        stockItem.setQuantity(data.getInt(StockColumnsOrder.COL_QUANITITY));
+
+        return stockItem;
     }
 
     @Override
@@ -171,25 +182,19 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         {
             this.onLoaderReset(null);
 
-            int size = data.getIntExtra( DialogAddStockItem.EXTRA_ID_SIZE, -1 ) ;
-            int idProduct = data.getIntExtra( DialogAddStockItem.EXTRA_ID_PRODUCT, -1 ) ;
-            int qty = data.getIntExtra( DialogAddStockItem.EXTRA_QTY, -1 );
-
-            insertNewStockItem(idProduct, size, qty);
+            insertInCatalogue(data);
 
             getLoaderManager().restartLoader(LOADER_STOCK, null, this);
 
         }
     }
 
-
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
 
-        getLoaderManager().initLoader(LOADER_STOCK,null,this);
+        getLoaderManager().initLoader(LOADER_STOCK, null, this);
     }
 
     @Override
@@ -282,37 +287,11 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
     }
 
-    private static StockItem getFromCursor(Cursor data) {
-        StockItem stockItem = new StockItem();
-        stockItem.setStockItemId(data.getInt(StockColumnsOrder.COL_STOCK_ID));
-        stockItem.setIdProduct(data.getInt(StockColumnsOrder.COL_PRODUCT_ID));
-        stockItem.setModel(data.getString(StockColumnsOrder.COL_PRODUCT_MODEL));
-        Uri imagePath =  data.isNull(StockColumnsOrder.COL_IMAGE_PATH) ?
-                        null:
-                        TextUtils.isEmpty(data.getString(StockColumnsOrder.COL_IMAGE_PATH))?
-                        null :
-                        Uri.parse(data.getString(StockColumnsOrder.COL_IMAGE_PATH));
-        stockItem.setImagePath(imagePath);
-        int idSize = data.getInt(StockColumnsOrder.COL_SIZE_ID);
-        String descriptionSize = data.getString(StockColumnsOrder.COL_SIZE);
-        stockItem.setSize(new SizeModel(idSize,descriptionSize));
-        stockItem.setQuantity(data.getInt(StockColumnsOrder.COL_QUANITITY));
-
-        return stockItem;
-    }
-
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
         stockItems.clear();
     }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
 
     @OnClick(R.id.btnCreateStock)
     public void createStockCard(View view)
@@ -326,21 +305,6 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         dialogFragment.setTargetFragment(this, requestCode);
         dialogFragment.show(fm, TAG);
 
-    }
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(Uri uri);
     }
 
     public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
@@ -370,21 +334,35 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         mRecyclerView.scrollToPosition(scrollPosition);
     }
 
+    private void insertInCatalogue(Intent data) {
+        InventoryManager manager = new InventoryManager( getActivity() );
+        int size = data.getIntExtra( DialogAddStockItem.EXTRA_ID_SIZE, -1 ) ;
+        int idProduct = data.getIntExtra( DialogAddStockItem.EXTRA_ID_PRODUCT, -1 ) ;
+        int qty = data.getIntExtra( DialogAddStockItem.EXTRA_QTY, -1 );
+        int idIncomeType = data.getIntExtra(DialogAddStockItem.EXTRA_INCOME_TYPE,-1);
 
-    private void insertNewStockItem(int idProduct, int idSize, int qty) {
+        insertNewStockItem(idProduct, size, qty, manager);
+        insertIncomeType( idProduct, size , qty, idIncomeType, manager);
 
+    }
+
+    private void insertNewStockItem(int idProduct, int idSize, int qty, InventoryManager manager) {
 
         if( idProduct < 0  || idSize < 0 || qty < 0 )
             return;
 
-
-        InventoryManager inventoryManager = new InventoryManager(getActivity());
-
-        inventoryManager.addItemToStock(createSpecificStock(idProduct,idSize,qty));
+        manager.addItemToStock(createSpecificStock(idProduct,idSize,qty));
     }
 
-    private  static StockItem createSpecificStock(int idProduct,int idSize, int qty)
-    {
+    private void insertIncomeType(int idProduct, int idSize, int qty, int idIncomeType, InventoryManager manager){
+
+        if( idProduct < 0  || idSize < 0 || qty < 0 || idIncomeType < 0 )
+            return;
+
+        manager.addIncome(createSpecificIncomeType(idProduct, idSize, qty , idIncomeType));
+    }
+
+    private  static StockItem createSpecificStock(int idProduct,int idSize, int qty){
 
         StockItem item = new StockItem();
         item.setQuantity(qty);
@@ -393,6 +371,25 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         item.setSize(sizeModel);
         item.setIdProduct(idProduct);
         return item;
+
+    }
+
+    private static IncomeModel createSpecificIncomeType(int idProduct, int idSize, int qty , int idIncomeType){
+        IncomeModel incomeModel = new IncomeModel();
+        IncomeType type = new IncomeType();
+        SizeModel sizeModel = new SizeModel();
+
+        type.setIdIncome(idIncomeType);
+        sizeModel.setIdSize(idSize);
+
+        incomeModel.setIncomeType(type);
+        incomeModel.setSize(sizeModel);
+
+        incomeModel.setIdProduct(idProduct);
+        incomeModel.setQuantity(qty);
+        incomeModel.setDateOperation( OpenClothesContract.getDbDateString( new Date() ) );
+
+        return incomeModel;
 
     }
 

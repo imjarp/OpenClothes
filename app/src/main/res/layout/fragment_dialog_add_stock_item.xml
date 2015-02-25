@@ -32,8 +32,16 @@
         android:layout_marginBottom="24dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:gravity="bottom"
-        >
+        android:gravity="bottom">
+
+        <Spinner
+            style="@style/Widget.IOSched.HeaderBar.Spinner"
+            android:id="@+id/spin_type_incoming"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+
+            />
 
 
         <Spinner

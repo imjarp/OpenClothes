@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
 import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
+import com.mx.kanjo.openclothes.model.IncomeType;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
@@ -48,6 +49,7 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
     public static final String EXTRA_ID_PRODUCT = "ID_PRODUCT";
     public static final String EXTRA_ID_SIZE = "ID_SIZE";
     public static final String EXTRA_QTY = "QUANTITY";
+    public static final String EXTRA_INCOME_TYPE = "ID_INCOME";
 
     int idProduct = 0;
     int idSize = 0;
@@ -60,14 +62,16 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
 
     @InjectView(R.id.spin_model) Spinner mSpinnerProduct;
     @InjectView(R.id.spin_size) Spinner mSpinnerSize;
+    @InjectView(R.id.spin_type_incoming) Spinner mSpinnerIncomingType;
     @InjectView(R.id.et_quantity) EditText mEditTextQuantity;
 
     private CatalogueManager mCatalogueManager;
     private ConfigurationInventoryManager mConfigInventoryManager;
     private ContentResolver mContentResolver;
     private ArrayList<SizeModel> listSize  = Lists.newArrayList();
-
+    private ArrayList<IncomeType> incomeTypeArrayList  ;
     public static final String TAG ="com.mx.kanjo.openclothes.ui.fragments.DialogAddStockItem";
+
 
     private interface ProductColumns{
         public static String [] COLUMNS = {
@@ -221,6 +225,25 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
         modelAdapter = new ProductSpinnerAdapter(context,getProducts());
 
         populateSizeSpinner(context);
+        populateSpinnerIncomingType(context);
+
+    }
+
+    private void populateSpinnerIncomingType(Context context) {
+
+        incomeTypeArrayList = new ArrayList<>(mConfigInventoryManager.getIncomeTypes());
+
+        ArrayList<String> simpleList = new ArrayList<>(incomeTypeArrayList.size());
+
+        for (IncomeType itemIncome : incomeTypeArrayList)
+        {
+            simpleList.add(itemIncome.getDescription());
+        }
+
+        ArrayAdapter<String> incomeTypeAdapter
+                = new ArrayAdapter<>(context, R.layout.view_item_spinner, simpleList);
+
+        mSpinnerIncomingType.setAdapter(incomeTypeAdapter);
 
     }
 
@@ -236,7 +259,7 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
         }
 
         ArrayAdapter<String> sizeAdapter
-                = new ArrayAdapter<>(context, R.layout.view_size_spinner, simpleList);
+                = new ArrayAdapter<>(context, R.layout.view_item_spinner, simpleList);
 
         mSpinnerSize.setAdapter(sizeAdapter);
 
@@ -267,19 +290,28 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
             return;
         }
 
-        Intent i  = new Intent();
-
-        int idProduct = (int) mSpinnerProduct.getSelectedItemId();
-        int idSize = listSize.get(mSpinnerSize.getSelectedItemPosition()).getIdSize();
-        int qty = Integer.parseInt(mEditTextQuantity.getText().toString());
-
-        i.putExtra( EXTRA_ID_PRODUCT, idProduct );
-        i.putExtra( EXTRA_ID_SIZE, idSize );
-        i.putExtra( EXTRA_QTY, qty);
+        Intent i  = getIntentExtras();
 
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
 
         dismiss();
+
+    }
+
+    public Intent getIntentExtras()
+    {
+        Intent i = new Intent();
+
+        int idProduct = (int) mSpinnerProduct.getSelectedItemId();
+        int idSize = listSize.get(mSpinnerSize.getSelectedItemPosition()).getIdSize();
+        int qty = Integer.parseInt(mEditTextQuantity.getText().toString());
+        int idIncomeType =  incomeTypeArrayList.get(mSpinnerIncomingType.getSelectedItemPosition()).getIdIncome();
+
+        i.putExtra( EXTRA_ID_PRODUCT, idProduct );
+        i.putExtra( EXTRA_ID_SIZE, idSize );
+        i.putExtra( EXTRA_QTY, qty);
+        i.putExtra( EXTRA_INCOME_TYPE, idIncomeType);
+        return  i;
 
     }
 
