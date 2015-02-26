@@ -2,6 +2,7 @@ package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -212,7 +213,16 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
 
-        mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER ;
+        Configuration config = getResources().getConfiguration();
+        if (config.smallestScreenWidthDp >= 600) {
+            mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER ;
+            //setContentView(R.layout.main_activity_tablet);
+        } else {
+            //setContentView(R.layout.main_activity);
+            mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER ;
+        }
+
+        //mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER ;
 
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 

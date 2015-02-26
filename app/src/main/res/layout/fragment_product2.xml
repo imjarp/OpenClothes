@@ -3,17 +3,13 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
+    android:layout_marginTop="?attr/actionBarSize"
     tools:context="com.mx.kanjo.openclothes.ui.ProductActivity.ProductFragment">
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-    <android.support.v7.widget.CardView
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                card_view:cardCornerRadius="4dp"
-                android:gravity="center">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -22,13 +18,24 @@
             android:orientation="vertical">
 
 
+            <android.support.v7.widget.CardView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                card_view:cardCornerRadius="4dp"
+                android:gravity="center">
+
             <ImageButton
                 android:id="@+id/img_new_product"
-                android:layout_width="192dp"
+                android:layout_width="fill_parent"
                 android:layout_height="192dp"
                 android:contentDescription="Pick an image"
                 android:layout_gravity="center"
-                android:layout_margin="24dp"/>
+                android:layout_margin="12dp"
+                android:layout_marginTop="12dp"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/cb_002"
+                />
+            </android.support.v7.widget.CardView>
 
 
             <EditText
@@ -101,6 +108,6 @@
 
         </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+
     </ScrollView>
 </LinearLayout>

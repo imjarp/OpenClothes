@@ -11,6 +11,9 @@
     <dimen name="btn_fab_size">56dp</dimen>
     <dimen name="btn_fab_margins">24dp</dimen>
     <dimen name="default_elevation">8dp</dimen>
-    
+
+
+    <dimen name="margin_right_dialog">24dp</dimen>
+    <dimen name="add_width_button">240dp</dimen>
 
 </resources>

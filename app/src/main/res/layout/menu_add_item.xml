@@ -8,11 +8,11 @@
 
     <Button
         android:id="@+id/btn_menu_add_new_product"
-        android:layout_width="240dp"
+        android:layout_width="@dimen/add_width_button"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:text="@string/menu_add_product_title"
-        android:layout_marginRight="24dp"
+        android:layout_marginRight="@dimen/margin_right_dialog"
         style="@android:style/TextAppearance.Medium"
         android:gravity="center"
 

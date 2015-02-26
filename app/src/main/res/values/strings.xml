@@ -96,7 +96,7 @@
     <!--Menu stock list actions-->
     <string name="title_income_stock">Income</string>
     <string name="title_outgoing_stock">Outgoing</string>
-    <string name="menu_add_product_title">Add Product</string>
+    <string name="menu_add_product_title">Add</string>
 
 
 </resources>
