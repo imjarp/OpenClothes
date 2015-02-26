@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
@@ -60,6 +61,8 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
     public void onBindViewHolder(ProductViewHolder viewHolder, int position) {
 
         ProductViewHolder holder = (ProductViewHolder) viewHolder;
+        if(position%2==0)
+            holder.parentRowView.setBackgroundColor(context.getResources().getColor(R.color.odd_row_view));
 
         tempStock = stockList.get(position);
 
@@ -93,6 +96,9 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder
     {
+
+        @InjectView(R.id.stock_item_view)
+        LinearLayout parentRowView;
 
         @InjectView(R.id.text_model)
         TextView textViewModel;

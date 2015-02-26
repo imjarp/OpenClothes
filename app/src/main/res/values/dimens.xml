@@ -9,7 +9,7 @@
     <dimen name="button_min_width">64dp</dimen>
 
     <dimen name="btn_fab_size">56dp</dimen>
-    <dimen name="btn_fab_margins">24dp</dimen>
+    <dimen name="btn_fab_margins">16dp</dimen>
     <dimen name="default_elevation">8dp</dimen>
     
 
