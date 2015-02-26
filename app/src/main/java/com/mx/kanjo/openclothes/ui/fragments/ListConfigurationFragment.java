@@ -98,7 +98,8 @@ public class ListConfigurationFragment extends ListFragment {
 
         titleView.setText(mParamTitle);
 
-        getListView().addHeaderView(headerView);
+        if(null == getListView().findViewById(R.id.title_configuration_list_view))
+            getListView().addHeaderView(headerView);
 
     }
 

@@ -16,13 +16,14 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             tools:src="@drawable/cb_002"
+            android:layout_marginLeft="12dp"
             />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp">
+        android:layout_marginStart="80dp"
+        android:layout_marginLeft="80dp">
 
 
         <TextView
