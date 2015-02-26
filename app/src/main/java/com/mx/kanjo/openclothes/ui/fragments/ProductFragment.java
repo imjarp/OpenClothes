@@ -77,6 +77,8 @@ public class ProductFragment extends Fragment {
 
     private static final int REQUEST_PICK_IMAGE = 1001;
 
+    public ProductFragment() {
+    }
 
     @OnClick(R.id.img_new_product)
     public void onClickImageProduct(View view)
@@ -95,8 +97,7 @@ public class ProductFragment extends Fragment {
 
     }
 
-    public ProductFragment() {
-    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

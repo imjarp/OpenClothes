@@ -3,31 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
+
 
     android:layout_marginTop="24dp"
     tools:context="com.mx.kanjo.openclothes.ui.fragments.ListProductFragment">
-
-
-    <!--android.support.v7.widget.CardView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginLeft="168dp"
-        android:layout_marginRight="168dp"
-        card_view:cardCornerRadius="4dp"-->
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycle_view_list_product"
             android:layout_marginLeft="144dp"
             android:layout_marginRight="144dp"
             android:layout_height="fill_parent"
-            android:layout_width="fill_parent">
-
-        </android.support.v7.widget.RecyclerView>
-
-
-        <!--/android.support.v7.widget.CardView-->
+            android:layout_width="fill_parent"/>
 
 
     <ImageButton

@@ -23,6 +23,10 @@ import android.view.ViewGroup;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.engine.InventoryManager;
+import com.mx.kanjo.openclothes.model.IncomeModel;
+import com.mx.kanjo.openclothes.model.IncomeType;
+import com.mx.kanjo.openclothes.model.OutcomeModel;
+import com.mx.kanjo.openclothes.model.OutcomeType;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
@@ -31,18 +35,12 @@ import com.mx.kanjo.openclothes.ui.StockAdapter;
 import com.mx.kanjo.openclothes.util.Lists;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ListStockFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ListStockFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ListStockFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
 
@@ -67,16 +65,15 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         public static final int COL_IMAGE_PATH = 3;
         public static final int COL_SIZE_ID = 4;
         public static final int COL_SIZE = 5;
-        public static final int COL_QUANITITY = 6;
+        public static final int COL_QUANTITY = 6;
 
 
     }
 
     private static final int LOADER_STOCK = 998;
-    private static final int REQUEST_INCOME_STOCK = 1;
-    private static final int REQUEST_OUTGOING_STOCK = 1;
 
-    private static final int REQUEST_NEW_STOCK = 2;
+    private static final int REQUEST_NEW_STOCK = 1;
+    private static final int REQUEST_REMOVE_STOCK = 2;
 
     private static final String TAG = ListStockFragment.class.getSimpleName();
 
@@ -102,13 +99,9 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         LINEAR_LAYOUT_MANAGER
     }
 
-
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -129,6 +122,25 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
     public ListStockFragment() {
         // Required empty public constructor
+    }
+
+    private static StockItem getFromCursor(Cursor data) {
+        StockItem stockItem = new StockItem();
+        stockItem.setStockItemId(data.getInt(StockColumnsOrder.COL_STOCK_ID));
+        stockItem.setIdProduct(data.getInt(StockColumnsOrder.COL_PRODUCT_ID));
+        stockItem.setModel(data.getString(StockColumnsOrder.COL_PRODUCT_MODEL));
+        Uri imagePath =  data.isNull(StockColumnsOrder.COL_IMAGE_PATH) ?
+                null:
+                TextUtils.isEmpty(data.getString(StockColumnsOrder.COL_IMAGE_PATH))?
+                        null :
+                        Uri.parse(data.getString(StockColumnsOrder.COL_IMAGE_PATH));
+        stockItem.setImagePath(imagePath);
+        int idSize = data.getInt(StockColumnsOrder.COL_SIZE_ID);
+        String descriptionSize = data.getString(StockColumnsOrder.COL_SIZE);
+        stockItem.setSize(new SizeModel(idSize,descriptionSize));
+        stockItem.setQuantity(data.getInt(StockColumnsOrder.COL_QUANTITY));
+
+        return stockItem;
     }
 
     @Override
@@ -167,29 +179,15 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         if(Activity.RESULT_OK != resultCode)
             return;
 
-        if( REQUEST_NEW_STOCK == requestCode)
-        {
-            this.onLoaderReset(null);
-
-            int size = data.getIntExtra( DialogAddStockItem.EXTRA_ID_SIZE, -1 ) ;
-            int idProduct = data.getIntExtra( DialogAddStockItem.EXTRA_ID_PRODUCT, -1 ) ;
-            int qty = data.getIntExtra( DialogAddStockItem.EXTRA_QTY, -1 );
-
-            insertNewStockItem(idProduct, size, qty);
-
-            getLoaderManager().restartLoader(LOADER_STOCK, null, this);
-
-        }
+        processResult(requestCode, data);
     }
-
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
 
-        getLoaderManager().initLoader(LOADER_STOCK,null,this);
+        getLoaderManager().initLoader(LOADER_STOCK, null, this);
     }
 
     @Override
@@ -227,10 +225,8 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
         switch (item.getItemId())
         {
-            case R.id.incoming_stock :
-                break   ;
             case R.id.outgoing_stock :
-                showFragment( DialogInventoryOperation.createInstance("",0) , DialogInventoryOperation.TAG, 99 );
+                showFragment( DialogInventoryOperation.createInstance("" , 0 ) , DialogInventoryOperation.TAG, REQUEST_REMOVE_STOCK );
                 break   ;
         }
 
@@ -282,37 +278,11 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
     }
 
-    private static StockItem getFromCursor(Cursor data) {
-        StockItem stockItem = new StockItem();
-        stockItem.setStockItemId(data.getInt(StockColumnsOrder.COL_STOCK_ID));
-        stockItem.setIdProduct(data.getInt(StockColumnsOrder.COL_PRODUCT_ID));
-        stockItem.setModel(data.getString(StockColumnsOrder.COL_PRODUCT_MODEL));
-        Uri imagePath =  data.isNull(StockColumnsOrder.COL_IMAGE_PATH) ?
-                        null:
-                        TextUtils.isEmpty(data.getString(StockColumnsOrder.COL_IMAGE_PATH))?
-                        null :
-                        Uri.parse(data.getString(StockColumnsOrder.COL_IMAGE_PATH));
-        stockItem.setImagePath(imagePath);
-        int idSize = data.getInt(StockColumnsOrder.COL_SIZE_ID);
-        String descriptionSize = data.getString(StockColumnsOrder.COL_SIZE);
-        stockItem.setSize(new SizeModel(idSize,descriptionSize));
-        stockItem.setQuantity(data.getInt(StockColumnsOrder.COL_QUANITITY));
-
-        return stockItem;
-    }
-
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
         stockItems.clear();
     }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
 
     @OnClick(R.id.btnCreateStock)
     public void createStockCard(View view)
@@ -326,21 +296,6 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         dialogFragment.setTargetFragment(this, requestCode);
         dialogFragment.show(fm, TAG);
 
-    }
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(Uri uri);
     }
 
     public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
@@ -370,21 +325,35 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         mRecyclerView.scrollToPosition(scrollPosition);
     }
 
+    private void addToStock(Intent data) {
+        InventoryManager manager = new InventoryManager( getActivity() );
+        int size = data.getIntExtra( DialogAddStockItem.EXTRA_ID_SIZE, -1 ) ;
+        int idProduct = data.getIntExtra( DialogAddStockItem.EXTRA_ID_PRODUCT, -1 ) ;
+        int qty = data.getIntExtra( DialogAddStockItem.EXTRA_QTY, -1 );
+        int idIncomeType = data.getIntExtra(DialogAddStockItem.EXTRA_INCOME_TYPE,-1);
 
-    private void insertNewStockItem(int idProduct, int idSize, int qty) {
+        insertNewStockItem(idProduct, size, qty, manager);
+        insertIncomeType( idProduct, size , qty, idIncomeType, manager);
 
+    }
+
+    private void insertNewStockItem(int idProduct, int idSize, int qty, InventoryManager manager) {
 
         if( idProduct < 0  || idSize < 0 || qty < 0 )
             return;
 
-
-        InventoryManager inventoryManager = new InventoryManager(getActivity());
-
-        inventoryManager.addItemToStock(createSpecificStock(idProduct,idSize,qty));
+        manager.addItemToStock(createSpecificStock(idProduct,idSize,qty));
     }
 
-    private  static StockItem createSpecificStock(int idProduct,int idSize, int qty)
-    {
+    private void insertIncomeType(int idProduct, int idSize, int qty, int idIncomeType, InventoryManager manager){
+
+        if( idProduct < 0  || idSize < 0 || qty < 0 || idIncomeType < 0 )
+            return;
+
+        manager.addIncome(createSpecificIncomeType(idProduct, idSize, qty , idIncomeType));
+    }
+
+    private  static StockItem createSpecificStock(int idProduct,int idSize, int qty){
 
         StockItem item = new StockItem();
         item.setQuantity(qty);
@@ -393,6 +362,91 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         item.setSize(sizeModel);
         item.setIdProduct(idProduct);
         return item;
+
+    }
+
+    private static IncomeModel createSpecificIncomeType(int idProduct, int idSize, int qty , int idIncomeType){
+        IncomeModel incomeModel = new IncomeModel();
+        IncomeType type = new IncomeType();
+        SizeModel sizeModel = new SizeModel();
+
+        type.setIdIncome(idIncomeType);
+        sizeModel.setIdSize(idSize);
+
+        incomeModel.setIncomeType(type);
+        incomeModel.setSize(sizeModel);
+
+        incomeModel.setIdProduct(idProduct);
+        incomeModel.setQuantity(qty);
+        incomeModel.setDateOperation( OpenClothesContract.getDbDateString( new Date() ) );
+
+        return incomeModel;
+
+    }
+
+    private void removeFromStock(Intent data) {
+        InventoryManager manager = new InventoryManager( getActivity() );
+        int size = data.getIntExtra( DialogInventoryOperation.EXTRA_ID_SIZE, -1 ) ;
+        int idProduct = data.getIntExtra( DialogInventoryOperation.EXTRA_ID_PRODUCT, -1 ) ;
+        int qty = data.getIntExtra( DialogInventoryOperation.EXTRA_QTY, -1 );
+        int idIncomeType = data.getIntExtra(DialogInventoryOperation.EXTRA_ID_OUTCOME,-1);
+
+
+        removeStockItem(idProduct, size, qty, manager);
+        insertOutcomeType(idProduct, size, qty, idIncomeType, manager);
+
+    }
+
+    private void removeStockItem(int idProduct, int idSize, int qty, InventoryManager manager) {
+
+        if( idProduct < 0  || idSize < 0 || qty < 0 )
+            return;
+
+        manager.removeItemFromStock(createSpecificStock(idProduct,idSize,qty));
+    }
+
+    private void insertOutcomeType(int idProduct, int idSize, int qty, int idOutcomeType, InventoryManager manager){
+
+        if( idProduct < 0  || idSize < 0 || qty < 0 || idOutcomeType < 0 )
+            return;
+
+        manager.addOutcome(createSpecificOutcome(idProduct, idSize, qty, idOutcomeType));
+    }
+
+    private static OutcomeModel createSpecificOutcome(int idProduct, int idSize, int qty , int idOutcomeType){
+        OutcomeModel outcomeModel = new OutcomeModel();
+        OutcomeType type = new OutcomeType();
+        SizeModel sizeModel = new SizeModel();
+
+        type.setIdOutcome(idOutcomeType);
+        sizeModel.setIdSize(idSize);
+
+        outcomeModel.setOutcomeType(type);
+        outcomeModel.setSize(sizeModel);
+
+        outcomeModel.setIdProduct(idProduct);
+        outcomeModel.setQuantity(qty);
+        outcomeModel.setDateOperation(OpenClothesContract.getDbDateString(new Date()));
+
+        return outcomeModel;
+
+    }
+
+    private void processResult(int requestCode, Intent data) {
+
+        this.onLoaderReset(null);
+
+        switch (requestCode)
+        {
+            case REQUEST_NEW_STOCK :
+                addToStock(data);
+                break;
+            case REQUEST_REMOVE_STOCK :
+                removeFromStock(data);
+                break;
+        }
+
+        getLoaderManager().restartLoader(LOADER_STOCK, null, this);
 
     }
 

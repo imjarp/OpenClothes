@@ -43,7 +43,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
 
 
-    private static final String TAG = ListProductFragment.class.getSimpleName();
+    private static final String TAG = "ListProductFragment";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
