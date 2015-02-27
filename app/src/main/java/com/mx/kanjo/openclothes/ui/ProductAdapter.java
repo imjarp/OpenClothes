@@ -2,6 +2,7 @@ package com.mx.kanjo.openclothes.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     Picasso picasso;
     ConfigImageHelper mConfigImageHelper;
     CircleTransform mCircleTransform ;
+    float widthPx,heightPx;
 
     public ProductAdapter(Context context) {
         this.context = context;
@@ -50,6 +52,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         picasso = Picasso.with(context);
         this.mConfigImageHelper = configImageHelper;
         mCircleTransform = new CircleTransform();
+        widthPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                                            mConfigImageHelper.getSizeImage().first,
+                                            context.getResources().getDisplayMetrics());
+        heightPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                mConfigImageHelper.getSizeImage().first,
+                context.getResources().getDisplayMetrics());
 
     }
 
@@ -82,13 +90,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             {
 
                 picasso.load(tempModelProduct.ImagePath)
-                        .resize(mConfigImageHelper.getSizeImage().first, mConfigImageHelper.getSizeImage().second)
+                        .resize((int)widthPx, (int)heightPx)
                         .transform(mCircleTransform)
                         .into(holder.imageViewModel);
             }
             else {
                 picasso.load(tempModelProduct.ImagePath)
-                        .resize(mConfigImageHelper.getSizeImage().first, mConfigImageHelper.getSizeImage().second)
+                        .resize((int)widthPx, (int)heightPx)
                         .into(holder.imageViewModel);
             }
         }

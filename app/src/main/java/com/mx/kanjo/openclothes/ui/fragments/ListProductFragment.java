@@ -225,7 +225,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         } else {
             //setContentView(R.layout.main_activity);
             mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER ;
-            sizeImage = new Pair<>(48,48);
+            sizeImage = new Pair<>(36,36);
             configImageHelper = new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
                                                                             .withRoundImage(true)
                                                                             .build();
