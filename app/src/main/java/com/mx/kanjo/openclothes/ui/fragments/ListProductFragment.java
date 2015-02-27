@@ -2,7 +2,6 @@ package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +27,8 @@ import com.mx.kanjo.openclothes.model.LeanProductModel;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 import com.mx.kanjo.openclothes.ui.ProductActivity;
 import com.mx.kanjo.openclothes.ui.ProductAdapter;
+import com.mx.kanjo.openclothes.util.ConfigImageHelper;
+import com.mx.kanjo.openclothes.util.UiUtils;
 
 import java.util.ArrayList;
 
@@ -53,6 +55,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
     private String mParam1;
     private String mParam2;
+    ConfigImageHelper configImageHelper;
 
 
 
@@ -152,7 +155,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
             productList.add(getFromCursor(data));
         }while (data.moveToNext());
 
-        ProductAdapter adapter = new ProductAdapter(getActivity(), productList);
+        ProductAdapter adapter = new ProductAdapter(getActivity(), productList,configImageHelper);
 
         if( null != mRecyclerViewProducts)
             mRecyclerViewProducts.setAdapter(adapter);
@@ -166,7 +169,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
         productList.clear();
 
-        ProductAdapter adapter = new ProductAdapter(getActivity(), productList);
+        ProductAdapter adapter = new ProductAdapter(getActivity(), productList,configImageHelper);
 
         if( null != mRecyclerViewProducts) {
             mRecyclerViewProducts.setAdapter(adapter);
@@ -212,14 +215,20 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         mRecyclerViewProducts = (RecyclerView) view.findViewById(R.id.recycle_view_list_product);
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        Pair<Integer,Integer> sizeImage;
 
-        Configuration config = getResources().getConfiguration();
-        if (config.smallestScreenWidthDp >= 600) {
+        if(UiUtils.isTablet(getActivity())){
             mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER ;
+            sizeImage = new Pair<>(168,168);
+            configImageHelper = new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage).build();
             //setContentView(R.layout.main_activity_tablet);
         } else {
             //setContentView(R.layout.main_activity);
             mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER ;
+            sizeImage = new Pair<>(48,48);
+            configImageHelper = new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
+                                                                            .withRoundImage(true)
+                                                                            .build();
         }
 
         //mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER ;

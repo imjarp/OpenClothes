@@ -1,7 +1,6 @@
 package com.mx.kanjo.openclothes.ui;
 
 import android.content.Context;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
+import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.PictureUtils;
 import com.squareup.picasso.Picasso;
 
@@ -33,7 +33,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private List<LeanProductModel> leanProductModelList;
     private static LeanProductModel tempModelProduct = null;
     Picasso picasso;
-    Pair<Integer,Integer> sizeImage;
+    ConfigImageHelper mConfigImageHelper;
 
     public ProductAdapter(Context context) {
         this.context = context;
@@ -41,12 +41,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
 
 
-    public ProductAdapter(Context context, ArrayList<LeanProductModel> products, Pair<Integer,Integer> sizeImage){
+    public ProductAdapter(Context context, ArrayList<LeanProductModel> products, ConfigImageHelper configImageHelper){
         this.context = context;
         leanProductModelList = products;
         itemsCount = products.size();
         picasso = Picasso.with(context);
-        this.sizeImage = sizeImage ;
+        this.mConfigImageHelper = configImageHelper;
 
 
     }
@@ -66,10 +66,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         tempModelProduct = leanProductModelList.get(position);
 
         if( null ==tempModelProduct.ImagePath){
+
+            if(mConfigImageHelper.roundImage())
+                holder.imageViewModel.setImageDrawable(PictureUtils.getImageClotheDefaultRounded(context));
+            else
             holder.imageViewModel.setImageDrawable(PictureUtils.getImageClotheDefault(context));
         }
         else {
-            picasso.load(tempModelProduct.ImagePath).resize(sizeImage.first,sizeImage.second).into(holder.imageViewModel);
+
+            //TODO: Check if is rounded
+            picasso.load(tempModelProduct.ImagePath).
+                    resize(mConfigImageHelper.getSizeImage().first, mConfigImageHelper.getSizeImage().second).
+                    into(holder.imageViewModel);
         }
 
         holder.textViewModel.setText("Model : " + tempModelProduct.Model);
