@@ -75,9 +75,7 @@ public class ListConfigurationFragment extends ListFragment {
             configurationItems = getArguments().getStringArrayList(ARG_PARAM_ITEMS);
         }
 
-        // TODO: Change Adapter to display your content
-        setListAdapter(new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, configurationItems));
+
 
 
     }
@@ -98,8 +96,14 @@ public class ListConfigurationFragment extends ListFragment {
 
         titleView.setText(mParamTitle);
 
-        if(null == getListView().findViewById(R.id.title_configuration_list_view))
+
+
+        if(null == getListView().findViewById(R.id.id_header_view_size_config))
             getListView().addHeaderView(headerView);
+
+        // TODO: Change Adapter to display your content
+        setListAdapter(new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, configurationItems));
 
     }
 

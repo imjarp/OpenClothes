@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
+import com.mx.kanjo.openclothes.util.CircleTransform;
 import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.PictureUtils;
 import com.squareup.picasso.Picasso;
@@ -34,6 +35,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private static LeanProductModel tempModelProduct = null;
     Picasso picasso;
     ConfigImageHelper mConfigImageHelper;
+    CircleTransform mCircleTransform ;
 
     public ProductAdapter(Context context) {
         this.context = context;
@@ -47,7 +49,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         itemsCount = products.size();
         picasso = Picasso.with(context);
         this.mConfigImageHelper = configImageHelper;
-
+        mCircleTransform = new CircleTransform();
 
     }
 
@@ -75,9 +77,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         else {
 
             //TODO: Check if is rounded
-            picasso.load(tempModelProduct.ImagePath).
-                    resize(mConfigImageHelper.getSizeImage().first, mConfigImageHelper.getSizeImage().second).
-                    into(holder.imageViewModel);
+
+            if(mConfigImageHelper.roundImage())
+            {
+
+                picasso.load(tempModelProduct.ImagePath)
+                        .resize(mConfigImageHelper.getSizeImage().first, mConfigImageHelper.getSizeImage().second)
+                        .transform(mCircleTransform)
+                        .into(holder.imageViewModel);
+            }
+            else {
+                picasso.load(tempModelProduct.ImagePath)
+                        .resize(mConfigImageHelper.getSizeImage().first, mConfigImageHelper.getSizeImage().second)
+                        .into(holder.imageViewModel);
+            }
         }
 
         holder.textViewModel.setText("Model : " + tempModelProduct.Model);

@@ -122,6 +122,7 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
     public ListStockFragment() {
         // Required empty public constructor
+
     }
 
     private static StockItem getFromCursor(Cursor data) {

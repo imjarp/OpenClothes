@@ -85,7 +85,7 @@ public class ConfigurationActivity extends ActionBarActivity {
 
         private static final int REQUEST_OUTCOME_TYPE = 2 ;
 
-        private int currentConfigurationItem;
+        private int currentConfigurationItem = -1;
 
         ArrayList<String> items = new ArrayList<>();
 
@@ -208,7 +208,7 @@ public class ConfigurationActivity extends ActionBarActivity {
                     items.add(iteratorSize.next().getSizeDescription());
                 }
             }
-            displayItemsInFragment(getString(R.string.title_list_configuration_size_items), items);
+            displayItemsInFragment(getString(R.string.title_list_configuration_size_items), items,"SIZE");
         }
 
         private void showIncomeTypeItems(ArrayList<String> items) {
@@ -218,7 +218,7 @@ public class ConfigurationActivity extends ActionBarActivity {
                     items.add(iteratorIncome.next().getDescription());
                 }
             }
-            displayItemsInFragment(getString(R.string.title_list_configuration_income_type_items), items);
+            displayItemsInFragment(getString(R.string.title_list_configuration_income_type_items), items, "INCOME");
         }
 
         private void showOutcomeTypeItems(ArrayList<String> items) {
@@ -228,7 +228,7 @@ public class ConfigurationActivity extends ActionBarActivity {
                     items.add(iteratorOutcome.next().getDescription());
                 }
             }
-            displayItemsInFragment(getString(R.string.title_list_configuration_outcome_type_items), items);
+            displayItemsInFragment(getString(R.string.title_list_configuration_outcome_type_items), items,"OUTGOING");
         }
 
 
@@ -264,16 +264,23 @@ public class ConfigurationActivity extends ActionBarActivity {
             }
         }
 
-        private void displayItemsInFragment(String title , ArrayList<String> items)
+        private void displayItemsInFragment(String title , ArrayList<String> items, String TAG)
         {
 
             ListConfigurationFragment listConfigurationFragment = ListConfigurationFragment.newInstance(title, "", items);
 
+
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+
+            if( null  != fm.findFragmentByTag(TAG))
+            {
+
+                fm.beginTransaction().remove(fm.findFragmentByTag(TAG)).commit();
+            }
 
             FragmentTransaction transaction = fm.beginTransaction();
 
-            transaction.replace(R.id.fragment_detail_container, listConfigurationFragment);
+            transaction.replace(R.id.fragment_detail_container, listConfigurationFragment,TAG);
 
             transaction.commit();
 

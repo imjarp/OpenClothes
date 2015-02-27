@@ -22,6 +22,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 card_view:cardCornerRadius="4dp"
+                android:layout_marginBottom="12dp"
                 android:gravity="center">
 
             <ImageButton
@@ -30,8 +31,6 @@
                 android:layout_height="192dp"
                 android:contentDescription="Pick an image"
                 android:layout_gravity="center"
-                android:layout_margin="12dp"
-                android:layout_marginTop="12dp"
                 android:scaleType="centerCrop"
                 tools:src="@drawable/cb_002"
                 />
@@ -44,6 +43,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Model"
                 android:layout_margin="12dp"
+                android:layout_marginTop="24dp"
                 android:layout_gravity="center"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
