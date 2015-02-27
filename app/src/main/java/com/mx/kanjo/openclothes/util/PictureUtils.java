@@ -8,7 +8,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.mx.kanjo.openclothes.R;
 
@@ -35,7 +37,7 @@ public class PictureUtils {
         return 128;
     }
 
-    public static void setImageScaled(Context context, ImageButton imageButton, String photoPath, SizeImage sizeImage)
+    public static void setImageScaled(Context context, ImageView imageWidget, String photoPath, SizeImage sizeImage)
     {
 
         int destHeight = getSize(sizeImage);
@@ -65,7 +67,7 @@ public class PictureUtils {
 
         BitmapDrawable drawable =  new BitmapDrawable(context.getResources(), bitmap);
 
-        imageButton.setImageDrawable(drawable);
+        imageWidget.setImageDrawable(drawable);
 
     }
 
