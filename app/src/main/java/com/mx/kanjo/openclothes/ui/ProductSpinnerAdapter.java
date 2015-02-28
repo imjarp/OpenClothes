@@ -134,7 +134,7 @@ public class ProductSpinnerAdapter implements SpinnerAdapter {
 
     public View getCustomView(int position, View convertView, ViewGroup parent)
     {
-        View view  = null;
+        View view  ;
 
         if(null == convertView) {
 

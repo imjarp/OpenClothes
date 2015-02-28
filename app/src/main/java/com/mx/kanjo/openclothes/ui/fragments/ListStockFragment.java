@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +33,9 @@ import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 import com.mx.kanjo.openclothes.provider.OpenClothesDatabase;
 import com.mx.kanjo.openclothes.ui.StockAdapter;
+import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.Lists;
+import com.mx.kanjo.openclothes.util.UiUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -272,11 +275,34 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
             stockItems.add(getFromCursor(data));
         }while (data.moveToNext());
 
-        adapter = new StockAdapter(getActivity(),stockItems);
+        adapter = new StockAdapter(getActivity(),stockItems, buildConfiguration());
+
         if( null != mRecyclerView)
             mRecyclerView.setAdapter(adapter);
 
 
+    }
+
+    private ConfigImageHelper buildConfiguration() {
+        Pair<Integer,Integer>sizeImage;
+
+        if( UiUtils.isTablet( getActivity() ) ) {
+
+            sizeImage = new Pair<>(72, 72);
+
+            return new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
+                    .withRoundImage(true)
+                    .build();
+        }
+        else
+        {
+            sizeImage = new Pair<>(48, 48);
+
+            return new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
+                    .withRoundImage(true)
+                    .build();
+
+        }
     }
 
     @Override

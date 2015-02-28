@@ -1,6 +1,8 @@
 package com.mx.kanjo.openclothes.ui;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -15,8 +17,8 @@ import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.util.CircleTransform;
 import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.PictureUtils;
-import com.mx.kanjo.openclothes.util.StorageUtil;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
 
     private static final int ANIMATED_ITEMS_COUNT = 4;
 
-    private Context context;
+    private Context mContext;
     private int lastAnimatedPosition = -1;
     private int itemsCount = 0;
     private List<StockItem> stockList;
@@ -42,17 +44,17 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
     float widthPx,heightPx;
 
     public StockAdapter(Context context) {
-        this.context = context;
+        mContext = context;
     }
 
 
 
-    public StockAdapter(Context context, ArrayList<StockItem> stockItems){
-        this.context = context;
+    public StockAdapter(Context context, ArrayList<StockItem> stockItems,ConfigImageHelper configImageHelper){
+        mContext = context;
         stockList = stockItems;
         itemsCount = stockItems.size();
         picasso = Picasso.with(context);
-        //this.mConfigImageHelper = configImageHelper;
+        this.mConfigImageHelper = configImageHelper;
         mCircleTransform = new CircleTransform();
         widthPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 mConfigImageHelper.getSizeImage().first,
@@ -65,7 +67,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        final View view = LayoutInflater.from(context).inflate(R.layout.stock_item, parent, false);
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.stock_item, parent, false);
 
         return new ProductViewHolder(view);
     }
@@ -77,21 +79,11 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
 
         //TODO : Change this for a divider
         if(position%2==0)
-            holder.parentRowView.setBackgroundColor(context.getResources().getColor(R.color.odd_row_view));
+            holder.parentRowView.setBackgroundColor(mContext.getResources().getColor(R.color.odd_row_view));
 
         tempStock = stockList.get(position);
 
-
-
-        if( null != tempStock.getImagePath()) {
-            //holder.imageViewModel.setImageURI(tempStock.getImagePath());
-            String filePath = StorageUtil.getPath(context, tempStock.getImagePath());
-            holder.imageViewModel.setImageDrawable(PictureUtils.getRoundedBitmap(filePath, context));
-
-        }
-        else {
-            holder.imageViewModel.setImageDrawable(PictureUtils.getImageClotheDefaultRounded(context));;
-        }
+        setImage(holder);
 
         holder.textViewSize.setText( tempStock.getSize().getSizeDescription() );
 
@@ -110,6 +102,52 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
     @Override
     public int getItemCount() {
         return itemsCount;
+    }
+
+    private void setImage(ProductViewHolder holder) {
+        if(tempStock.getImagePath() == null ){
+
+            setDefaultImage(holder,mConfigImageHelper.roundImage() ?
+                    PictureUtils.getImageClotheDefaultRounded(mContext):
+                    PictureUtils.getImageClotheDefault(mContext));
+        }
+        else{
+
+            setImageWithPath(holder,
+                    tempStock.getImagePath(),
+                    (int) widthPx,
+                    (int) heightPx,
+                    mConfigImageHelper.roundImage(),
+                    mConfigImageHelper.roundImage() ?
+                            PictureUtils.getImageClotheDefaultRounded(mContext) :
+                            PictureUtils.getImageClotheDefault(mContext)
+            );
+
+        }
+    }
+
+    private void setDefaultImage(final ProductViewHolder holder, final Drawable drawable){
+
+        holder.imageViewModel.setImageDrawable(drawable);
+    }
+
+
+    private void setImageWithPath(final ProductViewHolder holder, final Uri path, int widthPx, int heightPx, boolean isRounded, Drawable placeholder)
+    {
+
+
+        RequestCreator creator =  picasso.load(path)
+                .placeholder(PictureUtils.getImageClotheDefault(mContext))
+                .resize(widthPx, heightPx)
+                .centerInside();
+
+
+        if(isRounded)
+            creator.transform(mCircleTransform);
+
+        creator.into(holder.imageViewModel);
+
+
     }
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder

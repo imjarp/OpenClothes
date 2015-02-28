@@ -65,7 +65,10 @@
             android:hint="@string/hint_quantity_stock"
             android:gravity="center_vertical"
             android:inputType="numberDecimal"
-            android:layout_margin="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginBottom="6dp"
 
             />
     </LinearLayout>
@@ -96,7 +99,8 @@
             android:minWidth="@dimen/button_min_width"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
-            android:textColor="@color/primary"/>
+            android:textColor="@color/primary"
+            android:textStyle="bold"/>
 
         <Button
             android:id="@+id/btn_discard_stock_item"

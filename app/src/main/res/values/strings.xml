@@ -98,5 +98,8 @@
     <string name="title_outgoing_stock">Outgoing</string>
     <string name="menu_add_product_title">Add</string>
 
+    <!--Dialog remove stock item-->
+    <string name="title_remove_dialog_stock">Remove Stock Item</string>
+
 
 </resources>

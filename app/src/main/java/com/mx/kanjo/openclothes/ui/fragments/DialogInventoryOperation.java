@@ -199,7 +199,7 @@ public class DialogInventoryOperation extends DialogFragment {
                     .withRoundImage(true)
                     .build();
         } else {
-            return new ConfigImageHelper.ConfigImageHelpBuilder(new Pair<>(24,24))
+            return new ConfigImageHelper.ConfigImageHelpBuilder(new Pair<>(36,36))
                     .withRoundImage(true)
                     .build();
         }

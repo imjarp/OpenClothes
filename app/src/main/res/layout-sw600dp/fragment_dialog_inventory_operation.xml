@@ -6,14 +6,14 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="72dp"
+        android:layout_height="96dp"
         android:gravity="center"
         android:background="@color/primary">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_remove_dialog_stock"
+            android:text="@string/title_add_dialog_stock"
             android:textColor="@color/text_color"/>
     </LinearLayout>
 
@@ -26,9 +26,9 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="12dp"
+        android:layout_height="74dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="48dp"
         android:layout_marginBottom="24dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
@@ -36,42 +36,39 @@
         >
 
         <Spinner
+            style="@style/Widget.IOSched.HeaderBar.Spinner"
             android:id="@+id/spin_type"
-            style="@style/Widget.IOSched.HeaderBar.Spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
 
             />
 
         <Spinner
+            style="@style/Widget.IOSched.HeaderBar.Spinner"
             android:id="@+id/spin_model"
-            style="@style/Widget.IOSched.HeaderBar.Spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
 
             />
 
         <Spinner
-            android:id="@+id/spin_size"
             style="@style/Widget.IOSched.HeaderBar.Spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
+            android:id="@+id/spin_size"
+            android:layout_width="60dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
             />
 
         <EditText
             android:id="@+id/et_quantity"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="fill_parent"
+            android:layout_weight="2"
             android:hint="@string/hint_quantity_stock"
             android:gravity="center_vertical"
             android:inputType="numberDecimal"
-            android:layout_marginRight="6dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginBottom="6dp"
 
             />
     </LinearLayout>
@@ -102,8 +99,7 @@
             android:minWidth="@dimen/button_min_width"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
-            android:textColor="@color/primary"
-            android:textStyle="bold"/>
+            android:textColor="@color/primary"/>
 
         <Button
             android:id="@+id/btn_discard_outcome"
