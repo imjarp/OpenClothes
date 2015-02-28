@@ -25,7 +25,7 @@ public final class ConfigImageHelper {
 
     public static class ConfigImageHelpBuilder {
         private Pair<Integer,Integer> sizeImage ;
-        private Boolean roundImage ;
+        private Boolean roundImage = false ;
 
         public ConfigImageHelpBuilder(final Pair<Integer,Integer> sizeImage) {
             this.sizeImage = sizeImage;

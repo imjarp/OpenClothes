@@ -220,18 +220,18 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         if(UiUtils.isTablet(getActivity())){
             mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER ;
             sizeImage = new Pair<>(168,168);
-            configImageHelper = new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage).build();
+            configImageHelper = new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
+                                                                            .build();
             //setContentView(R.layout.main_activity_tablet);
         } else {
             //setContentView(R.layout.main_activity);
             mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER ;
-            sizeImage = new Pair<>(36,36);
+            sizeImage = new Pair<>(48,48);
             configImageHelper = new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
                                                                             .withRoundImage(true)
                                                                             .build();
         }
 
-        //mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER ;
 
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 

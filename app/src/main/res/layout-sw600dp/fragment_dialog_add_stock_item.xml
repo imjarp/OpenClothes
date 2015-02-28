@@ -1,11 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="72dp"
+        android:layout_height="96dp"
         android:gravity="center"
         android:background="@color/primary">
 
@@ -25,9 +26,9 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="12dp"
+        android:layout_height="74dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="48dp"
         android:layout_marginBottom="24dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
@@ -36,36 +37,38 @@
         <Spinner
             style="@style/Widget.IOSched.HeaderBar.Spinner"
             android:id="@+id/spin_type_incoming"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+
             />
 
 
         <Spinner
             style="@style/Widget.IOSched.HeaderBar.Spinner"
             android:id="@+id/spin_model"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+
             />
 
         <Spinner
             style="@style/Widget.IOSched.HeaderBar.Spinner"
             android:id="@+id/spin_size"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
+            android:layout_width="60dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
             />
 
         <EditText
             android:id="@+id/et_quantity"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="fill_parent"
+            android:layout_weight="2"
             android:hint="@string/hint_quantity_stock"
             android:gravity="center_vertical"
             android:inputType="numberDecimal"
-            android:layout_margin="6dp"
 
             />
     </LinearLayout>

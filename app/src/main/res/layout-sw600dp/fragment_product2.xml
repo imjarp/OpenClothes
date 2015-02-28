@@ -47,6 +47,8 @@
                 android:layout_gravity="center"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
+                android:singleLine="true"
+                android:nextFocusDown="@id/edit_product_cost"
                 />
 
             <EditText
@@ -59,6 +61,7 @@
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:inputType="numberDecimal"
+                android:nextFocusDown="@id/edit_product_price"
                 />
 
             <EditText
@@ -71,6 +74,7 @@
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:inputType="numberDecimal"
+                android:nextFocusDown="@id/edit_product_description"
                 />
 
             <EditText

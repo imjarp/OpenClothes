@@ -18,23 +18,18 @@
             android:orientation="vertical">
 
 
-            <android.support.v7.widget.CardView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                card_view:cardCornerRadius="4dp"
-                android:layout_marginBottom="12dp"
-                android:gravity="center">
 
             <ImageButton
                 android:id="@+id/img_new_product"
-                android:layout_width="fill_parent"
-                android:layout_height="192dp"
+                android:layout_width="144dp"
+                android:layout_height="144dp"
                 android:contentDescription="Pick an image"
                 android:layout_gravity="center"
                 android:scaleType="centerCrop"
                 tools:src="@drawable/cb_002"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
                 />
-            </android.support.v7.widget.CardView>
 
 
             <EditText
@@ -47,6 +42,8 @@
                 android:layout_gravity="center"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
+                android:singleLine="true"
+                android:nextFocusDown="@id/edit_product_cost"
                 />
 
             <EditText
@@ -59,6 +56,7 @@
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:inputType="numberDecimal"
+                android:nextFocusDown="@id/edit_product_price"
                 />
 
             <EditText
@@ -71,6 +69,7 @@
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:inputType="numberDecimal"
+                android:nextFocusDown="@id/edit_product_description"
                 />
 
             <EditText

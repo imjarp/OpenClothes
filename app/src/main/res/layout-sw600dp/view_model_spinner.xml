@@ -10,8 +10,8 @@
     
     <ImageView
         android:id="@+id/image_model"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         tools:src="@drawable/cb_002"
         android:layout_gravity="center"
         android:layout_marginRight="8dp"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         tools:text="CB002"
         android:layout_gravity="center"
-        android:layout_marginLeft="6dp"
+        style="@android:style/TextAppearance.Medium"
         />
 
 </LinearLayout>

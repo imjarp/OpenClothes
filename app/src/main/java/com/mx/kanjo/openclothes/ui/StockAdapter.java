@@ -1,8 +1,8 @@
 package com.mx.kanjo.openclothes.ui;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +12,13 @@ import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.model.StockItem;
-import com.mx.kanjo.openclothes.util.Maps;
+import com.mx.kanjo.openclothes.util.CircleTransform;
+import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.PictureUtils;
 import com.mx.kanjo.openclothes.util.StorageUtil;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -35,7 +36,10 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
     private int itemsCount = 0;
     private List<StockItem> stockList;
     private static StockItem tempStock = null;
-    private HashMap<Integer,Drawable> images = Maps.newHashMap();
+    Picasso picasso;
+    ConfigImageHelper mConfigImageHelper;
+    CircleTransform mCircleTransform ;
+    float widthPx,heightPx;
 
     public StockAdapter(Context context) {
         this.context = context;
@@ -47,6 +51,15 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
         this.context = context;
         stockList = stockItems;
         itemsCount = stockItems.size();
+        picasso = Picasso.with(context);
+        //this.mConfigImageHelper = configImageHelper;
+        mCircleTransform = new CircleTransform();
+        widthPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                mConfigImageHelper.getSizeImage().first,
+                context.getResources().getDisplayMetrics());
+        heightPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                mConfigImageHelper.getSizeImage().first,
+                context.getResources().getDisplayMetrics());
     }
 
     @Override
@@ -61,10 +74,14 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
     public void onBindViewHolder(ProductViewHolder viewHolder, int position) {
 
         ProductViewHolder holder = (ProductViewHolder) viewHolder;
+
+        //TODO : Change this for a divider
         if(position%2==0)
             holder.parentRowView.setBackgroundColor(context.getResources().getColor(R.color.odd_row_view));
 
         tempStock = stockList.get(position);
+
+
 
         if( null != tempStock.getImagePath()) {
             //holder.imageViewModel.setImageURI(tempStock.getImagePath());
@@ -83,6 +100,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
         holder.textViewQuantity.setText( String.valueOf(tempStock.getQuantity()) );
 
     }
+
 
     @Override
     public long getItemId(int position) {

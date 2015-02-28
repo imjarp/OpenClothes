@@ -92,10 +92,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 picasso.load(tempModelProduct.ImagePath)
                         .resize((int)widthPx, (int)heightPx)
                         .transform(mCircleTransform)
+                        //.fit()
+                        .centerInside()
+                        .placeholder(PictureUtils.getImageClotheDefaultRounded(context))
                         .into(holder.imageViewModel);
             }
             else {
                 picasso.load(tempModelProduct.ImagePath)
+                        .placeholder(PictureUtils.getImageClotheDefault(context))
                         .resize((int)widthPx, (int)heightPx)
                         .into(holder.imageViewModel);
             }

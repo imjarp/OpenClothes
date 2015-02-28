@@ -286,7 +286,7 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @OnClick(R.id.btnCreateStock)
-    public void createStockCard(View view)
+    public void onClickButtonListener(View view)
     {
         showFragment(DialogAddStockItem.newInstance("",""), DialogAddStockItem.TAG, REQUEST_NEW_STOCK);
     }

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,9 @@ import com.mx.kanjo.openclothes.model.LeanProductModel;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 import com.mx.kanjo.openclothes.ui.ProductSpinnerAdapter;
+import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.Lists;
+import com.mx.kanjo.openclothes.util.UiUtils;
 
 import java.util.ArrayList;
 
@@ -60,6 +63,8 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
     private ProductSpinnerAdapter modelAdapter ;
 
 
+
+
     @InjectView(R.id.spin_model) Spinner mSpinnerProduct;
     @InjectView(R.id.spin_size) Spinner mSpinnerSize;
     @InjectView(R.id.spin_type_incoming) Spinner mSpinnerIncomingType;
@@ -71,6 +76,9 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
     private ArrayList<SizeModel> listSize  = Lists.newArrayList();
     private ArrayList<IncomeType> incomeTypeArrayList  ;
     public static final String TAG ="com.mx.kanjo.openclothes.ui.fragments.DialogAddStockItem";
+
+
+    Context context;
 
 
     private interface ProductColumns{
@@ -218,15 +226,29 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
     }
 
     private void init() {
-        Context context = getActivity();
+        context = getActivity();
         mCatalogueManager = new CatalogueManager(context);
         mConfigInventoryManager = new ConfigurationInventoryManager(context);
         mContentResolver = context.getContentResolver();
-        modelAdapter = new ProductSpinnerAdapter(context,getProducts());
+        modelAdapter = new ProductSpinnerAdapter(context,getProducts(),build());
 
         populateSizeSpinner(context);
         populateSpinnerIncomingType(context);
 
+    }
+
+    private ConfigImageHelper build()
+    {
+
+        if(UiUtils.isTablet(context)){
+            return new ConfigImageHelper.ConfigImageHelpBuilder(new Pair<>(60,60))
+                    .withRoundImage(true)
+                    .build();
+        } else {
+            return new ConfigImageHelper.ConfigImageHelpBuilder(new Pair<>(36,36))
+                    .withRoundImage(true)
+                    .build();
+        }
     }
 
     private void populateSpinnerIncomingType(Context context) {
@@ -318,7 +340,7 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
     }
 
     private void showMessage() {
-        Toast.makeText(getActivity(),getString(R.string.message_quantity_validation),Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, getString(R.string.message_quantity_validation),Toast.LENGTH_SHORT).show();
     }
 
     private static boolean isQuantityCompliant(String qtyText) {

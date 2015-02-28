@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +15,13 @@ import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
+import com.mx.kanjo.openclothes.util.CircleTransform;
+import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.PictureUtils;
-import com.mx.kanjo.openclothes.util.StorageUtil;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -31,20 +35,32 @@ public class ProductSpinnerAdapter implements SpinnerAdapter {
 
     private ArrayList<LeanProductModel> list;
 
-    private HashMap<Integer,Drawable> images;
-
     LayoutInflater mInflater;
 
     Resources res;
 
+    Picasso picasso;
+    ConfigImageHelper mConfigImageHelper;
+    CircleTransform mCircleTransform ;
+    float widthPx,heightPx;
+
     private static LeanProductModel temp;
 
-    public ProductSpinnerAdapter(Context context, ArrayList<LeanProductModel> list) {
+    public ProductSpinnerAdapter(Context context, ArrayList<LeanProductModel> list, ConfigImageHelper configImageHelper) {
         this.mContext = context;
         this.list = list;
         this.mInflater  = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.res = mContext.getResources();
-        images = new HashMap<>();
+        picasso = Picasso.with(context);
+        mCircleTransform = new CircleTransform();
+        this.mConfigImageHelper = configImageHelper;
+        widthPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                mConfigImageHelper.getSizeImage().first,
+                context.getResources().getDisplayMetrics());
+        heightPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                mConfigImageHelper.getSizeImage().first,
+                context.getResources().getDisplayMetrics());
+
     }
 
     @Override
@@ -118,7 +134,7 @@ public class ProductSpinnerAdapter implements SpinnerAdapter {
 
     public View getCustomView(int position, View convertView, ViewGroup parent)
     {
-        View view   = null;
+        View view  = null;
 
         if(null == convertView) {
 
@@ -138,27 +154,56 @@ public class ProductSpinnerAdapter implements SpinnerAdapter {
 
         holder.mTextModel.setText(list.get(position).Model);
 
-        Drawable bmImage;
-
         temp = list.get(position);
 
-        if( null != images.get(temp.ID)) {
-            bmImage = images.get(temp.ID);
-        }
-        else {
-            if(null!= temp.ImagePath) {
-                String filePath = StorageUtil.getPath(mContext, temp.ImagePath);
-                bmImage = PictureUtils.getRoundedBitmap(filePath,mContext);
-                images.put(temp.ID, bmImage);
-            }else
-            {
-                bmImage = PictureUtils.getImageClotheDefaultRounded(mContext);
-            }
-        }
-
-        holder.mImageModel.setImageDrawable(bmImage);
-
+        setImage(holder);
 
         return view;
     }
+
+    private void setImage(ViewHolderModel holder) {
+        if(temp.ImagePath == null ){
+
+            setDefaultImage(holder,mConfigImageHelper.roundImage() ?
+                    PictureUtils.getImageClotheDefaultRounded(mContext):
+                    PictureUtils.getImageClotheDefault(mContext));
+        }
+        else{
+
+            setImageWithPath(holder,
+                    temp.ImagePath,
+                    (int) widthPx,
+                    (int) heightPx,
+                    mConfigImageHelper.roundImage(),
+                    mConfigImageHelper.roundImage() ?
+                            PictureUtils.getImageClotheDefaultRounded(mContext) :
+                            PictureUtils.getImageClotheDefault(mContext)
+            );
+
+        }
+    }
+
+    private void setImageWithPath(final ViewHolderModel holder, final Uri path, int widthPx, int heightPx, boolean isRounded, Drawable placeholder)
+    {
+
+
+        RequestCreator creator =  picasso.load(path)
+                .placeholder(PictureUtils.getImageClotheDefault(mContext))
+                .resize(widthPx, heightPx)
+                .centerInside();
+
+
+        if(isRounded)
+            creator.transform(mCircleTransform);
+
+        creator.into(holder.mImageModel);
+
+
+    }
+
+    private void setDefaultImage(final ViewHolderModel holder, final Drawable drawable){
+
+        holder.mImageModel.setImageDrawable(drawable);
+    }
+
 }
