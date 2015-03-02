@@ -2,11 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mx.kanjo.openclothes" >
 
-    <!--Product Activity-->
+    <!-- Product Activity -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -39,7 +37,15 @@
         <activity
             android:name=".ui.ProductActivity"
             android:label="@string/title_activity_product"
-            android:windowSoftInputMode="stateVisible|adjustResize|adjustPan">
+            android:windowSoftInputMode="stateVisible|adjustResize|adjustPan" >
+        </activity>
+        <activity
+            android:name=".ui.NewSaleActivity"
+            android:label="@string/title_activity_new_sale"
+            android:parentActivityName=".ui.MainActivity2" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mx.kanjo.openclothes.ui.MainActivity2" />
         </activity>
     </application>
 

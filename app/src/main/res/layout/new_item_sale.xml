@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="6dp"
+    android:layout_marginLeft="6dp">
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="5"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <ImageView
+
+        android:id="@+id/image_view_product"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        tools:src="@drawable/cb_002"
+        android:layout_weight="3"
+        />
+
+    <TextView
+        android:id="@+id/text_product"
+        android:layout_width="0dp"
+        android:layout_weight="7"
+        android:layout_height="fill_parent"
+        tools:text ="CB-011"
+        android:layout_marginLeft="6dp"
+        android:gravity="center|left"
+        />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/text_qty"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="fill_parent"
+        tools:text="2"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/text_price"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="fill_parent"
+        tools:text="$100"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/text_total_sale_item"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="fill_parent"
+        tools:text="$200"
+        android:gravity="center"
+        />
+
+
+
+
+</LinearLayout>

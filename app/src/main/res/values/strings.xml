@@ -100,6 +100,10 @@
 
     <!--Dialog remove stock item-->
     <string name="title_remove_dialog_stock">Remove Stock Item</string>
+    <string name="title_activity_new_sale">NewSaleActivity</string>
+
+    <!--Dialog add sale item-->
+    <string name="title_add_dialog_new_sale">New sale item</string>
 
 
 </resources>

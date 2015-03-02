@@ -6,13 +6,41 @@
     android:layout_marginTop="60dp"
     tools:context="com.mx.kanjo.openclothes.ui.fragments.ListStockFragment">
 
+
     <LinearLayout
-        android:id="@+id/linear_header"
-        android:layout_marginLeft="144dp"
-        android:layout_marginRight="144dp"
+        android:id="@+id/linear_general_data"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/card_view_product"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical"
+        android:layout_marginRight="48dp"
+        android:layout_marginLeft="48dp">
+
+        <EditText
+            android:layout_width="220dp"
+            android:layout_height="36dp"
+            android:text="Customer name"
+
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:text="Total"
+            android:gravity="right|end|center_vertical"/>
+
+        </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linear_header_table_sale"
+        android:layout_marginLeft="144dp"
+        android:layout_marginRight="144dp"
+        android:layout_marginTop="12dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear_general_data"
         android:orientation="horizontal"
         android:layout_marginBottom="6dp">
         <TextView
@@ -36,30 +64,44 @@
             android:layout_weight="3"
             android:gravity="center"/>
 
-        </LinearLayout>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Price"
+            android:layout_weight="3"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Total"
+            android:layout_weight="3"
+            android:gravity="center"/>
+
+    </LinearLayout>
 
 
     <android.support.v7.widget.CardView
-        android:id="@+id/card_view_stock_list"
+        android:id="@+id/card_view_new_sale_list"
         android:layout_marginLeft="144dp"
         android:layout_marginRight="144dp"
-        android:layout_below="@+id/linear_header"
+        android:layout_below="@+id/linear_header_table_sale"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycle_view_list"
-                android:layout_height="fill_parent"
-                android:layout_width="fill_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycle_view_list"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent">
 
 
 
 
-            </android.support.v7.widget.RecyclerView>
+        </android.support.v7.widget.RecyclerView>
     </android.support.v7.widget.CardView>
 
 
     <ImageButton
-        android:id="@+id/btnCreateStock"
+        android:id="@+id/btnAddNewSaleItem"
         android:layout_width="@dimen/btn_fab_size"
         android:layout_height="@dimen/btn_fab_size"
         android:layout_alignParentBottom="true"
