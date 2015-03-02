@@ -31,29 +31,26 @@ import android.widget.Toast;
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
 import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
+import com.mx.kanjo.openclothes.model.LeanProductModel;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 import com.mx.kanjo.openclothes.provider.OpenClothesDatabase;
+import com.mx.kanjo.openclothes.ui.ProductSpinnerAdapter;
 import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.Lists;
 import com.mx.kanjo.openclothes.util.UiUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Dictionary;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Set;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 
-public class DialogAddNewSaleItem extends DialogFragment implements AdapterView.OnItemSelectedListener,
-                                                                    LoaderManager.LoaderCallbacks<Cursor> {
+public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManager.LoaderCallbacks<Cursor> {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -67,7 +64,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements AdapterView.
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private StockSpinnerAdapter adapter;
+    private ProductSpinnerAdapter adapter;
 
 
 
@@ -177,8 +174,9 @@ public class DialogAddNewSaleItem extends DialogFragment implements AdapterView.
 
             case LOADER_STOCK :
             {
+                int index = 0;
 
-                Dictionary<Integer,StockItem> distinctProductList = new Hashtable<>();
+                ArrayList<LeanProductModel> listProduct = Lists.newArrayList();
 
                 listStockItems.clear();
 
@@ -191,20 +189,18 @@ public class DialogAddNewSaleItem extends DialogFragment implements AdapterView.
                     return;
                 do
                 {
+
                     tempStockItem = getStockFromCursor(data);
 
                     listStockItems.add(tempStockItem);
 
-                    if(distinctProductList.get(tempStockItem.getIdProduct())==null)
-                    {
-                        distinctProductList.put(tempStockItem.getIdProduct(),tempStockItem);
-                    }
+                    addDistinctProduct(index, listProduct, tempStockItem);
+
+                    index++;
                 }while (data.moveToNext());
 
 
-                ArrayList<StockItem> temp = Collections.list(distinctProductList.elements());
-
-                adapter = new StockSpinnerAdapter(context,Collections.list(distinctProductList.elements(),build());
+                adapter  = new ProductSpinnerAdapter(getActivity(), listProduct, build());
 
                 mSpinnerProduct.setAdapter(adapter);
 
@@ -235,6 +231,20 @@ public class DialogAddNewSaleItem extends DialogFragment implements AdapterView.
         }
 
 
+    }
+
+    private void addDistinctProduct(int index, ArrayList<LeanProductModel> listProduct, StockItem tempStockItem) {
+        if(index==0) {
+
+            listProduct.add(createLean(tempStockItem));
+
+        }
+        else{
+
+            if(listProduct.get(index-1).ID != tempStockItem.getIdProduct() )
+                listProduct.add(createLean(tempStockItem) );
+
+        }
     }
 
     @Override
@@ -291,7 +301,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements AdapterView.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_dialog_add_stock_item, container, false);
+        View view = inflater.inflate(R.layout.fragment_dialog_add_sale_item, container, false);
         ButterKnife.inject(this,view);
         return view;
 
@@ -299,26 +309,35 @@ public class DialogAddNewSaleItem extends DialogFragment implements AdapterView.
     }
 
 
+    protected AdapterView.OnItemSelectedListener productItemClickListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            populateSizeSpinner((int) adapter.getItemId(position));
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
 
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-        String stop = "";
-
-        stop = stop;
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
 
 
     @Override public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset( this );
+    }
+
+    public static LeanProductModel createLean(StockItem item){
+
+        LeanProductModel lean = new LeanProductModel();
+        lean.Price = item.getPrice();
+        lean.Model = item.getModel();
+        lean.ImagePath = item.getImagePath();
+        lean.ID = item.getIdProduct();
+        return lean;
+
     }
 
     private void init() {
@@ -349,14 +368,20 @@ public class DialogAddNewSaleItem extends DialogFragment implements AdapterView.
     private  void populateSizeSpinner(int idProduct)
     {
 
+        //Fetch all stock that have that id Product
         ArrayList<String> simpleList = Lists.newArrayList();
+        SizeModel size;
 
-        for(StockItem item : listStockItems){
+        for(StockItem stockItem : listStockItems){
 
-            if(item.getIdProduct() == idProduct)
-            {
-                simpleList.add( sizeModelDictionary.get(idProduct).getSizeDescription());
+            if(stockItem.getIdProduct() == idProduct){
+
+                size =  sizeModelDictionary.get(stockItem.getSize().getIdSize());
+                //TODO: refactor
+                simpleList.add(size.getSizeDescription());
+
             }
+
         }
 
         ArrayAdapter<String> sizeAdapter
@@ -366,7 +391,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements AdapterView.
 
     }
 
-    @OnClick({R.id.btn_add_stock_item,R.id.btn_discard_stock_item})
+    @OnClick({R.id.btn_add_new_sale_item,R.id.btn_discard_stock_item})
     public void onClickEvent(Button button)
     {
         switch (button.getId())
@@ -408,12 +433,11 @@ public class DialogAddNewSaleItem extends DialogFragment implements AdapterView.
         int idProduct = (int) mSpinnerProduct.getSelectedItemId();
         int idSize = listSize.get(mSpinnerSize.getSelectedItemPosition()).getIdSize();
         int qty = Integer.parseInt(mEditTextQuantity.getText().toString());
-        int idIncomeType =  incomeTypeArrayList.get(mSpinnerIncomingType.getSelectedItemPosition()).getIdIncome();
 
-        i.putExtra(EXTRA_ID_STOCK, idProduct );
+        i.putExtra( EXTRA_ID_STOCK, idProduct );
         i.putExtra( EXTRA_ID_SIZE, idSize );
         i.putExtra( EXTRA_QTY, qty);
-        i.putExtra( EXTRA_INCOME_TYPE, idIncomeType);
+
         return  i;
 
     }

@@ -314,7 +314,7 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
     @OnClick(R.id.btnCreateStock)
     public void onClickButtonListener(View view)
     {
-        showFragment(DialogAddStockItem.newInstance("",""), DialogAddStockItem.TAG, REQUEST_NEW_STOCK);
+        showFragment(DialogAddNewSaleItem.newInstance("",""), DialogAddStockItem.TAG, REQUEST_NEW_STOCK);
     }
 
     private void showFragment(android.support.v4.app.DialogFragment dialogFragment, String TAG, int requestCode)

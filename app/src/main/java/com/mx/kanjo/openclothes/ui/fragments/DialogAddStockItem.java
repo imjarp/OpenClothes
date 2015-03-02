@@ -153,7 +153,7 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
 
     }
 
-    //TODO : Refactor this to search products not in the UI Thread
+    //TODO : Refactor move to a cursor loader
     public ArrayList<LeanProductModel> getProducts()
     {
 

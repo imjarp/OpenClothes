@@ -16,6 +16,7 @@ import android.view.View;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.ui.fragments.ListProductFragment;
+import com.mx.kanjo.openclothes.ui.fragments.ListSalesFragment;
 import com.mx.kanjo.openclothes.ui.fragments.ListStockFragment;
 import com.mx.kanjo.openclothes.ui.fragments.NavigationFragment;
 
@@ -124,6 +125,18 @@ public class MainActivity2 extends ActionBarActivity implements
             ListProductFragment listProductFragment = ListProductFragment.newInstance("", "");
             FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.sample_content_fragment, listProductFragment);
+            transaction.commit();
+            return;
+
+
+        }
+
+        if(position == 2)
+        {
+
+            ListSalesFragment listSalesFragment = ListSalesFragment.newInstance("", "");
+            FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.sample_content_fragment, listSalesFragment);
             transaction.commit();
             return;
 
