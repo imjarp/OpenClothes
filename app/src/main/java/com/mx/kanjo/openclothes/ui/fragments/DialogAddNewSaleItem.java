@@ -42,6 +42,7 @@ import com.mx.kanjo.openclothes.util.Lists;
 import com.mx.kanjo.openclothes.util.UiUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -66,9 +67,6 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
     private String mParam2;
     private ProductSpinnerAdapter adapter;
 
-
-
-
     @InjectView(R.id.spin_model) Spinner mSpinnerProduct;
     @InjectView(R.id.spin_size) Spinner mSpinnerSize;
     @InjectView(R.id.et_quantity) EditText mEditTextQuantity;
@@ -82,6 +80,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
     private ArrayList<SizeModel> listSize  = Lists.newArrayList();
     private Dictionary<Integer,SizeModel> sizeModelDictionary;
     private ArrayList<StockItem> listStockItems = Lists.newArrayList();
+    StockItem selectedStockItem  = null;
     public static final String TAG ="com.mx.kanjo.openclothes.ui.fragments.DialogAddStockItem";
     private static final int LOADER_STOCK = 999;
     private static final int LOADER_ALL_SIZE = 998;
@@ -155,7 +154,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
                 return new CursorLoader( getActivity(),
                         sizeUri,
-                        StockColumns.COLUMNS,
+                        SizeColums.COLUMNS,
                         selection,
                         selectionArgs,
                         sortOrder );
@@ -204,6 +203,10 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
                 mSpinnerProduct.setAdapter(adapter);
 
+                mSpinnerProduct.setOnItemSelectedListener(productItemClickListener);
+
+                return;
+
             }
             case LOADER_ALL_SIZE :
             {
@@ -225,6 +228,8 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
                 }while (data.moveToNext());
 
+                return;
+
             }
 
 
@@ -241,7 +246,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         }
         else{
 
-            if(listProduct.get(index-1).ID != tempStockItem.getIdProduct() )
+            if(listProduct.get(listProduct.size()-1).ID != tempStockItem.getIdProduct() )
                 listProduct.add(createLean(tempStockItem) );
 
         }
@@ -281,7 +286,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog =  super.onCreateDialog( savedInstanceState );
-        dialog.getWindow().requestFeature( Window.FEATURE_NO_TITLE );
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         return dialog;
     }
@@ -308,11 +313,15 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
     }
 
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset( this );
+    }
 
     protected AdapterView.OnItemSelectedListener productItemClickListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            populateSizeSpinner((int) adapter.getItemId(position));
+                populateSizeSpinner((int) adapter.getItemId(position));
         }
 
         @Override
@@ -321,13 +330,47 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         }
     };
 
+    protected AdapterView.OnItemSelectedListener sizeItemClickListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            String size = (String) parent.getAdapter().getItem(position);
+            findStockItem(size);
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
+
+    protected View.OnFocusChangeListener textQuantityFocusListener = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+
+            if(hasFocus){
+
+                if(!TextUtils.isEmpty(mEditTextQuantity.getText()) && TextUtils.isDigitsOnly(mEditTextQuantity.getText())){
+
+                    int quantity = Integer.parseInt(mEditTextQuantity.getText().toString());
+
+                    if(quantity>0){
+
+                        if(null != selectedStockItem ){
+
+                            int total = quantity * selectedStockItem.getPrice();
+
+                            mTextViewTotal.setText(String.valueOf(total));
+                        }
+
+                    }
+                }
+            }
+
+        }
+    };
 
 
-
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset( this );
-    }
 
     public static LeanProductModel createLean(StockItem item){
 
@@ -348,6 +391,9 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
         getLoaderManager().initLoader(LOADER_STOCK, null, this);
         getLoaderManager().initLoader(LOADER_ALL_SIZE, null, this);
+        mEditTextQuantity.setOnFocusChangeListener(textQuantityFocusListener);
+        mSpinnerSize.setOnItemSelectedListener(sizeItemClickListener);
+
 
     }
 
@@ -388,6 +434,41 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
                 = new ArrayAdapter<>(context, R.layout.view_item_spinner, simpleList);
 
         mSpinnerSize.setAdapter(sizeAdapter);
+
+
+    }
+
+    private void findStockItem(String item)
+    {
+
+        ArrayList<SizeModel> listSize = Collections.list(sizeModelDictionary.elements());
+
+        SizeModel selectedSize = null;
+
+        for(SizeModel s : listSize){
+
+            if(s.getSizeDescription().equals(item)){
+
+                selectedSize = s;
+            }
+
+        }
+
+        selectedStockItem = findStockItem(selectedSize.getIdSize(), mSpinnerProduct.getSelectedItemId());
+
+    }
+
+    private StockItem findStockItem(int idSize, long idProduct){
+
+        for(StockItem item : listStockItems){
+
+            if(item.getIdProduct() == idProduct && item.getSize().getIdSize() == idSize){
+                return item;
+            }
+
+        }
+        return null;
+
 
     }
 
@@ -487,6 +568,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
         return sizeModel;
     }
+
 
 
 }
