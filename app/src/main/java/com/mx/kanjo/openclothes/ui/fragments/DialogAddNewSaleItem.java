@@ -14,19 +14,27 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
@@ -70,7 +78,8 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
     @InjectView(R.id.spin_model) Spinner mSpinnerProduct;
     @InjectView(R.id.spin_size) Spinner mSpinnerSize;
     @InjectView(R.id.et_quantity) EditText mEditTextQuantity;
-    @InjectView(R.id.text_total_line) TextView mTextViewTotal;
+    @InjectView(R.id.text_total_line) TextSwitcher mTextViewTotal;
+    @InjectView(R.id.text_view_price) TextSwitcher mTextPrice;
 
     private Context context;
 
@@ -95,6 +104,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
                 OpenClothesDatabase.Tables.SIZE + "." +  OpenClothesContract.Size._ID,
                 OpenClothesDatabase.Tables.SIZE + "." +  OpenClothesContract.Size.SIZE,
                 OpenClothesDatabase.Tables.STOCK + "." +  OpenClothesContract.Stock.QUANTITY,
+                OpenClothesDatabase.Tables.PRODUCT + "." + OpenClothesContract.Product.PRICE
 
         };
     }
@@ -107,6 +117,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         public static final int COL_SIZE_ID = 4;
         public static final int COL_SIZE = 5;
         public static final int COL_QUANTITY = 6;
+        public static final int COL_PRICE = 7;
 
 
     }
@@ -257,9 +268,6 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
     }
 
-
-
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -344,33 +352,54 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         }
     };
 
-    protected View.OnFocusChangeListener textQuantityFocusListener = new View.OnFocusChangeListener() {
+    protected ViewSwitcher.ViewFactory textFactory = new ViewSwitcher.ViewFactory() {
         @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-
-            if(hasFocus){
-
-                if(!TextUtils.isEmpty(mEditTextQuantity.getText()) && TextUtils.isDigitsOnly(mEditTextQuantity.getText())){
-
-                    int quantity = Integer.parseInt(mEditTextQuantity.getText().toString());
-
-                    if(quantity>0){
-
-                        if(null != selectedStockItem ){
-
-                            int total = quantity * selectedStockItem.getPrice();
-
-                            mTextViewTotal.setText(String.valueOf(total));
-                        }
-
-                    }
-                }
-            }
-
+        public View makeView() {
+            TextView t = new TextView(context);
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT);
+            t.setLayoutParams(layoutParams);
+            t.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
+            return t;
         }
     };
 
+    protected TextWatcher textQuantityWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            if(!TextUtils.isEmpty(s) && TextUtils.isDigitsOnly(s)){
+
+                int quantity = Integer.parseInt(s.toString());
+
+                if(quantity>0){
+
+                    if(null != selectedStockItem ){
+
+                        int total = quantity * selectedStockItem.getPrice();
+
+                        mTextViewTotal.setText( "$ " + String.valueOf(total) );
+
+                    }
+
+                }
+            }
+            else{
+
+                mTextViewTotal.setText("$0.00");
+            }
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     public static LeanProductModel createLean(StockItem item){
 
@@ -391,8 +420,20 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
         getLoaderManager().initLoader(LOADER_STOCK, null, this);
         getLoaderManager().initLoader(LOADER_ALL_SIZE, null, this);
-        mEditTextQuantity.setOnFocusChangeListener(textQuantityFocusListener);
+
+        mEditTextQuantity.addTextChangedListener(textQuantityWatcher);
         mSpinnerSize.setOnItemSelectedListener(sizeItemClickListener);
+
+        Animation in = AnimationUtils.loadAnimation(context,android.R.anim.fade_in);
+        Animation out = AnimationUtils.loadAnimation(context,android.R.anim.fade_out);
+
+        mTextPrice.setFactory(textFactory);
+        mTextPrice.setInAnimation(in);
+        mTextPrice.setOutAnimation(out);
+
+        mTextViewTotal.setFactory(textFactory);
+        mTextViewTotal.setInAnimation(in);
+        mTextViewTotal.setOutAnimation(out);
 
 
     }
@@ -455,6 +496,9 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         }
 
         selectedStockItem = findStockItem(selectedSize.getIdSize(), mSpinnerProduct.getSelectedItemId());
+
+        String price = String.valueOf( selectedStockItem.getPrice() );
+        mTextPrice.setText( "$ " + price );
 
     }
 
@@ -555,6 +599,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         String descriptionSize = data.getString(StockColumnsOrder.COL_SIZE);
         stockItem.setSize(new SizeModel(idSize,descriptionSize));
         stockItem.setQuantity(data.getInt(StockColumnsOrder.COL_QUANTITY));
+        stockItem.setPrice(data.getInt(StockColumnsOrder.COL_PRICE));
 
         return stockItem;
     }
