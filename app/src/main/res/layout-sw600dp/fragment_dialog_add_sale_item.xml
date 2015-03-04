@@ -15,7 +15,7 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="72dp"
+        android:layout_height="96dp"
         android:gravity="center"
         android:background="@color/primary">
 
@@ -28,80 +28,86 @@
 
 
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="24dp">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="7"/>
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Price"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Total"
+            android:gravity="center"
+            />
+        </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="24dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Model"
-            android:layout_marginTop="6dp"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="74dp"
+            android:orientation="horizontal"
+            android:gravity="bottom">
 
 
-        <Spinner
+            <Spinner
                 style="@style/Widget.IOSched.HeaderBar.Spinner"
                 android:id="@+id/spin_model"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="3"
 
                 />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Size"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="6dp"
-            />
 
             <Spinner
                 style="@style/Widget.IOSched.HeaderBar.Spinner"
                 android:id="@+id/spin_size"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-
+                android:layout_width="60dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
                 />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Quantity"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="6dp"
-            />
-
-        <EditText
+            <EditText
                 android:id="@+id/et_quantity"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
                 android:hint="@string/hint_quantity_stock"
                 android:gravity="center_vertical"
                 android:inputType="numberDecimal"
-                android:layout_marginTop="12dp"
 
                 />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/product_price"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="6dp"
-            />
 
             <TextSwitcher
                 android:id="@+id/text_view_price"
-                android:layout_width="fill_parent"
-                android:layout_height="30dp"
-                android:layout_marginTop="12dp"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
                 android:gravity="center"
                 android:inputType="numberDecimal"
                 tools:text="$200"
@@ -110,19 +116,11 @@
                 android:text="$0.00"
                 />
 
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="6dp"
-            />
             <TextSwitcher
                 android:id="@+id/text_total_line"
-                android:layout_width="fill_parent"
-                android:layout_height="30dp"
-                android:layout_marginTop="12dp"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
                 android:gravity="center"
                 android:inputType="numberDecimal"
                 tools:text="$200"
@@ -130,6 +128,7 @@
                 android:textStyle="bold"
                 android:text="$0.00"
                 />
+        </LinearLayout>
     </LinearLayout>
 
     <View

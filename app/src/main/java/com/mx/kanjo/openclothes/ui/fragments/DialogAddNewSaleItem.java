@@ -2,7 +2,6 @@ package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -37,8 +36,6 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.mx.kanjo.openclothes.R;
-import com.mx.kanjo.openclothes.engine.CatalogueManager;
-import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
@@ -65,7 +62,8 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    public static final String EXTRA_ID_STOCK = "ID_PRODUCT";
+    public static final String EXTRA_ID_PRODUCT = "ID_PRODUCT";
+    public static final String EXTRA_ID_STOCK = "ID_STOCK";
     public static final String EXTRA_ID_SIZE = "ID_SIZE";
     public static final String EXTRA_QTY = "QUANTITY";
     public static final String EXTRA_INCOME_TYPE = "ID_INCOME";
@@ -83,9 +81,6 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
     private Context context;
 
-    private CatalogueManager mCatalogueManager;
-    private ConfigurationInventoryManager mConfigInventoryManager;
-    private ContentResolver mContentResolver;
     private ArrayList<SizeModel> listSize  = Lists.newArrayList();
     private Dictionary<Integer,SizeModel> sizeModelDictionary;
     private ArrayList<StockItem> listStockItems = Lists.newArrayList();
@@ -122,7 +117,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
     }
 
-    private interface SizeColums {
+    private interface SizeColumns {
 
         public static String[] COLUMNS = {
             OpenClothesContract.Size._ID,
@@ -131,7 +126,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
     }
 
-    private interface SizeColumsOrder{
+    private interface SizeColumnsOrder {
         public static final int COL_SIZE_ID = 0;
         public static final int COL_SIZE_DESCRIPTION = 1;
     }
@@ -165,7 +160,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
                 return new CursorLoader( getActivity(),
                         sizeUri,
-                        SizeColums.COLUMNS,
+                        SizeColumns.COLUMNS,
                         selection,
                         selectionArgs,
                         sortOrder );
@@ -427,9 +422,6 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
     private void init() {
         context = getActivity();
-        mCatalogueManager = new CatalogueManager(context);
-        mConfigInventoryManager = new ConfigurationInventoryManager(context);
-        mContentResolver = context.getContentResolver();
 
         getLoaderManager().initLoader(LOADER_STOCK, null, this);
         getLoaderManager().initLoader(LOADER_ALL_SIZE, null, this);
@@ -542,7 +534,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
     {
         switch (button.getId())
         {
-            case R.id.btn_add_stock_item :
+            case R.id.btn_add_new_sale_item :
                 sendResult(Activity.RESULT_OK);
                 break;
 
@@ -557,9 +549,12 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         if (null == getTargetFragment())
             return;
 
+        if(Activity.RESULT_CANCELED == resultCode )
+            getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, null);
+
         String textQty = mEditTextQuantity.getText().toString();
 
-        if ( !isQuantityCompliant(textQty) && resultCode == Activity.RESULT_OK ) {
+        if ( !isQuantityCompliant(textQty)) {
             showMessage();
             return;
         }
@@ -574,13 +569,19 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
     public Intent getIntentExtras()
     {
+
+        if(null == selectedStockItem)
+            throw  new NullPointerException("selectedStockItem");
+
         Intent i = new Intent();
 
-        int idProduct = (int) mSpinnerProduct.getSelectedItemId();
-        int idSize = listSize.get(mSpinnerSize.getSelectedItemPosition()).getIdSize();
+        int idProduct = selectedStockItem.getIdProduct();
+        int idStock = selectedStockItem.getStockItemId();
+        int idSize = selectedStockItem.getSize().getIdSize();
         int qty = Integer.parseInt(mEditTextQuantity.getText().toString());
 
-        i.putExtra( EXTRA_ID_STOCK, idProduct );
+        i.putExtra(EXTRA_ID_PRODUCT, idProduct );
+        i.putExtra(EXTRA_ID_STOCK, idStock);
         i.putExtra( EXTRA_ID_SIZE, idSize );
         i.putExtra( EXTRA_QTY, qty);
 
@@ -590,6 +591,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
     private void showMessage() {
         Toast.makeText(context, getString(R.string.message_quantity_validation),Toast.LENGTH_SHORT).show();
+        mEditTextQuantity.setError("Error enter a valid quantity");
     }
 
     private static boolean isQuantityCompliant(String qtyText) {
@@ -629,8 +631,8 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
         SizeModel sizeModel = new SizeModel();
 
-        sizeModel.setIdSize(data.getInt(SizeColumsOrder.COL_SIZE_ID));
-        sizeModel.setSizeDescription(data.getString(SizeColumsOrder.COL_SIZE_DESCRIPTION));
+        sizeModel.setIdSize(data.getInt(SizeColumnsOrder.COL_SIZE_ID));
+        sizeModel.setSizeDescription(data.getString(SizeColumnsOrder.COL_SIZE_DESCRIPTION));
 
         return sizeModel;
     }
