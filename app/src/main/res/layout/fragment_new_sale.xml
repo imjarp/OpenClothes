@@ -14,6 +14,7 @@
         android:orientation="horizontal"
         android:layout_alignParentTop="true"
         android:gravity="center_vertical"
+        android:layout_marginTop="60dp"
         android:layout_marginRight="48dp"
         android:layout_marginLeft="48dp">
 
@@ -88,7 +89,7 @@
         android:layout_below="@+id/linear_header_table_sale"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-        <android.support.v7.widget.RecyclerView
+        <!--android.support.v7.widget.RecyclerView
             android:id="@+id/recycle_view_list"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent">
@@ -96,7 +97,7 @@
 
 
 
-        </android.support.v7.widget.RecyclerView>
+        </android.support.v7.widget.RecyclerView-->
     </android.support.v7.widget.CardView>
 
 

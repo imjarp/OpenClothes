@@ -1,6 +1,7 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,6 +30,10 @@ import butterknife.OnClick;
  * create an instance of this fragment.
  */
 public class NewSaleFragment extends Fragment {
+
+
+    private static final int REQUEST_SALE_ITEM = 1;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -82,6 +87,11 @@ public class NewSaleFragment extends Fragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -94,17 +104,17 @@ public class NewSaleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_new_sale2, container, false);
+        View view = inflater.inflate(R.layout.fragment_new_sale, container, false);
 
         view.setTag(TAG);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_view_list);
+        /*mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_view_list);
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
 
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER ;
 
-        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);*/
 
         ButterKnife.inject(this, view);
 
@@ -119,8 +129,7 @@ public class NewSaleFragment extends Fragment {
     {
         if( R.id.btnAddNewSaleItem == view.getId())
         {
-
-            showFragment(null,"",0);
+            showFragment(DialogAddNewSaleItem.newInstance("",""), DialogAddStockItem.TAG, REQUEST_SALE_ITEM);
         }
     }
 
@@ -138,7 +147,7 @@ public class NewSaleFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            //mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");

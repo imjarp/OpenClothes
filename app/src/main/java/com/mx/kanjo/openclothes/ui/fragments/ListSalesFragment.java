@@ -32,6 +32,7 @@ import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 import com.mx.kanjo.openclothes.provider.OpenClothesDatabase;
+import com.mx.kanjo.openclothes.ui.NewSaleActivity;
 import com.mx.kanjo.openclothes.ui.StockAdapter;
 import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.Lists;
@@ -203,12 +204,6 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        /*try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
     }
 
     @Override
@@ -314,7 +309,9 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
     @OnClick(R.id.btnCreateStock)
     public void onClickButtonListener(View view)
     {
-        showFragment(DialogAddNewSaleItem.newInstance("",""), DialogAddStockItem.TAG, REQUEST_NEW_STOCK);
+        Intent i = new Intent(getActivity(), NewSaleActivity.class);
+        startActivity(i);
+        //showFragment(DialogAddNewSaleItem.newInstance("",""), DialogAddStockItem.TAG, REQUEST_NEW_STOCK);
     }
 
     private void showFragment(android.support.v4.app.DialogFragment dialogFragment, String TAG, int requestCode)

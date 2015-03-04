@@ -549,8 +549,10 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         if (null == getTargetFragment())
             return;
 
-        if(Activity.RESULT_CANCELED == resultCode )
+        if(Activity.RESULT_CANCELED == resultCode ) {
             getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, null);
+            dismiss();
+        }
 
         String textQty = mEditTextQuantity.getText().toString();
 

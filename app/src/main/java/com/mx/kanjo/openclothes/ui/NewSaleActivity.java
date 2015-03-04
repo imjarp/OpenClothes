@@ -14,6 +14,8 @@ import com.mx.kanjo.openclothes.ui.fragments.NewSaleFragment;
 
 public class NewSaleActivity extends ActionBarActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
