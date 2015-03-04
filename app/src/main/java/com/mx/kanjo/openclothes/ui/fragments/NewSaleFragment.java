@@ -1,10 +1,12 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,8 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mx.kanjo.openclothes.R;
+import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
+import com.mx.kanjo.openclothes.ui.SaleItemAdapter;
+import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.Lists;
+import com.mx.kanjo.openclothes.util.UiUtils;
 
 import java.util.ArrayList;
 
@@ -45,6 +51,8 @@ public class NewSaleFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private Context mContext;
+
     private OnFragmentInteractionListener mListener;
 
     private RecyclerView mRecyclerView;
@@ -54,6 +62,10 @@ public class NewSaleFragment extends Fragment {
     private LinearLayoutManager mLinearLayoutManager;
 
     protected RecyclerView.LayoutManager mLayoutManager;
+
+    SaleItemAdapter mSaleItemAdapter ;
+
+    ArrayList<StockItem> mSalesItems = Lists.newArrayList();
 
     private int SPAN_COUNT = 0;
 
@@ -89,6 +101,26 @@ public class NewSaleFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
+        if( Activity.RESULT_OK != resultCode)
+            return;
+
+        parseResult(resultCode,data);
+    }
+
+    private void parseResult(int resultCode, Intent data) {
+
+        StockItem stockItem = new StockItem();
+        stockItem.setQuantity(10);
+        stockItem.setPrice(50);
+        stockItem.setModel("CB-011");
+
+
+        SizeModel s = new SizeModel(1,"Small");
+        stockItem.setSize(s);
+
+        mSaleItemAdapter.addSaleItem(stockItem);
+        mSaleItemAdapter.notifyItemInserted(0);
+
     }
 
     @Override
@@ -108,19 +140,47 @@ public class NewSaleFragment extends Fragment {
 
         view.setTag(TAG);
 
-        /*mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_view_list);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_view_list);
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
 
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER ;
 
-        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);*/
+        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
         ButterKnife.inject(this, view);
+
+        mContext = getActivity();
+
+        mSaleItemAdapter = new SaleItemAdapter(mContext,mSalesItems,buildConfiguration());
+
 
         return view;
 
 
+    }
+
+
+    private ConfigImageHelper buildConfiguration() {
+        Pair<Integer,Integer> sizeImage;
+
+        if( UiUtils.isTablet(getActivity()) ) {
+
+            sizeImage = new Pair<>(72, 72);
+
+            return new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
+                    .withRoundImage(true)
+                    .build();
+        }
+        else
+        {
+            sizeImage = new Pair<>(48, 48);
+
+            return new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
+                    .withRoundImage(true)
+                    .build();
+
+        }
     }
 
 

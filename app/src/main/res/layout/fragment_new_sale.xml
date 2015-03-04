@@ -48,35 +48,36 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Product"
-            android:layout_weight="5"
-            android:gravity="center"/>
+            android:layout_weight="6"
+            android:gravity="left"
+            android:paddingLeft="60dp"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Size"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:gravity="center"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Quantity"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:gravity="center"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Price"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:gravity="center"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Total"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:gravity="center"/>
 
     </LinearLayout>
@@ -89,7 +90,7 @@
         android:layout_below="@+id/linear_header_table_sale"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-        <!--android.support.v7.widget.RecyclerView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/recycle_view_list"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent">
@@ -97,7 +98,7 @@
 
 
 
-        </android.support.v7.widget.RecyclerView-->
+        </android.support.v7.widget.RecyclerView>
     </android.support.v7.widget.CardView>
 
 
