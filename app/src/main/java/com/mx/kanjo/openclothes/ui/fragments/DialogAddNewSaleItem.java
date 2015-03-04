@@ -296,6 +296,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         Dialog dialog =  super.onCreateDialog( savedInstanceState );
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         return dialog;
     }
 
@@ -330,6 +331,8 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 populateSizeSpinner((int) adapter.getItemId(position));
+
+
         }
 
         @Override
@@ -371,28 +374,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            if(!TextUtils.isEmpty(s) && TextUtils.isDigitsOnly(s)){
-
-                int quantity = Integer.parseInt(s.toString());
-
-                if(quantity>0){
-
-                    if(null != selectedStockItem ){
-
-                        int total = quantity * selectedStockItem.getPrice();
-
-                        mTextViewTotal.setText( "$ " + String.valueOf(total) );
-
-                    }
-
-                }
-            }
-            else{
-
-                mTextViewTotal.setText("$0.00");
-            }
-
+            setTotalLine(s);
         }
 
         @Override
@@ -400,6 +382,37 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
         }
     };
+
+    private void refreshTotalLine(){
+
+        setTotalLine(mEditTextQuantity.getText());
+
+    }
+
+    private void setTotalLine(CharSequence s){
+
+        if(!TextUtils.isEmpty(s) && TextUtils.isDigitsOnly(s)){
+
+            int quantity = Integer.parseInt(s.toString());
+
+            if(quantity>0){
+
+                if(null != selectedStockItem ){
+
+                    int total = quantity * selectedStockItem.getPrice();
+
+                    mTextViewTotal.setText( "$ " + String.valueOf(total) );
+
+                }
+
+            }
+        }
+        else{
+
+            mTextViewTotal.setText("$0.00");
+        }
+
+    }
 
     public static LeanProductModel createLean(StockItem item){
 
@@ -476,6 +489,13 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
         mSpinnerSize.setAdapter(sizeAdapter);
 
+        mSpinnerSize.setSelection(0);
+
+        sizeItemClickListener.onItemSelected(mSpinnerSize, null, 0, 0);
+
+        refreshTotalLine();
+
+
 
     }
 
@@ -498,6 +518,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         selectedStockItem = findStockItem(selectedSize.getIdSize(), mSpinnerProduct.getSelectedItemId());
 
         String price = String.valueOf( selectedStockItem.getPrice() );
+
         mTextPrice.setText( "$ " + price );
 
     }
