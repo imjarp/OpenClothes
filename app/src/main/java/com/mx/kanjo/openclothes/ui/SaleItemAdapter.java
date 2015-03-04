@@ -30,7 +30,6 @@ public class SaleItemAdapter extends RecyclerView.Adapter<SaleItemAdapter.SaleIt
 
     private Context context;
     private int lastAnimatedPosition = -1;
-    private int itemsCount = 0;
     private ArrayList<StockItem> mSaleItems;
     private static StockItem tempSaleItem = null;
     Picasso picasso;
@@ -45,7 +44,6 @@ public class SaleItemAdapter extends RecyclerView.Adapter<SaleItemAdapter.SaleIt
     public SaleItemAdapter(Context context, ArrayList<StockItem> saleItems, ConfigImageHelper configImageHelper){
         this.context = context;
         mSaleItems = saleItems;
-        itemsCount = saleItems.size();
         picasso = Picasso.with(context);
         this.mConfigImageHelper = configImageHelper;
         mCircleTransform = new CircleTransform();
@@ -61,7 +59,7 @@ public class SaleItemAdapter extends RecyclerView.Adapter<SaleItemAdapter.SaleIt
     @Override
     public SaleItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        final View view = LayoutInflater.from(context).inflate(R.layout.product_card, parent, false);
+        final View view = LayoutInflater.from(context).inflate(R.layout.line_item_sale, parent, false);
         return new SaleItemHolder(view);
     }
 
@@ -118,7 +116,7 @@ public class SaleItemAdapter extends RecyclerView.Adapter<SaleItemAdapter.SaleIt
 
     @Override
     public int getItemCount() {
-        return itemsCount;
+        return mSaleItems.size();
     }
 
     public static class SaleItemHolder extends RecyclerView.ViewHolder

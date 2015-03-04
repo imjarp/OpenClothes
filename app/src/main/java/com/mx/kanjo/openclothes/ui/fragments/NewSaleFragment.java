@@ -1,8 +1,10 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +12,7 @@ import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,8 @@ import android.view.ViewGroup;
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
+import com.mx.kanjo.openclothes.provider.OpenClothesContract;
+import com.mx.kanjo.openclothes.provider.OpenClothesDatabase;
 import com.mx.kanjo.openclothes.ui.SaleItemAdapter;
 import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.Lists;
@@ -71,9 +76,38 @@ public class NewSaleFragment extends Fragment {
 
     ArrayList<StockItem> saleItems = Lists.newArrayList();
 
+    int fakeIndex = 1;
+
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
+    }
+
+    private interface StockColumns{
+        public static String [] COLUMNS = {
+                OpenClothesDatabase.Tables.STOCK + "." +  OpenClothesContract.Stock._ID,
+                OpenClothesDatabase.Tables.PRODUCT + "." +  OpenClothesContract.Product._ID,
+                OpenClothesContract.Product.MODEL,
+                OpenClothesContract.Product.IMAGE_PATH,
+                OpenClothesDatabase.Tables.SIZE + "." +  OpenClothesContract.Size._ID,
+                OpenClothesDatabase.Tables.SIZE + "." +  OpenClothesContract.Size.SIZE,
+                OpenClothesDatabase.Tables.STOCK + "." +  OpenClothesContract.Stock.QUANTITY,
+                OpenClothesDatabase.Tables.PRODUCT + "." + OpenClothesContract.Product.PRICE
+
+        };
+    }
+
+    private interface StockColumnsOrder{
+        public static final int COL_STOCK_ID = 0;
+        public static final int COL_PRODUCT_ID = 1;
+        public static final int COL_PRODUCT_MODEL = 2;
+        public static final int COL_IMAGE_PATH = 3;
+        public static final int COL_SIZE_ID = 4;
+        public static final int COL_SIZE = 5;
+        public static final int COL_QUANTITY = 6;
+        public static final int COL_PRICE = 7;
+
+
     }
 
     /**
@@ -104,24 +138,21 @@ public class NewSaleFragment extends Fragment {
         if( Activity.RESULT_OK != resultCode)
             return;
 
-        parseResult(resultCode,data);
+        parseResult(requestCode,data);
     }
 
-    private void parseResult(int resultCode, Intent data) {
-
-        StockItem stockItem = new StockItem();
-        stockItem.setQuantity(10);
-        stockItem.setPrice(50);
-        stockItem.setModel("CB-011");
+    private void parseResult(int requestCode, Intent data) {
 
 
-        SizeModel s = new SizeModel(1,"Small");
-        stockItem.setSize(s);
+        if(requestCode == REQUEST_SALE_ITEM){
 
-        mSaleItemAdapter.addSaleItem(stockItem);
-        mSaleItemAdapter.notifyItemInserted(0);
+            addSaleItemToForm(data);
+        }
+
 
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -152,14 +183,39 @@ public class NewSaleFragment extends Fragment {
 
         mContext = getActivity();
 
+
         mSaleItemAdapter = new SaleItemAdapter(mContext,mSalesItems,buildConfiguration());
 
+        mRecyclerView.setAdapter(mSaleItemAdapter);
 
         return view;
 
 
     }
 
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            //mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
 
     private ConfigImageHelper buildConfiguration() {
         Pair<Integer,Integer> sizeImage;
@@ -193,32 +249,74 @@ public class NewSaleFragment extends Fragment {
         }
     }
 
+    private void addSaleItemToForm(Intent data) {
 
+        int idStock = data.getIntExtra( DialogAddNewSaleItem.EXTRA_ID_STOCK, -1 );
+        int idProduct = data.getIntExtra( DialogAddNewSaleItem.EXTRA_ID_PRODUCT, -1 );
+        int idSize = data.getIntExtra( DialogAddNewSaleItem.EXTRA_ID_SIZE, -1 );
+        int quantity = data.getIntExtra( DialogAddNewSaleItem.EXTRA_QTY, -1 );
 
-
-
-        @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
         try {
-            //mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+            mSaleItemAdapter.addSaleItem(createStockItem(idStock,idSize,quantity,idProduct));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public StockItem createStockItem(int idStock, int sizeId, int quantity,int idProduct) throws Exception {
+
+        Uri stockItemUri = OpenClothesContract.Stock.buildStockUriProductSize();
+
+        String selection = StockColumns.COLUMNS[StockColumnsOrder.COL_STOCK_ID] + " = ?";
+
+        String[] selectionArgs = new String[]{ String.valueOf(idStock) };
+
+        ContentResolver resolver = mContext.getContentResolver();
+
+        Cursor cursor = resolver.query(stockItemUri,
+                                       StockColumns.COLUMNS,
+                                       selection,
+                                       selectionArgs,
+                                       null);
+
+
+        if(!cursor.moveToFirst() || 0 == cursor.getCount()){
+            throw  new Exception("Error can't find Stock item");
+        }
+
+        StockItem saleItem = getStockFromCursor(cursor);
+
+        saleItem.setQuantity(quantity);
+
+        //TODO : Check if the values are constant??
+
+        cursor.close();
+
+        return saleItem;
     }
+
+    private static StockItem getStockFromCursor(Cursor data) {
+        StockItem stockItem = new StockItem();
+        stockItem.setStockItemId(data.getInt(StockColumnsOrder.COL_STOCK_ID));
+        stockItem.setIdProduct(data.getInt(StockColumnsOrder.COL_PRODUCT_ID));
+        stockItem.setModel(data.getString(StockColumnsOrder.COL_PRODUCT_MODEL));
+        Uri imagePath =  data.isNull(StockColumnsOrder.COL_IMAGE_PATH) ?
+                null:
+                TextUtils.isEmpty(data.getString(StockColumnsOrder.COL_IMAGE_PATH))?
+                        null :
+                        Uri.parse(data.getString(StockColumnsOrder.COL_IMAGE_PATH));
+        stockItem.setImagePath(imagePath);
+        int idSize = data.getInt(StockColumnsOrder.COL_SIZE_ID);
+        String descriptionSize = data.getString(StockColumnsOrder.COL_SIZE);
+        stockItem.setSize(new SizeModel(idSize,descriptionSize));
+        stockItem.setQuantity(data.getInt(StockColumnsOrder.COL_QUANTITY));
+        stockItem.setPrice(data.getInt(StockColumnsOrder.COL_PRICE));
+
+        return stockItem;
+    }
+
+
 
     /**
      * This interface must be implemented by activities that contain this
