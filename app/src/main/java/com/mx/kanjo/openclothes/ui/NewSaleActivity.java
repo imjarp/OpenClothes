@@ -3,6 +3,7 @@ package com.mx.kanjo.openclothes.ui;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,8 +26,17 @@ public class NewSaleActivity extends ActionBarActivity {
                     .add(R.id.container, NewSaleFragment.newInstance("",""))
                     .commit();
         }
+        configureToolbar();
+
     }
 
+    private void configureToolbar() {
+        Toolbar mainToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mainToolbar);
+        getSupportActionBar().setTitle(getString(R.string.title_add_new_sale));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

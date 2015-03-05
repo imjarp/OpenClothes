@@ -105,5 +105,7 @@
     <!--Dialog add sale item-->
     <string name="title_add_dialog_new_sale">New sale item</string>
 
+    <!--New Sale activity-->
+    <string name="title_add_new_sale">Add new sale</string>
 
 </resources>

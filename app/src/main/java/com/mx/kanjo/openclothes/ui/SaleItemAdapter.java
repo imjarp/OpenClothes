@@ -144,4 +144,6 @@ public class SaleItemAdapter extends RecyclerView.Adapter<SaleItemAdapter.SaleIt
     }
 
 
+
+
 }

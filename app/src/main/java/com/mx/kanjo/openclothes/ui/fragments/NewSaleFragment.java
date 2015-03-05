@@ -8,14 +8,19 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.model.SizeModel;
@@ -30,13 +35,10 @@ import com.mx.kanjo.openclothes.util.UiUtils;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link NewSaleFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link NewSaleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -58,8 +60,6 @@ public class NewSaleFragment extends Fragment {
 
     private Context mContext;
 
-    private OnFragmentInteractionListener mListener;
-
     private RecyclerView mRecyclerView;
 
     protected LayoutManagerType mCurrentLayoutManagerType;
@@ -68,15 +68,16 @@ public class NewSaleFragment extends Fragment {
 
     protected RecyclerView.LayoutManager mLayoutManager;
 
+    //TODO : Refactor for textswicther
+    @InjectView(R.id.text_total_sale) TextView mTextViewTotalSale;
+
     SaleItemAdapter mSaleItemAdapter ;
 
     ArrayList<StockItem> mSalesItems = Lists.newArrayList();
 
-    private int SPAN_COUNT = 0;
+    int totalSale = 0;
 
-    ArrayList<StockItem> saleItems = Lists.newArrayList();
-
-    int fakeIndex = 1;
+    int SPAN_COUNT = 0;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -134,7 +135,7 @@ public class NewSaleFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
+
         if( Activity.RESULT_OK != resultCode)
             return;
 
@@ -152,8 +153,6 @@ public class NewSaleFragment extends Fragment {
 
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,6 +160,8 @@ public class NewSaleFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -188,6 +189,8 @@ public class NewSaleFragment extends Fragment {
 
         mRecyclerView.setAdapter(mSaleItemAdapter);
 
+        ButterKnife.inject(this,view);
+
         return view;
 
 
@@ -214,7 +217,29 @@ public class NewSaleFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            inflater.inflate(R.menu.menu_new_sale_fragment,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+
+            case R.id.save_sale :
+                    saveSale();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void saveSale() {
+
+        NavUtils.navigateUpFromSameTask(getActivity());
+
     }
 
     private ConfigImageHelper buildConfiguration() {
@@ -257,9 +282,14 @@ public class NewSaleFragment extends Fragment {
         int quantity = data.getIntExtra( DialogAddNewSaleItem.EXTRA_QTY, -1 );
 
         try {
-            mSaleItemAdapter.addSaleItem(createStockItem(idStock,idSize,quantity,idProduct));
+            StockItem item = createStockItem(idStock, idSize, quantity, idProduct);
+            mSaleItemAdapter.addSaleItem(item);
+            //mSalesItems.add(item);
+            totalSale += (item.getQuantity() * item.getPrice());
+            updateTotal();
+
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
 
     }
@@ -316,24 +346,6 @@ public class NewSaleFragment extends Fragment {
         return stockItem;
     }
 
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
-    }
-
-
     public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
         int scrollPosition = 0;
 
@@ -365,5 +377,11 @@ public class NewSaleFragment extends Fragment {
         android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
         dialogFragment.setTargetFragment(this, requestCode);
         dialogFragment.show(fm, TAG);
+    }
+
+    private void updateTotal(){
+
+        mTextViewTotalSale.setText("$ " + String.valueOf(totalSale));
+
     }
 }

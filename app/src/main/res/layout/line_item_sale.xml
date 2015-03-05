@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/image_view_product"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
             tools:src="@drawable/cb_002" />
 
         <TextView

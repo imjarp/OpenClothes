@@ -26,6 +26,7 @@
             />
 
         <TextView
+            android:id="@+id/text_total_sale"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:text="Total"
