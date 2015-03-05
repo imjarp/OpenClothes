@@ -4,7 +4,8 @@
     <item android:enabled="true"
           android:id="@+id/save_sale"
           android:orderInCategory="100"
-          android:showAsAction="always"
+          android:icon="@drawable/ic_menu_add_clothe"
+          android:showAsAction="ifRoom"
           android:title="Confirm Sale"/>
 
 </menu>
