@@ -139,7 +139,7 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
     @Override
     public void onResume() {
         super.onResume();
-        mSpinnerProduct.setAdapter(modelAdapter);
+
     }
 
     @Override
@@ -231,7 +231,7 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
         mConfigInventoryManager = new ConfigurationInventoryManager(context);
         mContentResolver = context.getContentResolver();
         modelAdapter = new ProductSpinnerAdapter(context,getProducts(),build());
-
+        mSpinnerProduct.setAdapter(modelAdapter);
         populateSizeSpinner(context);
         populateSpinnerIncomingType(context);
 

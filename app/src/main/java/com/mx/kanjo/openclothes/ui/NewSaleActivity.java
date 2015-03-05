@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.ui.fragments.NewSaleFragment;
+import com.mx.kanjo.openclothes.util.UiUtils;
 
 public class NewSaleActivity extends ActionBarActivity {
 
@@ -34,7 +35,9 @@ public class NewSaleActivity extends ActionBarActivity {
         Toolbar mainToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle(getString(R.string.title_add_new_sale));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(UiUtils.isTablet(this)) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
     }
 

@@ -105,12 +105,12 @@ public class ProductSpinnerAdapter implements SpinnerAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return 0;
+        return 1;
     }
 
     @Override
     public int getViewTypeCount() {
-        return 0;
+        return 1;
     }
 
     @Override

@@ -138,13 +138,15 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
         String sortOrder = null;
         String selection =  null ;
-        String [] selectionArgs =null;// { "1" };
+        String [] selectionArgs = null;// { "1" };
 
         switch (id){
             case LOADER_STOCK :
             {
 
                 Uri stockUri = OpenClothesContract.Stock.buildStockUriProductSize();
+
+                sortOrder = StockColumns.COLUMNS[StockColumnsOrder.COL_PRODUCT_ID] +  " DESC " ;
 
                 return new CursorLoader( getActivity(),
                         stockUri,
