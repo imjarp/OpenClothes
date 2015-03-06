@@ -107,5 +107,8 @@
 
     <!--New Sale activity-->
     <string name="title_add_new_sale">Add new sale</string>
+    <string name="title_fragment_stock">My stock </string>
+    <string name="title_fragment_products">My products</string>
+    <string name="title_sales_fragment">My sales</string>
 
 </resources>

@@ -24,6 +24,7 @@ public class MainActivity2 extends ActionBarActivity implements
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
+    Toolbar mainToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class MainActivity2 extends ActionBarActivity implements
     }
 
     private void configureToolbar() {
-        Toolbar mainToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mainToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle("Open Clothes");
         
@@ -106,6 +107,8 @@ public class MainActivity2 extends ActionBarActivity implements
     @Override
     public void onNavigationDrawerSelectedItem(int position) {
 
+        mDrawerLayout.closeDrawers();
+
         if(position == 0)
         {
 
@@ -154,4 +157,6 @@ public class MainActivity2 extends ActionBarActivity implements
         transaction.replace(R.id.sample_content_fragment, fragment);
         transaction.commit();
     }
+
+
 }

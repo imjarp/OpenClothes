@@ -11,6 +11,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -192,6 +193,12 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         super.onActivityCreated(savedInstanceState);
 
         getLoaderManager().initLoader(LOADER_STOCK, null, this);
+
+        setTitle();
+    }
+
+    private void setTitle() {
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_fragment_stock));
     }
 
     @Override
