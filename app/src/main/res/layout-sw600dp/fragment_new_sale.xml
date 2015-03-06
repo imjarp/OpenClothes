@@ -103,7 +103,7 @@
     </android.support.v7.widget.CardView>
 
 
-    <ImageButton
+    <!--ImageButton
         android:id="@+id/btnAddNewSaleItem"
         android:layout_width="@dimen/btn_fab_size"
         android:layout_height="@dimen/btn_fab_size"
@@ -114,7 +114,7 @@
         android:background="@drawable/btn_fab_default"
         android:elevation="@dimen/default_elevation"
         android:src="@drawable/ic_plus"
-        android:textSize="28sp" />
+        android:textSize="28sp" /-->
 
 
 </RelativeLayout>

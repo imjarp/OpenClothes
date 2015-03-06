@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:openclothes="http://schemas.android.com/apk/res-auto">
 
     <item android:enabled="true"
-          android:id="@+id/save_sale"
+          android:id="@+id/add_new_item"
           android:orderInCategory="100"
-          android:icon="@drawable/ic_menu_add_clothe"
-          android:showAsAction="ifRoom"
-          android:title="Confirm Sale"/>
+          android:icon="@drawable/ic_menu_t_shirt"
+          openclothes:showAsAction="ifRoom"
+          android:title="Add item"/>
+
+    <item android:enabled="true"
+        android:id="@+id/save_sale"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_menu_download"
+        openclothes:showAsAction="ifRoom"
+        android:title="Create Sale"/>
 
 </menu>

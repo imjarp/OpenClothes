@@ -3,21 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="24dp"
+    android:layout_marginTop="36dp"
     tools:context="com.mx.kanjo.openclothes.ui.fragments.ListStockFragment">
-
-    <ImageButton
-        android:id="@+id/btnAddNewSaleItem"
-        android:layout_width="@dimen/btn_fab_size"
-        android:layout_height="@dimen/btn_fab_size"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="@dimen/btn_fab_margins"
-        android:layout_marginRight="@dimen/btn_fab_margins"
-        android:background="@drawable/btn_fab_default"
-        android:elevation="@dimen/default_elevation"
-        android:src="@drawable/ic_plus"
-        android:textSize="28sp" />
 
 
     <LinearLayout
@@ -26,11 +13,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_vertical"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="36dp"
         android:layout_marginRight="4dp"
         android:layout_marginLeft="4dp"
         android:layout_marginBottom="24dp"
-        android:layout_below="@+id/btnAddNewSaleItem">
+        >
 
         <EditText
             android:layout_width="fill_parent"
@@ -63,17 +50,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Product"
-            android:layout_weight="6"
+            android:layout_weight="10"
             android:gravity="left"
             android:paddingLeft="6dp"
             />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Size"
-            android:layout_weight="4"
-            android:gravity="center"/>
 
         <TextView
             android:layout_width="0dp"

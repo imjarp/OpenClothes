@@ -36,7 +36,6 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 /**
  * Use the {@link NewSaleFragment#newInstance} factory method to
@@ -230,6 +229,10 @@ public class NewSaleFragment extends Fragment {
 
         switch (item.getItemId()){
 
+            case R.id.add_new_item:
+                showFragment(DialogAddNewSaleItem.newInstance("",""), DialogAddStockItem.TAG, REQUEST_SALE_ITEM);
+                break;
+
             case R.id.save_sale :
                     saveSale();
                 break;
@@ -256,7 +259,7 @@ public class NewSaleFragment extends Fragment {
         }
         else
         {
-            sizeImage = new Pair<>(48, 48);
+            sizeImage = new Pair<>(24, 24);
 
             return new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
                     .withRoundImage(true)
@@ -266,14 +269,14 @@ public class NewSaleFragment extends Fragment {
     }
 
 
-    @OnClick(R.id.btnAddNewSaleItem)
+    /*@OnClick(R.id.btnAddNewSaleItem)
     public void onClickListener(View view)
     {
         if( R.id.btnAddNewSaleItem == view.getId())
         {
             showFragment(DialogAddNewSaleItem.newInstance("",""), DialogAddStockItem.TAG, REQUEST_SALE_ITEM);
         }
-    }
+    }*/
 
     private void addSaleItemToForm(Intent data) {
 
