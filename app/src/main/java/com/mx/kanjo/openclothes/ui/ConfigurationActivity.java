@@ -153,7 +153,9 @@ public class ConfigurationActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, 
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_configuration, container, false);
+
             ButterKnife.inject(this, rootView);
+
             return rootView;
         }
 
@@ -235,6 +237,7 @@ public class ConfigurationActivity extends ActionBarActivity {
         private void updateCurrentFragment()
         {
             items.clear();
+
             if(currentConfigurationItem==0)
                 showSizeItems(items);
             else if(currentConfigurationItem==1)
@@ -268,7 +271,6 @@ public class ConfigurationActivity extends ActionBarActivity {
         {
 
             ListConfigurationFragment listConfigurationFragment = ListConfigurationFragment.newInstance(title, "", items);
-
 
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
 

@@ -29,7 +29,10 @@
             android:id="@+id/et_size"
             android:layout_width="196dp"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_size"/>
+            android:hint="@string/hint_size"
+            android:inputType="textCapWords|textShortMessage"
+            android:singleLine="true"
+            />
         </LinearLayout>
 
 

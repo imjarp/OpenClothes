@@ -29,7 +29,9 @@
             android:id="@+id/et_income_type"
             android:layout_width="196dp"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_income_type"/>
+            android:hint="@string/hint_income_type"
+            android:inputType="textShortMessage"
+            android:singleLine="true"/>
     </LinearLayout>
 
 

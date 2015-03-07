@@ -45,11 +45,10 @@
 
 
     <!--Configuration Activity-->
-
     <string name="title_size">Size</string>
     <string name="title_income">Income Types</string>
     <string name="title_outcome">Outcome Types</string>
-
+    <string name="title_configurations">Configurations</string>
 
     <!--Titles for dialogs that has only two actions add or discard-->
     <string name="discard_action_title">Discard</string>
@@ -110,5 +109,6 @@
     <string name="title_fragment_stock">My stock </string>
     <string name="title_fragment_products">My products</string>
     <string name="title_sales_fragment">My sales</string>
+
 
 </resources>
