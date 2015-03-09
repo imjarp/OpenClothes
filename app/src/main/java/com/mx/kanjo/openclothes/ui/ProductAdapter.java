@@ -135,7 +135,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
      }
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener
+            implements View.OnLongClickListener
     {
 
         @InjectView(R.id.text_view_model)
@@ -154,7 +154,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
             super(itemView);
             ButterKnife.inject(this,itemView);
-            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         public void bindProduct(LeanProductModel productModel){
@@ -162,14 +162,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             this.productModel = productModel;
         }
 
+
+
         @Override
-        public void onClick(View v) {
+        public boolean onLongClick(View v) {
             if (mItemClickListener != null) {
                 mItemClickListener.onItemClick(v, getPosition(),getItemId());
+                return true;
             }
-
-
+            return false;
         }
-
-     }
+    }
 }

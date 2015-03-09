@@ -155,7 +155,6 @@ public class ProductFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        
         saveKeysToInstance(outState);
        
     }

@@ -256,7 +256,7 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         String selection =  null ;
 
         //Active
-        String [] selectionArgs =null;// { "1" };
+        String [] selectionArgs = null;// { "1" };
 
 
         return new CursorLoader( getActivity(),

@@ -52,13 +52,15 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
     private static final String ARG_PARAM2 = "param2";
 
     private static final int REQUEST_NEW_PRODUCT = 1;
+    private static final int REQUEST_UPDATE_PRODUCT = 2;
     private static final int LOADER_PRODUCT = 999;
+
+    int positionUpdated;
 
     private String mParam1;
     private String mParam2;
+
     ConfigImageHelper configImageHelper;
-
-
 
     private ArrayList<LeanProductModel> productList = new ArrayList<>();
 
@@ -168,29 +170,23 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
     }
 
-    //TODO : check
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
         productList.clear();
 
-        adapter = new ProductAdapter(getActivity(), productList,configImageHelper);
-
-        if( null != mRecyclerViewProducts) {
-            mRecyclerViewProducts.setAdapter(adapter);
-            mRecyclerViewProducts.getAdapter().notifyDataSetChanged();
-        }
-
-        adapter.SetOnItemClickListener(adapterClickListener);
-        adapter.setHasStableIds(true);
     }
 
     ProductAdapter.OnItemClickListener adapterClickListener = new ProductAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(View view, int position, long id) {
 
-            String stop = "1";
+            positionUpdated = position;
 
+            Intent intentNewProduct = new Intent(getActivity(), ProductActivity.class);
+
+
+            startActivityForResult(intentNewProduct, REQUEST_UPDATE_PRODUCT);
         }
     };
 
@@ -227,6 +223,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         mRecyclerViewProducts = (RecyclerView) view.findViewById(R.id.recycle_view_list_product);
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
+
         Pair<Integer,Integer> sizeImage;
 
         if(UiUtils.isTablet(getActivity())){
@@ -259,11 +256,20 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         super.onActivityCreated(savedInstanceState);
 
         getLoaderManager().initLoader(LOADER_PRODUCT,null,this);
-        
+
         setTitle();
         
     }
-    
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(productList == null){
+            getLoaderManager().restartLoader(LOADER_PRODUCT,null,this);
+        }
+
+    }
+
 
     @Override
     public void onDestroyView() {
