@@ -8,8 +8,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.mx.kanjo.openclothes.R;
@@ -59,6 +57,7 @@ public class PictureUtils {
                 inSampleSize = Math.round((float)srcWidth / (float)destWidth);
             }
         }
+
 
         options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;

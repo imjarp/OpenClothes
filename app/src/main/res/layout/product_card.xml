@@ -20,34 +20,33 @@
             />
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
         android:layout_marginStart="80dp"
         android:layout_marginLeft="80dp">
 
 
+
+
+        <TextView
+            android:id="@+id/text_view_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondary_text"
+            tools:text="Price: $500"
+            android:padding="2dp"
+            />
         <TextView
             android:id="@+id/text_view_model"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Model : CB-011"
             android:textStyle="bold"
             android:textColor="@color/primary"
             android:padding="2dp"
+            android:layout_below="@+id/text_view_price"
 
             />
-
-        <TextView
-            android:id="@+id/text_view_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/secondary_text"
-            tools:text="Price: $500"
-            android:layout_below="@+id/text_view_model"
-            android:padding="2dp"
-            />
-
-
 
 
         </RelativeLayout>
@@ -59,10 +58,7 @@
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:background="#dfdfdf"
-        android:layout_height="1dp"
-        />
-
-
+        android:layout_height="2dp" />
 
         </FrameLayout>
 

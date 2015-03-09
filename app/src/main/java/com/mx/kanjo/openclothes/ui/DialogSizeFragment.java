@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
 
@@ -29,12 +30,29 @@ public class DialogSizeFragment extends DialogFragment {
 
     public static final String EXTRA_SIZE = "com.mx.kanjo.openclothes.ui.DialogSizeFragment";
 
+    private static final String KEY_IS_UPDATE = "Update";
+
+    private boolean isForUpdate = false;
+
     @InjectView(R.id.et_size)
     public EditText mSize ;
 
     public static DialogSizeFragment createInstace()
     {
         return new DialogSizeFragment();
+    }
+
+    public static DialogSizeFragment createInstaceForUpdate()
+    {
+        DialogSizeFragment f = new DialogSizeFragment();
+
+        Bundle args  = new Bundle();
+
+        args.putBoolean(KEY_IS_UPDATE,true);
+
+        f.setArguments(args);
+
+        return f;
     }
 
     @OnClick({R.id.btn_add_size,R.id.btn_discard_size})
@@ -72,9 +90,21 @@ public class DialogSizeFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_new_size,container,false);
         ButterKnife.inject(this,view);
+        if(isForUpdate){
+            ((TextView) view.findViewById(R.id.txtview_title_fragment_size)).setText(getString(R.string.title_update_size));
+            ((Button) view.findViewById(R.id.btn_add_size)).setText(getString(R.string.update_action));
+        }
         return view;
     }
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if( null  != getArguments()){
+            isForUpdate = getArguments().getBoolean(KEY_IS_UPDATE);
+        }
+    }
 
     @NonNull
     @Override
@@ -83,6 +113,8 @@ public class DialogSizeFragment extends DialogFragment {
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return dialog;
     }
+
+
 
     @Override public void onDestroyView() {
         super.onDestroyView();

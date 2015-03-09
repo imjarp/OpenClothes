@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.mx.kanjo.openclothes.R;
+import com.mx.kanjo.openclothes.engine.CatalogueManager;
 import com.mx.kanjo.openclothes.model.ProductModel;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 import com.mx.kanjo.openclothes.util.PictureUtils;
@@ -38,29 +39,17 @@ import butterknife.OnClick;
  */
 public class ProductFragment extends Fragment {
 
+    //TODO : check why is the image flip on small device
+    //TODO : validate model in another thread (UI thread)
 
     private OnFragmentProductListener mProductListener;
 
     private String pathFile, model, price, description, cost;
     private Uri uriImage;
     Boolean isActiveProduct;
-
-    //TODO: Implement on screen change
-
-
-    private static final String keyPathFile, keyModel, keyPrice, keyDescription, keyIsActiveProduct, keyCost;
-
+    private static final int REQUEST_PICK_IMAGE = 1001;
     private boolean productCompliant;
-
-    static {
-
-        keyPathFile = "keyPathFile";
-        keyModel = "keyModel";
-        keyPrice = "keyPrice";
-        keyDescription = "keyDescription";
-        keyIsActiveProduct = "keyIsActiveProduct";
-        keyCost = "keyCost";
-    }
+    private CatalogueManager mCatalogueManager;
 
     @InjectView(R.id.edit_product_model)EditText editTextModel;
 
@@ -75,7 +64,20 @@ public class ProductFragment extends Fragment {
     @InjectView(R.id.img_new_product) ImageButton imageProduct;
 
 
-    private static final int REQUEST_PICK_IMAGE = 1001;
+
+    interface  KeyState {
+
+        String KEY_PATH_FILE = "keyPathFile";
+        String KEY_MODEL = "keyModel";
+        String KEY_PRICE = "keyPrice";
+        String KEY_DESCRIPTION = "keyDescription";
+        String KEY_IS_ACTIVE_PRODUCT = "keyIsActiveProduct";
+        String KEY_COST = "keyCost";
+    }
+
+    public interface OnFragmentProductListener {
+        public void onAddProductClick(ProductModel productModel);
+    }
 
     public ProductFragment() {
     }
@@ -110,11 +112,7 @@ public class ProductFragment extends Fragment {
 
         if ( null != data && null != ( uriImage = data.getData() ) )
         {
-            pathFile = StorageUtil.getPath(getActivity(), uriImage);
-
-            //TODO: Validate image
-            PictureUtils.setImageScaled(getActivity(), imageProduct, pathFile, PictureUtils.SizeImage.IMAGE_192x192);
-
+            setImage(uriImage);
         }
 
     }
@@ -128,6 +126,7 @@ public class ProductFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        mCatalogueManager = new CatalogueManager(activity);
         try {
             mProductListener = (OnFragmentProductListener) activity;
         } catch (ClassCastException e) {
@@ -142,6 +141,8 @@ public class ProductFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_product2, container, false);
         ButterKnife.inject(this, rootView);
+        if( null != savedInstanceState)
+            restoreSaveInstance(savedInstanceState);
         return rootView;
     }
 
@@ -150,6 +151,16 @@ public class ProductFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        
+        saveKeysToInstance(outState);
+       
+    }
+
+
 
     @Override
     public void onDestroyView() {
@@ -195,22 +206,34 @@ public class ProductFragment extends Fragment {
         if(TextUtils.isEmpty(editTextCost.getText().toString()))
         {
             resultValidation.errors.add(getString(R.string.validation_cost_product));
+            editTextCost.setError(getString(R.string.validation_cost_product));
         }
 
         if(TextUtils.isEmpty(editTextModel.getText().toString()))
         {
             resultValidation.errors.add(getString(R.string.validation_model_product));
+            editTextModel.setError(getString(R.string.validation_model_product));
+        }
+        else
+        {
+
+            if (null != mCatalogueManager.findProductByModel(editTextModel.getText().toString()) )
+            {
+                resultValidation.errors.add(getString(R.string.validation_model_product));
+                editTextModel.setError(getString(R.string.validation_model_duplicated));
+            }
+            
         }
 
         if(TextUtils.isEmpty(editTextPrice.getText().toString()))
         {
-            resultValidation.errors.add(getString(R.string.validation_price_product));
+           resultValidation.errors.add(getString(R.string.validation_price_product));
+
+            editTextPrice.setError(getString(R.string.validation_price_product));
         }
 
-        //TODO: Check if the model already exists
         
-        if(resultValidation.hasError())
-            showMessage(resultValidation);
+
 
         return !resultValidation.hasError();
 
@@ -227,9 +250,48 @@ public class ProductFragment extends Fragment {
 
     }
 
-    public interface OnFragmentProductListener {
-        public void onAddProductClick(ProductModel productModel);
+    private void saveKeysToInstance(Bundle outState) {
+
+        outState.putString(KeyState.KEY_COST, editTextCost.getText().toString());
+        outState.putString(KeyState.KEY_DESCRIPTION, editTextDescription.getText().toString() );
+        outState.putBoolean(KeyState.KEY_IS_ACTIVE_PRODUCT, checkBoxActiveProduct.isChecked() );
+        outState.putString( KeyState.KEY_MODEL , editTextModel.getText().toString() );
+        outState.putParcelable( KeyState.KEY_PATH_FILE, uriImage );
+        outState.putString( KeyState.KEY_PRICE , editTextPrice.getText().toString() );
+
     }
+
+    private void restoreSaveInstance(Bundle savedInstanceState){
+
+        String cost , description, model , price;
+        boolean isActive ;
+        cost =  savedInstanceState.getString(KeyState.KEY_COST);
+        description =  savedInstanceState.getString(KeyState.KEY_DESCRIPTION);
+        model =  savedInstanceState.getString(KeyState.KEY_MODEL);
+        price =  savedInstanceState.getString(KeyState.KEY_PRICE);
+        uriImage = savedInstanceState.getParcelable(KeyState.KEY_PATH_FILE);
+        isActive = savedInstanceState.getBoolean(KeyState.KEY_IS_ACTIVE_PRODUCT);
+
+        if(!TextUtils.isEmpty(cost)){ editTextCost.setText(cost); }
+        if(!TextUtils.isEmpty(description)){ editTextDescription.setText(description); }
+        if(!TextUtils.isEmpty(model)){ editTextModel.setText(model); }
+        if(!TextUtils.isEmpty(price)){ editTextPrice.setText(price); }
+        if(null != uriImage ){setImage(uriImage);}
+        checkBoxActiveProduct.setChecked(isActive);
+
+    }
+
+    private void setImage(Uri uri){
+
+        pathFile = StorageUtil.getPath(getActivity(), uri);
+
+        //TODO: Validate image
+        PictureUtils.setImageScaled(getActivity(), imageProduct, pathFile, PictureUtils.SizeImage.IMAGE_192x192);
+    }
+
+
+
+
 
     public  ProductModel createProductModel()
     {

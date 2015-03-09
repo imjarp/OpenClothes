@@ -11,6 +11,7 @@
         android:background="@color/primary">
 
         <TextView
+            android:id="@+id/title_fragment_income"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_add_income_type"

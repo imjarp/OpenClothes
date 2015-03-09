@@ -1,17 +1,25 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
+import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
+import com.mx.kanjo.openclothes.model.IncomeType;
+import com.mx.kanjo.openclothes.model.OutcomeType;
+import com.mx.kanjo.openclothes.model.SizeModel;
+import com.mx.kanjo.openclothes.ui.DialogIncomeTypeFragment;
+import com.mx.kanjo.openclothes.ui.DialogOutcomeTypeFragment;
+import com.mx.kanjo.openclothes.ui.DialogSizeFragment;
 
 import java.util.ArrayList;
 
@@ -22,23 +30,42 @@ import java.util.ArrayList;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class ListConfigurationFragment extends ListFragment {
+public class ListConfigurationFragment extends ListFragment implements AdapterView.OnItemLongClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_TITLE = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String ARG_PARAM_ITEMS = "configuration_items";
+    private static final String ARG_PARAM_CONFIG = "config_type";
+
+    private static final int REQUEST_SIZE = 0 ;
+
+    private static final int REQUEST_INCOME_TYPE = 1 ;
+
+    private static final int REQUEST_OUTCOME_TYPE = 2 ;
+
 
     // TODO: Rename and change types of parameters
     private String mParamTitle;
     private String mParam2;
     private ArrayList<String> configurationItems;
 
+    int currentConfigType = -1;
+
+    private static final int SIZE_CONFIG = 0;
+    private static final int INCOME_CONFIG = 1;
+    private static final int OUTCOME_CONFIG = 2;
+
+    private ConfigurationInventoryManager mConfigurationInventoryManager;
+
+
     View headerView;
 
-
     private OnFragmentInteractionListener mListener;
+
+    private String valueItemOnLongClick = "";
+    private int positionItemOnLongClick = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,12 +75,13 @@ public class ListConfigurationFragment extends ListFragment {
     }
 
     // TODO: Rename and change types of parameters
-    public static ListConfigurationFragment newInstance(String param1, String param2, ArrayList<String> items) {
+    public static ListConfigurationFragment newInstance(String param1, int configType, ArrayList<String> items) {
         ListConfigurationFragment fragment = new ListConfigurationFragment();
+
         Bundle args = new Bundle();
         args.putString(ARG_TITLE, param1);
-        args.putString(ARG_PARAM2, param2);
         args.putStringArrayList(ARG_PARAM_ITEMS, items);
+        args.putInt(ARG_PARAM_CONFIG,  configType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,12 +94,26 @@ public class ListConfigurationFragment extends ListFragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if( Activity.RESULT_OK != resultCode )
+            return;
+
+        processResult(requestCode,data);
+
+
+    }
+
+
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
             mParamTitle = getArguments().getString(ARG_TITLE);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            currentConfigType = getArguments().getInt(ARG_PARAM_CONFIG);
             configurationItems = getArguments().getStringArrayList(ARG_PARAM_ITEMS);
         }
 
@@ -97,7 +139,6 @@ public class ListConfigurationFragment extends ListFragment {
         titleView.setText(mParamTitle);
 
 
-
         if(null == getListView().findViewById(R.id.id_header_view_size_config))
             getListView().addHeaderView(headerView);
 
@@ -105,6 +146,36 @@ public class ListConfigurationFragment extends ListFragment {
         setListAdapter(new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, configurationItems));
 
+        getListView().setOnItemLongClickListener(this);
+
+        mConfigurationInventoryManager = new ConfigurationInventoryManager( getActivity() );
+
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+        if(R.id.id_header_view_size_config == view.getId())
+            return false;
+
+        valueItemOnLongClick = (String) getListAdapter().getItem( position-1 );
+        positionItemOnLongClick = position;
+
+        if(currentConfigType == SIZE_CONFIG){
+            showDialogFragment(DialogSizeFragment.createInstaceForUpdate(), DialogSizeFragment.TAG, REQUEST_SIZE);
+            return true;
+        }
+        if(currentConfigType == INCOME_CONFIG){
+            showDialogFragment(DialogIncomeTypeFragment.createInstaceForUpdate(), DialogIncomeTypeFragment.TAG, REQUEST_INCOME_TYPE);
+            return true;
+
+        }
+        if(currentConfigType == OUTCOME_CONFIG){
+            showDialogFragment(DialogOutcomeTypeFragment.createInstaceForUpdate(), DialogOutcomeTypeFragment.TAG, REQUEST_OUTCOME_TYPE);
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -126,16 +197,68 @@ public class ListConfigurationFragment extends ListFragment {
     }
 
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+    private void showDialogFragment(android.support.v4.app.DialogFragment dialogFragment, String TAG, int requestCode)
+    {
+        android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+        dialogFragment.setTargetFragment( this, requestCode);
+        dialogFragment.show(fm, TAG);
 
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
-        }
     }
+
+    private void processResult(int requestCode, Intent data) {
+
+        String newValue = null;
+
+        if(REQUEST_SIZE ==requestCode){
+
+            SizeModel s =  mConfigurationInventoryManager.findSizeByDescription(valueItemOnLongClick);
+
+            if( null != s )
+            {
+                newValue = data.getStringExtra(DialogSizeFragment.EXTRA_SIZE);
+
+                mConfigurationInventoryManager.modifySize(s.getIdSize(),newValue);
+            }
+
+        }
+        else if(REQUEST_INCOME_TYPE ==requestCode){
+
+            IncomeType i = mConfigurationInventoryManager.findIncomeTypeByDescription(valueItemOnLongClick);
+            if( null != i  ){
+
+                newValue = data.getStringExtra(DialogIncomeTypeFragment.EXTRA_INCOME_TYPE);
+                mConfigurationInventoryManager.modifyIncomeType(i.getIdIncome(),newValue);
+            }
+
+
+        }
+        else if(REQUEST_OUTCOME_TYPE ==requestCode){
+
+            OutcomeType o = mConfigurationInventoryManager.findOutcomeTypeByDescription(valueItemOnLongClick);
+            if( null != o  ){
+
+                newValue = data.getStringExtra(DialogIncomeTypeFragment.EXTRA_INCOME_TYPE);
+                mConfigurationInventoryManager.modifyOutcomeType(o.getIdOutcome(), newValue);
+            }
+
+        }
+
+        if( null != newValue)
+        {
+            configurationItems.set(positionItemOnLongClick-1,newValue);
+
+            setListAdapter(new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_list_item_1, android.R.id.text1, configurationItems));
+
+
+
+        }
+
+
+
+    }
+
+
 
     /**
      * This interface must be implemented by activities that contain this

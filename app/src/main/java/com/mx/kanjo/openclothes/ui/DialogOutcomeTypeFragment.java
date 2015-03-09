@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
 
@@ -31,9 +33,26 @@ public class DialogOutcomeTypeFragment extends DialogFragment {
     @InjectView(R.id.et_outcome_type)
     public EditText mEditText;
 
+    private static final String KEY_IS_UPDATE = "Update";
+
+    private boolean isForUpdate = false;
+
     public static DialogOutcomeTypeFragment createInstace()
     {
         return new DialogOutcomeTypeFragment();
+    }
+
+    public static DialogOutcomeTypeFragment createInstaceForUpdate()
+    {
+        DialogOutcomeTypeFragment f = new DialogOutcomeTypeFragment();
+
+        Bundle args  = new Bundle();
+
+        args.putBoolean(KEY_IS_UPDATE,true);
+
+        f.setArguments(args);
+
+        return f;
     }
 
     @OnClick({R.id.btn_add_outcome_type,R.id.btn_discard_outcome_type})
@@ -70,7 +89,11 @@ public class DialogOutcomeTypeFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate( R.layout.dialog_new_outcome_type, container, false );
-        ButterKnife.inject(this, view );
+         ButterKnife.inject(this, view );
+        if(isForUpdate){
+            ((TextView) view.findViewById(R.id.title_outcome_type)).setText(getString(R.string.title_update_outcome_type));
+            ((Button) view.findViewById(R.id.btn_add_outcome_type)).setText(getString(R.string.update_action));
+        }
         return view;
     }
 
@@ -89,6 +112,13 @@ public class DialogOutcomeTypeFragment extends DialogFragment {
     }
 
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if( null  != getArguments()){
+            isForUpdate = getArguments().getBoolean(KEY_IS_UPDATE);
+        }
+    }
 
 
 }

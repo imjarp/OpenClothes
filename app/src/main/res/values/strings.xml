@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">OpenClothes</string>
     <string name="model_section">Model</string>
@@ -56,14 +56,18 @@
 
     <!--Dialog add size-->
     <string name="title_add_new_size">Add Size</string>
+    <string name="title_update_size">Update Size</string>
     <string name="hint_size">Size</string>
+
 
     <!--Dialog Income Type-->
     <string name="title_add_income_type">Add Income Type</string>
+    <string name="title_update_income_type">Update income type</string>
     <string name="hint_income_type">Income type</string>
 
     <!--Dialog Outcome Type-->
-    <string name="title_add_outcome_type">Add Income Type</string>
+    <string name="title_add_outcome_type">Add Outcome Type</string>
+    <string name="title_update_outcome_type">Update Outcome Type</string>
     <string name="hint_outcome_type">Income type</string>
     <string name="title_section_configuration">Configuration</string>
 
@@ -80,10 +84,11 @@
     <string name="title_activity_product">Product</string>
 
     <!--Product Fragment -->
-    <string name="message_pick_image">Pick the model image</string>
+    <string name="message_pick_image">Pick the image</string>
     <string name="validation_cost_product">Cost is required</string>
     <string name="validation_model_product">Model is required</string>
     <string name="validation_price_product">Price is required</string>
+    <string name="validation_model_duplicated">There is an existing model</string>
 
 
     <!--Dialog add stock item-->
@@ -109,6 +114,8 @@
     <string name="title_fragment_stock">My stock </string>
     <string name="title_fragment_products">My products</string>
     <string name="title_sales_fragment">My sales</string>
+    <string name="update_action">Update</string>
+
 
 
 </resources>

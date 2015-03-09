@@ -61,6 +61,13 @@ public class ConfigurationInventoryManager {
         return findOutcomeTypeByDescription(description,resolver);
     }
 
+    public void modifySize(int idSize, String sizeDescription )
+    {
+        updateSize(resolver, new SizeModel(idSize, sizeDescription));
+    }
+
+
+
     public void modifyIncomeType(int idIncomeType, String incomeDescription )
     {
         updateIncomeType(resolver, new IncomeType(idIncomeType,incomeDescription));
@@ -146,16 +153,39 @@ public class ConfigurationInventoryManager {
 
     }
 
+    private void updateSize(ContentResolver resolver, SizeModel sizeModel) {
+
+        Uri sizeUri = OpenClothesContract.Size.buildSizeUri(sizeModel.getIdSize());
+
+        ContentValues values = SizeCreator.getFromModel(sizeModel);
+
+
+        String selection = OpenClothesContract.Size._ID + " = ?";
+
+        String [] selectionArgs = new String[]{ String.valueOf(sizeModel.getIdSize()) };
+
+        resolver.update(sizeUri,
+                values,
+                selection,
+                selectionArgs);
+
+    }
+
     private static void updateIncomeType(ContentResolver resolver, IncomeType incomeType)
     {
         Uri incomeTypeIdUri = OpenClothesContract.IncomeType.buildIncomeTypeUri(incomeType.getIdIncome());
 
         ContentValues values = IncomeTypeCreator.getIncomeType(incomeType);
 
+        String selection = OpenClothesContract.IncomeType._ID + " = ?";
+
+        String [] selectionArgs = new String[]{ String.valueOf(incomeType.getIdIncome()) };
+
+
         resolver.update(incomeTypeIdUri,
                         values,
-                        String.valueOf(incomeType.getIdIncome()),
-                        new String[]{OpenClothesContract.IncomeType._ID});
+                        selection,
+                        selectionArgs);
 
     }
 
@@ -166,10 +196,14 @@ public class ConfigurationInventoryManager {
 
         ContentValues values = OutcomeTypeCreator.getOutcomeType(outcomeType);
 
+        String selection = OpenClothesContract.OutcomeType._ID + " = ?";
+
+        String [] selectionArgs = new String[]{ String.valueOf(outcomeType.getIdOutcome()) };
+
         resolver.update(outcomeTypeIdUri,
                 values,
-                String.valueOf(outcomeType.getIdOutcome()),
-                new String[]{OpenClothesContract.OutcomeType._ID});
+                selection,
+                selectionArgs);
 
     }
 

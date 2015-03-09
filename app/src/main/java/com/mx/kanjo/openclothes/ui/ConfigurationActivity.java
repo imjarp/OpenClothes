@@ -42,6 +42,7 @@ public class ConfigurationActivity extends ActionBarActivity {
                     .commit();
         }
 
+
         configureToolbar();
 
     }
@@ -180,7 +181,7 @@ public class ConfigurationActivity extends ActionBarActivity {
                     return true;
 
                 case R.id.add_item_income_type :
-                    showFragment(DialogIncomeTypeFragment.createInstace(), DialogIncomeTypeFragment.TAG, REQUEST_INCOME_TYPE);
+                    showFragment(DialogIncomeTypeFragment.createInstance(), DialogIncomeTypeFragment.TAG, REQUEST_INCOME_TYPE);
                     return true;
 
                 case R.id.add_item_outcome_type :
@@ -204,33 +205,36 @@ public class ConfigurationActivity extends ActionBarActivity {
         private void showSizeItems(ArrayList<String> items )
         {
             Iterator<SizeModel> iteratorSize =  configurationInventoryManager.getSizeCatalogue().iterator();
+            int configTypeSize = 0;
 
             if( null != iteratorSize ) {
                 while (iteratorSize.hasNext()) {
                     items.add(iteratorSize.next().getSizeDescription());
                 }
             }
-            displayItemsInFragment(getString(R.string.title_list_configuration_size_items), items,"SIZE");
+            displayItemsInFragment(getString(R.string.title_list_configuration_size_items), items,"SIZE",configTypeSize);
         }
 
         private void showIncomeTypeItems(ArrayList<String> items) {
+            int configTypeIncome = 1;
             Iterator<IncomeType> iteratorIncome =  configurationInventoryManager.getIncomeTypes().iterator();
             if( null != iteratorIncome ) {
                 while (iteratorIncome.hasNext()) {
                     items.add(iteratorIncome.next().getDescription());
                 }
             }
-            displayItemsInFragment(getString(R.string.title_list_configuration_income_type_items), items, "INCOME");
+            displayItemsInFragment(getString(R.string.title_list_configuration_income_type_items), items, "INCOME",configTypeIncome);
         }
 
         private void showOutcomeTypeItems(ArrayList<String> items) {
+            int configTypeOutcome = 2;
             Iterator<OutcomeType> iteratorOutcome  =  configurationInventoryManager.getOutcomeTypes().iterator();
             if( null != iteratorOutcome ) {
                 while (iteratorOutcome.hasNext()) {
                     items.add(iteratorOutcome.next().getDescription());
                 }
             }
-            displayItemsInFragment(getString(R.string.title_list_configuration_outcome_type_items), items,"OUTGOING");
+            displayItemsInFragment(getString(R.string.title_list_configuration_outcome_type_items), items,"OUTGOING",configTypeOutcome);
         }
 
 
@@ -267,10 +271,10 @@ public class ConfigurationActivity extends ActionBarActivity {
             }
         }
 
-        private void displayItemsInFragment(String title , ArrayList<String> items, String TAG)
+        private void displayItemsInFragment(String title , ArrayList<String> items, String TAG , int configType)
         {
 
-            ListConfigurationFragment listConfigurationFragment = ListConfigurationFragment.newInstance(title, "", items);
+            ListConfigurationFragment listConfigurationFragment = ListConfigurationFragment.newInstance(title, configType, items);
 
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
 

@@ -32,7 +32,11 @@
         </activity>
         <activity
             android:name=".ui.ConfigurationActivity"
-            android:label="@string/title_activity_configuration" >
+            android:label="@string/title_activity_configuration"
+            android:parentActivityName=".ui.MainActivity2">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mx.kanjo.openclothes.ui.MainActivity2" />
         </activity>
         <activity
             android:name=".ui.ProductActivity"

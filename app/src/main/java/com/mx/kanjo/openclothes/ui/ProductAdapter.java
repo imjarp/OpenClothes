@@ -105,8 +105,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             }
         }
 
-        holder.textViewModel.setText("Model : " + tempModelProduct.Model);
-        holder.textViewPrice.setText("Price : $" + tempModelProduct.Price);
+        holder.textViewModel.setText(tempModelProduct.Model);
+        holder.textViewPrice.setText(" $ " + tempModelProduct.Price);
 
     }
 

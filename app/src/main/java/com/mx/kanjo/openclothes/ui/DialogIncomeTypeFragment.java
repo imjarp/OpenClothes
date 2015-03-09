@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.mx.kanjo.openclothes.R;
 
@@ -31,9 +33,26 @@ public class DialogIncomeTypeFragment extends DialogFragment {
     @InjectView(R.id.et_income_type)
     public EditText mEditText;
 
-    public static DialogIncomeTypeFragment createInstace()
+    private static final String KEY_IS_UPDATE = "Update";
+
+    private boolean isForUpdate = false;
+
+    public static DialogIncomeTypeFragment createInstance()
     {
         return new DialogIncomeTypeFragment();
+    }
+
+    public static DialogIncomeTypeFragment createInstaceForUpdate()
+    {
+        DialogIncomeTypeFragment f = new DialogIncomeTypeFragment();
+
+        Bundle args  = new Bundle();
+
+        args.putBoolean(KEY_IS_UPDATE,true);
+
+        f.setArguments(args);
+
+        return f;
     }
 
     @OnClick({R.id.btn_add_income_type,R.id.btn_discard_income_type})
@@ -71,6 +90,11 @@ public class DialogIncomeTypeFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate( R.layout.dialog_new_income_type, container, false );
         ButterKnife.inject( this, view );
+
+        if(isForUpdate){
+            ((TextView) view.findViewById(R.id.title_fragment_income)).setText(getString(R.string.title_update_income_type));
+            ((Button) view.findViewById(R.id.btn_add_income_type)).setText(getString(R.string.update_action));
+        }
         return view;
     }
 
@@ -88,7 +112,11 @@ public class DialogIncomeTypeFragment extends DialogFragment {
         ButterKnife.reset( this );
     }
 
-
-
-
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if( null  != getArguments()){
+            isForUpdate = getArguments().getBoolean(KEY_IS_UPDATE);
+        }
+    }
 }

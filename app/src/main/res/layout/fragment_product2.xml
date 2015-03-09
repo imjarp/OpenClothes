@@ -25,7 +25,7 @@
                 android:layout_height="144dp"
                 android:contentDescription="Pick an image"
                 android:layout_gravity="center"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
                 tools:src="@drawable/cb_002"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
