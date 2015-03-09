@@ -25,7 +25,8 @@ import butterknife.InjectView;
 /**
  * Created by JARP on 1/30/15.
  */
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder>
+ {
 
     private static final int ANIMATED_ITEMS_COUNT = 4;
 
@@ -38,6 +39,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     ConfigImageHelper mConfigImageHelper;
     CircleTransform mCircleTransform ;
     float widthPx,heightPx;
+    static OnItemClickListener mItemClickListener;
 
     public ProductAdapter(Context context) {
         this.context = context;
@@ -105,12 +107,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             }
         }
 
+
+        SetOnItemClickListener(mItemClickListener);
         holder.textViewModel.setText(tempModelProduct.Model);
         holder.textViewPrice.setText(" $ " + tempModelProduct.Price);
+        holder.bindProduct(tempModelProduct);
 
     }
 
-    @Override
+
+     @Override
     public long getItemId(int position) {
         return leanProductModelList.get(position).ID;
     }
@@ -120,12 +126,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return itemsCount;
     }
 
+     public static interface OnItemClickListener {
+         public void onItemClick(View view , int position, long id);
+     }
+
+     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
+         this.mItemClickListener = mItemClickListener;
+     }
+
     public static class ProductViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener
     {
 
         @InjectView(R.id.text_view_model)
         TextView textViewModel;
-
 
         @InjectView(R.id.image_view_product)
         ImageView imageViewModel;
@@ -133,12 +147,29 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         @InjectView(R.id.text_view_price)
         TextView textViewPrice;
 
+        private LeanProductModel productModel;
+
 
         public ProductViewHolder(View itemView) {
 
             super(itemView);
             ButterKnife.inject(this,itemView);
+            itemView.setOnClickListener(this);
         }
 
-    }
+        public void bindProduct(LeanProductModel productModel){
+
+            this.productModel = productModel;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(v, getPosition(),getItemId());
+            }
+
+
+        }
+
+     }
 }

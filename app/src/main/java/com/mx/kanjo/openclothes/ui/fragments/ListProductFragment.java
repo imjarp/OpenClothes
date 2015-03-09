@@ -66,6 +66,8 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
     private LinearLayoutManager mLinearLayoutManager;
 
+    ProductAdapter adapter;
+
     private interface ProductColumns{
         public static String [] COLUMNS = {
                 OpenClothesContract.Product._ID,
@@ -156,7 +158,9 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
             productList.add(getFromCursor(data));
         }while (data.moveToNext());
 
-        ProductAdapter adapter = new ProductAdapter(getActivity(), productList,configImageHelper);
+        adapter = new ProductAdapter(getActivity(), productList,configImageHelper);
+        adapter.SetOnItemClickListener(adapterClickListener);
+        adapter.setHasStableIds(true);
 
         if( null != mRecyclerViewProducts)
             mRecyclerViewProducts.setAdapter(adapter);
@@ -170,19 +174,26 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
         productList.clear();
 
-        ProductAdapter adapter = new ProductAdapter(getActivity(), productList,configImageHelper);
+        adapter = new ProductAdapter(getActivity(), productList,configImageHelper);
 
         if( null != mRecyclerViewProducts) {
             mRecyclerViewProducts.setAdapter(adapter);
             mRecyclerViewProducts.getAdapter().notifyDataSetChanged();
         }
 
-
-        //adapter.notifyDataSetChanged();
-
+        adapter.SetOnItemClickListener(adapterClickListener);
+        adapter.setHasStableIds(true);
     }
 
-    @Override
+    ProductAdapter.OnItemClickListener adapterClickListener = new ProductAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(View view, int position, long id) {
+
+            String stop = "1";
+
+        }
+    };
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if(Activity.RESULT_OK != resultCode)

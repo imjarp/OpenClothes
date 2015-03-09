@@ -8,7 +8,8 @@
     android:layout_marginBottom="4dp"
     android:layout_marginLeft="12dp"
     android:layout_marginRight="12dp"
-    android:id="@+id/row_product_card">
+    android:id="@+id/row_product_card"
+    android:background="?android:attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/image_view_product"
