@@ -88,7 +88,7 @@
     <string name="validation_cost_product">Cost is required</string>
     <string name="validation_model_product">Model is required</string>
     <string name="validation_price_product">Price is required</string>
-    <string name="validation_model_duplicated">There is an existing model</string>
+    <string name="validation_model_duplicated">This model is already in use.</string>
 
 
     <!--Dialog add stock item-->

@@ -180,13 +180,9 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
     ProductAdapter.OnItemClickListener adapterClickListener = new ProductAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(View view, int position, long id) {
-
             positionUpdated = position;
-
-            Intent intentNewProduct = new Intent(getActivity(), ProductActivity.class);
-
-
-            startActivityForResult(intentNewProduct, REQUEST_UPDATE_PRODUCT);
+            Intent intent = ProductActivity.createIntentForUpdate( getActivity(), (int) id);
+            startActivityForResult(intent, REQUEST_UPDATE_PRODUCT);
         }
     };
 

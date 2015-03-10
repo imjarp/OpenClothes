@@ -1,8 +1,11 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,13 +17,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
+import com.mx.kanjo.openclothes.engine.creators.ProductCreator;
 import com.mx.kanjo.openclothes.model.ProductModel;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 import com.mx.kanjo.openclothes.util.PictureUtils;
@@ -42,14 +47,20 @@ public class ProductFragment extends Fragment {
     //TODO : check why is the image flip on small device
     //TODO : validate model in another thread (UI thread)
 
+    public final static String KEY_ID_PRODUCT = "idProduct";
+    private static final int REQUEST_PICK_IMAGE = 1001;
+
     private OnFragmentProductListener mProductListener;
 
     private String pathFile, model, price, description, cost;
+    //Keep the value if its is used for update
+    private String tempModel;
     private Uri uriImage;
     Boolean isActiveProduct;
-    private static final int REQUEST_PICK_IMAGE = 1001;
-    private boolean productCompliant;
+
     private CatalogueManager mCatalogueManager;
+    private Context mContext;
+    private int idProduct;
 
     @InjectView(R.id.edit_product_model)EditText editTextModel;
 
@@ -63,9 +74,12 @@ public class ProductFragment extends Fragment {
 
     @InjectView(R.id.img_new_product) ImageButton imageProduct;
 
+    @InjectView(R.id.progress_model) ProgressBar progressModel;
+
+    Button mBtnMenuAction;
 
 
-    interface  KeyState {
+    private interface  KeyState{
 
         String KEY_PATH_FILE = "keyPathFile";
         String KEY_MODEL = "keyModel";
@@ -75,34 +89,108 @@ public class ProductFragment extends Fragment {
         String KEY_COST = "keyCost";
     }
 
-    public interface OnFragmentProductListener {
+    public interface OnFragmentProductListener{
         public void onAddProductClick(ProductModel productModel);
     }
 
-    public ProductFragment() {
+    public ProductFragment(){
     }
 
-    @OnClick(R.id.img_new_product)
-    public void onClickImageProduct(View view)
-    {
-        startActivityForResult( Intent.createChooser(makeIntentPickImage(),
-                                                    getString(R.string.message_pick_image)),
-                                REQUEST_PICK_IMAGE);
-    }
+    public static ProductFragment createUpdateFragment(int idProduct){
 
-    private Intent makeIntentPickImage()
-    {
-        Intent intentPickImage = new Intent();
-        intentPickImage.setAction(Intent.ACTION_PICK);
-        intentPickImage.setType("image/*");
-        return intentPickImage;
+        ProductFragment fragment = new ProductFragment();
+
+        Bundle args = new Bundle();
+        args.putInt(KEY_ID_PRODUCT, idProduct);
+        fragment.setArguments(args);
+        return fragment;
 
     }
-
-
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+
+        mCatalogueManager = new CatalogueManager(activity);
+
+        mContext = activity;
+        try {
+            mProductListener = (OnFragmentProductListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentProductListener");
+        }
+
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState){
+
+        final View rootView = inflater.inflate(R.layout.fragment_product2, container, false);
+
+        ButterKnife.inject(this, rootView);
+        if( null != savedInstanceState)
+            restoreSaveInstance(savedInstanceState);
+        else{
+            if (getArguments()!=null)
+            {
+                idProduct  = getArguments().getInt(KEY_ID_PRODUCT,-1);
+                if (idProduct >0){
+                    fetchProduct(rootView, idProduct);
+                }
+            }
+        }
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+
+        inflater.inflate(R.menu.menu_product, menu);
+
+        MenuItem add =  menu.findItem(R.id.action_new_product);
+
+
+        if(null != add.getActionView()) {
+
+            mBtnMenuAction = (Button) add.getActionView().findViewById(R.id.btn_menu_add_new_product);
+
+            if( idProduct > 0 && mBtnMenuAction != null ) {
+                mBtnMenuAction.setText(getString(R.string.update_action));
+            }
+            mBtnMenuAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    validateProductModel();
+                }
+            });
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        saveKeysToInstance(outState);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
 
         if( Activity.RESULT_OK != resultCode )
             return;
@@ -118,87 +206,38 @@ public class ProductFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView(){
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mProductListener = null;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mCatalogueManager = new CatalogueManager(activity);
-        try {
-            mProductListener = (OnFragmentProductListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentProductListener");
-        }
+    @OnClick(R.id.img_new_product)
+    public void onClickImageProduct(View view){
+        startActivityForResult( Intent.createChooser(makeIntentPickImage(),
+                        getString(R.string.message_pick_image)),
+                REQUEST_PICK_IMAGE);
+    }
+
+    private static Intent makeIntentPickImage(){
+        Intent intentPickImage = new Intent();
+        intentPickImage.setAction(Intent.ACTION_PICK);
+        intentPickImage.setType("image/*");
+        return intentPickImage;
 
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_product2, container, false);
-        ButterKnife.inject(this, rootView);
-        if( null != savedInstanceState)
-            restoreSaveInstance(savedInstanceState);
-        return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        saveKeysToInstance(outState);
-       
-    }
-
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
-    }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        inflater.inflate(R.menu.menu_product, menu);
-
-        MenuItem add =  menu.findItem(R.id.action_new_product);
-
-        if(null != add.getActionView()) {
-            (add.getActionView().findViewById(R.id.btn_menu_add_new_product)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(isProductCompliant())
-                        callParentActivity();
-                }
-            });
-        }
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    private void callParentActivity() {
+    private void onAddProductEvent(){
         mProductListener.onAddProductClick(createProductModel());
     }
 
 
-    public boolean isProductCompliant() {
+    public void validateProductModel(){
 
         Notification resultValidation = new Notification();
 
@@ -208,22 +247,6 @@ public class ProductFragment extends Fragment {
             editTextCost.setError(getString(R.string.validation_cost_product));
         }
 
-        if(TextUtils.isEmpty(editTextModel.getText().toString()))
-        {
-            resultValidation.errors.add(getString(R.string.validation_model_product));
-            editTextModel.setError(getString(R.string.validation_model_product));
-        }
-        else
-        {
-
-            if (null != mCatalogueManager.findProductByModel(editTextModel.getText().toString()) )
-            {
-                resultValidation.errors.add(getString(R.string.validation_model_product));
-                editTextModel.setError(getString(R.string.validation_model_duplicated));
-            }
-            
-        }
-
         if(TextUtils.isEmpty(editTextPrice.getText().toString()))
         {
            resultValidation.errors.add(getString(R.string.validation_price_product));
@@ -231,25 +254,60 @@ public class ProductFragment extends Fragment {
             editTextPrice.setError(getString(R.string.validation_price_product));
         }
 
-        
+        if(TextUtils.isEmpty(editTextModel.getText().toString()))
+        {
+            resultValidation.errors.add(getString(R.string.validation_model_product));
+            editTextModel.setError(getString(R.string.validation_model_product));
+        }
 
 
-        return !resultValidation.hasError();
+        executeValidationModelTask(editTextModel.getText().toString());
+
+        //ExistModelTask.execute(new String[]{  });
+
+
+
 
     }
 
-    private void showMessage(Notification resultValidation) {
+    private void executeValidationModelTask(String model) {
 
-        StringBuilder builderMessage = new StringBuilder();
+        new AsyncTask<String, Void, Boolean>() {
 
-        for (String error : resultValidation.errors)
-            builderMessage.append(error + "\n");
+            @Override
+            protected void onPreExecute() {
+                toogleProgressModel();
+            }
 
-        Toast.makeText(getActivity(), builderMessage.toString(), Toast.LENGTH_SHORT).show();
+            @Override
+            protected Boolean doInBackground(String... params) {
 
+                String model = params[0];
+
+                //Validate if the model exist
+                if (null != mCatalogueManager.findProductByModel(model)) {
+                    return true;
+                }
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+
+
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                toogleProgressModel();
+                setResultExistTask(aBoolean);
+            }
+        }.execute(new String[]{model});
     }
 
-    private void saveKeysToInstance(Bundle outState) {
+    private void saveKeysToInstance(Bundle outState){
 
         outState.putString(KeyState.KEY_COST, editTextCost.getText().toString());
         outState.putString(KeyState.KEY_DESCRIPTION, editTextDescription.getText().toString() );
@@ -282,19 +340,102 @@ public class ProductFragment extends Fragment {
 
     private void setImage(Uri uri){
 
-        pathFile = StorageUtil.getPath(getActivity(), uri);
+        pathFile = StorageUtil.getPath(mContext, uri);
 
         //TODO: Validate image
-        PictureUtils.setImageScaled(getActivity(), imageProduct, pathFile, PictureUtils.SizeImage.IMAGE_192x192);
+        PictureUtils.setImageScaled(mContext, imageProduct, pathFile, PictureUtils.SizeImage.IMAGE_192x192);
+    }
+
+    private void fetchProduct(final View rootView, int idProduct){
+
+        AsyncTask fetchProductTask = new AsyncTask<Integer, Void, ProductModel>() {
+            @Override
+            protected ProductModel doInBackground(Integer ... params) {
+
+                Uri uriProduct = OpenClothesContract.Product.buildProductUri(params[0]);
+
+                Cursor cursor =  mContext.getContentResolver().query(uriProduct,null,null,null,null);
+
+                if(!cursor.moveToFirst())
+                    return null;
+                if(cursor.getCount() == 0)
+                    return null;
+
+                ProductModel model =  ProductCreator.getProductModelFromCursor(cursor);
+
+                cursor.close();
+
+                return model;
+            }
+
+
+
+            @Override
+            protected void onPreExecute() {
+                rootView.findViewById(R.id.progressBarLoading).setVisibility(View.VISIBLE);
+                rootView.findViewById(R.id.view_scroll_product).setVisibility(View.GONE);
+
+
+            }
+
+            @Override
+            protected void onPostExecute(ProductModel productModel) {
+                super.onPostExecute(productModel);
+                rootView.findViewById(R.id.progressBarLoading).setVisibility(View.GONE);
+                rootView.findViewById(R.id.view_scroll_product).setVisibility(View.VISIBLE);
+                if( null != productModel){
+
+                    if (productModel.getCost()>0){ editTextCost.setText(String.valueOf(productModel.getCost())); }
+                    if(!TextUtils.isEmpty(productModel.getDescription())){ editTextDescription.setText(productModel.getDescription()); }
+                    if(!TextUtils.isEmpty(productModel.getModel())){ editTextModel.setText(productModel.getModel()); }
+                    if(productModel.getPrice()>0){ editTextPrice.setText(String.valueOf(productModel.getPrice())); }
+                    if(null != productModel.getImagePath() ){setImage(productModel.getImagePath());}
+
+                }
+            }
+        };
+        //.executeOnExecutor(Executors.newSingleThreadExecutor(), Long.valueOf(idProduct));
+        fetchProductTask.execute(new Integer[]{idProduct});
+
+
+    }
+
+    private void setResultExistTask(boolean existModel){
+
+        if(!existModel){
+            onAddProductEvent();
+        }
+        else
+        {
+            editTextModel.setError(getString(R.string.validation_model_duplicated));
+
+        }
+
+    }
+
+    private void toogleProgressModel(){
+
+        if(mBtnMenuAction !=null ){
+            mBtnMenuAction.setEnabled( ! mBtnMenuAction.isEnabled() );
+        }
+
+        int visibility = progressModel.getVisibility();
+
+        if(visibility == View.VISIBLE){
+            progressModel.setVisibility(View.GONE);
+        }
+        else
+        {
+            progressModel.setVisibility(View.VISIBLE);
+        }
+
+
+
     }
 
 
 
-
-
-    public  ProductModel createProductModel()
-    {
-        //model, price, description;
+    public  ProductModel createProductModel(){
         description = editTextDescription.getText().toString();
 
         model = editTextModel.getText().toString();
@@ -306,8 +447,7 @@ public class ProductFragment extends Fragment {
         isActiveProduct = checkBoxActiveProduct.isChecked();
 
         ProductModel productModel = new ProductModel();
-        productModel.setIdProduct(0);
-        //productModel.setName();
+        productModel.setIdProduct( idProduct > 0 ? idProduct : 0);
         productModel.setDescription(description);
         productModel.setModel(model);
         productModel.setDateOperation(OpenClothesContract.getDbDateString(new Date()));
@@ -320,8 +460,7 @@ public class ProductFragment extends Fragment {
 
     }
 
-    private class Notification
-    {
+    private class Notification{
 
         public Notification()
         {

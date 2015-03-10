@@ -4,11 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:layout_marginTop="?attr/actionBarSize"
+    android:orientation="vertical"
     tools:context="com.mx.kanjo.openclothes.ui.ProductActivity.ProductFragment">
 
+    <ProgressBar
+        android:id="@+id/progressBarLoading"
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
     <ScrollView
+        android:id="@+id/view_scroll_product"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:visibility="visible">
 
 
         <LinearLayout
@@ -16,6 +28,8 @@
             android:layout_height="fill_parent"
             android:padding="2dp"
             android:orientation="vertical">
+
+
 
 
 
@@ -32,19 +46,38 @@
                 />
 
 
-            <EditText
-                android:id="@+id/edit_product_model"
+
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="Model"
-                android:layout_margin="12dp"
-                android:layout_marginTop="24dp"
-                android:layout_gravity="center"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:singleLine="true"
-                android:nextFocusDown="@id/edit_product_cost"
-                />
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/edit_product_model"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Model"
+                    android:layout_margin="12dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_gravity="center"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:singleLine="true"
+                    android:nextFocusDown="@id/edit_product_cost"
+                    />
+
+                <ProgressBar
+                    android:id="@+id/progress_model"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    style="@android:style/Widget.ProgressBar.Large"
+                    android:layout_gravity="center_vertical"
+                    android:layout_alignParentRight="true"
+                    android:visibility="gone"
+                    />
+
+                </RelativeLayout>
+
 
             <EditText
                 android:id="@+id/edit_product_cost"
