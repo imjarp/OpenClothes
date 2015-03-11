@@ -3,22 +3,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="56dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
-    android:layout_marginLeft="12dp"
-    android:layout_marginRight="12dp"
+    android:layout_height="59dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="2dp"
     android:id="@+id/row_product_card"
-    android:background="?android:attr/selectableItemBackground">
+    android:orientation="vertical"
+    android:background="?android:attr/selectableItemBackground"
+    android:layout_gravity="center_vertical">
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical">
         <ImageView
             android:id="@+id/image_view_product"
             android:scaleType="centerCrop"
             android:layout_width="48dp"
             android:layout_height="48dp"
             tools:src="@drawable/cb_002"
-            android:layout_marginLeft="12dp"
-            android:layout_gravity="center"
+            android:layout_marginLeft="2dp"
+            android:layout_gravity="center_vertical"
             />
 
     <RelativeLayout
@@ -27,7 +33,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:gravity="center"
-        android:layout_gravity="center">
+        android:layout_gravity="center_vertical">
         <TextView
             android:id="@+id/text_view_price"
             android:layout_width="match_parent"
@@ -50,15 +56,15 @@
 
 
         </RelativeLayout>
+    </LinearLayout>
 
-
-    <!--View xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_marginTop="52dp"
-        android:layout_marginBottom="8dp"
+    <View xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_marginTop="2dp"
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:background="#dfdfdf"
-        android:layout_height="2dp" /-->
+        android:layout_height="1dp"
+        />
 
-        </LinearLayout>
+</LinearLayout>
 

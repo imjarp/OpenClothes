@@ -249,7 +249,7 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
 
-        String sortOrder = null;
+        String sortOrder = OpenClothesContract.Product.MODEL + " ASC ";
 
         Uri stockUri = OpenClothesContract.Stock.buildStockUriProductSize();
 

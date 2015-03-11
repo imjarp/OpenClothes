@@ -15,11 +15,10 @@
        android:paddingRight="12dp"
        android:layout_marginTop="2dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="5"
-        android:orientation="horizontal"
+        android:layout_weight="7"
         android:gravity="left">
 
     <ImageView
@@ -29,42 +28,40 @@
         tools:src="@drawable/cb_002"
         android:layout_margin="4dp"/>
 
-    <TextView
-        android:id="@+id/text_model"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        tools:text="CB002"
-        android:layout_gravity="center|center_horizontal"
-        android:gravity="center_horizontal"
-        android:layout_marginLeft="12dp"
-
-        />
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_weight="3"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:padding="12dp">
-
         <TextView
             android:id="@+id/text_size"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             tools:text="Small"
             android:layout_gravity="center"
             style="@android:style/TextAppearance.Small"
+            android:layout_toRightOf="@+id/image_model"
+            android:layout_marginLeft="6dp"
+            android:layout_alignTop="@+id/image_model"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
             />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/text_model"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            tools:text="CB002"
+            android:layout_marginLeft="6dp"
+            android:layout_toRightOf="@+id/image_model"
+            android:layout_below="@+id/text_size"
+            android:layout_marginTop="4dp"
+            android:layout_alignBottom="@+id/image_model"
+            android:gravity="center_vertical"
+            />
+
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="fill_parent"
         android:layout_weight="3"
         android:orientation="horizontal"
-        android:gravity="center"
+        android:gravity="center_vertical|left"
         android:padding="12dp">
 
         <TextView

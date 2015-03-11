@@ -304,8 +304,19 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
 
     private void sendResult(int resultCode) {
 
-        if (null == getTargetFragment())
+        if (null == getTargetFragment()) {
+            dismiss();
             return;
+        }
+
+        if( Activity.RESULT_CANCELED == resultCode ){
+
+            getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, null);
+
+            dismiss();
+
+            return;
+        }
 
         String textQty = mEditTextQuantity.getText().toString();
 

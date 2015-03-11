@@ -18,6 +18,8 @@ import java.util.Arrays;
  */
 public class OpenClothesProvider extends ContentProvider {
 
+
+
     private final String TAG = OpenClothesProvider.class.getSimpleName();
 
     private OpenClothesDatabase mOpenHelper;
@@ -180,14 +182,25 @@ public class OpenClothesProvider extends ContentProvider {
                                                                                      null,
                                                                                      sortOrder);
                 break;
+
+
             // "product/*/model"
             case  PRODUCT_MODEL :
+                /*
+                //TODO: add a query that search a model by a filter or like or contains
                 cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.PRODUCT,projection,
                                                                                      OpenClothesContract.Product.MODEL + " LIKE '%" + OpenClothesContract.Product.getModelFromUri(uri) + "%'",
                                                                                      null,
                                                                                      null,
                                                                                      null,
-                                                                                     sortOrder);
+                                                                                     sortOrder);*/
+
+                cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.PRODUCT,projection,
+                        OpenClothesContract.Product.MODEL + " = '" + OpenClothesContract.Product.getModelFromUri(uri) + "   '",
+                        null,
+                        null,
+                        null,
+                        sortOrder);
                 break;
             case STOCK_PRODUCT_SIZE:
                 String idProduct = OpenClothesContract.Stock.getProductIdFromUri(uri);

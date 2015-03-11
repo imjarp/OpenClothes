@@ -262,6 +262,12 @@ public class DialogInventoryOperation extends DialogFragment {
         if (null == getTargetFragment())
             return;
 
+        if( Activity.RESULT_CANCELED == resultCode ){
+            getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, null);
+            dismiss();
+            return;
+        }
+
         String textQty = mEditboxQty.getText().toString();
 
         if ( !isQuantityCompliant(textQty) && resultCode == Activity.RESULT_OK ) {

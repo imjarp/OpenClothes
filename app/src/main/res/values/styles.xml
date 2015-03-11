@@ -29,4 +29,9 @@
     </style>
 
     <style name="Widget.IOSched.HeaderBar.Spinner" parent="Widget.IOSched.HeaderBar.Spinner.Base" />
+
+    <style name="TextAppearance.OpenClothes.FloatLabel" parent="android:TextAppearance.Small">
+        <item name="android:textColor">@color/primary_dark</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>

@@ -204,14 +204,14 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
     private void updateAdapter(Intent data) {
         Uri uri = data.getData();
-        if(uri ==null){return;}
+        if( uri ==null ){return;}
 
         LeanProductModel lean = getLeanProduct(uri);
 
-        if(null == lean){return;}
+        if( null == lean ){return;}
 
-        if(positionUpdated > -1 ) {
-            adapter.updateProduct(positionUpdated, lean);
+        if( positionUpdated > -1 ) {
+            adapter.updateProduct( positionUpdated, lean );
             positionUpdated = -1;
         }
 

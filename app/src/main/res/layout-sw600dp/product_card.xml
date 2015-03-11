@@ -17,7 +17,8 @@
         android:layout_margin="2dp"
         android:gravity="center"
         android:layout_gravity="center"
-        android:layout_marginTop="6dp">
+        android:layout_marginTop="6dp"
+        android:background="?android:attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/image_view_product"

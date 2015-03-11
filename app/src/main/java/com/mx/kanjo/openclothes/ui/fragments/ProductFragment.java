@@ -266,11 +266,17 @@ public class ProductFragment extends Fragment {
             editTextModel.setError(getString(R.string.validation_model_product));
         }
 
+        if(resultValidation.hasError())
+            return;
+
         String currentModel = editTextModel.getText().toString();
 
-        if( !updateProduct ||( updateProduct && !originalModel.equals( currentModel ) ) )
+        if( !updateProduct ||( updateProduct && !originalModel.equals( currentModel ) ) ) {
             executeValidationModelTask(currentModel);
+            return;
+        }
 
+        onUpdateProductEvent();
         return;
 
     }
