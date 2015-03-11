@@ -38,6 +38,11 @@ public class CatalogueManager {
 
     }
 
+    public int updateProduct(ProductModel product){
+
+        return updateProduct(resolver,product);
+    }
+
     public Set<ProductModel> getCatalogue(){
 
         return getFromResolver();
@@ -74,6 +79,17 @@ public class CatalogueManager {
         return products;
     }
 
+    private int updateProduct(ContentResolver resolver , ProductModel model){
+
+        Uri uriProduct = OpenClothesContract.Product.buildProductUri( model.getIdProduct() );
+        ContentValues values = ProductCreator.getFromProduct(model);
+        String where = OpenClothesContract.Product._ID + " = ?";
+        String  [] selectionArgs= new String[]{String.valueOf(model.getIdProduct())};
+
+        return resolver.update(uriProduct,values,where,selectionArgs);
+
+    }
+
     private Uri insertNewProduct(ContentResolver resolver, ProductModel model)
     {
         ContentValues values = ProductCreator.getFromProduct(model);
@@ -102,5 +118,7 @@ public class CatalogueManager {
         return productModel;
 
     }
+
+
 
 }

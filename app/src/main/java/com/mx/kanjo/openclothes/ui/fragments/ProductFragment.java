@@ -54,9 +54,10 @@ public class ProductFragment extends Fragment {
 
     private String pathFile, model, price, description, cost;
     //Keep the value if its is used for update
-    private String tempModel;
+    private String originalModel;
     private Uri uriImage;
     Boolean isActiveProduct;
+    Boolean updateProduct = false;
 
     private CatalogueManager mCatalogueManager;
     private Context mContext;
@@ -91,6 +92,7 @@ public class ProductFragment extends Fragment {
 
     public interface OnFragmentProductListener{
         public void onAddProductClick(ProductModel productModel);
+        public void onUpdateProduct(ProductModel productModel);
     }
 
     public ProductFragment(){
@@ -236,6 +238,10 @@ public class ProductFragment extends Fragment {
         mProductListener.onAddProductClick(createProductModel());
     }
 
+    private void onUpdateProductEvent(){
+        mProductListener.onUpdateProduct(createProductModel());
+    }
+
 
     public void validateProductModel(){
 
@@ -260,13 +266,12 @@ public class ProductFragment extends Fragment {
             editTextModel.setError(getString(R.string.validation_model_product));
         }
 
+        String currentModel = editTextModel.getText().toString();
 
-        executeValidationModelTask(editTextModel.getText().toString());
+        if( !updateProduct ||( updateProduct && !originalModel.equals( currentModel ) ) )
+            executeValidationModelTask(currentModel);
 
-        //ExistModelTask.execute(new String[]{  });
-
-
-
+        return;
 
     }
 
@@ -289,11 +294,6 @@ public class ProductFragment extends Fragment {
                     return true;
                 }
 
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 return false;
             }
 
@@ -302,7 +302,7 @@ public class ProductFragment extends Fragment {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 toogleProgressModel();
-                setResultExistTask(aBoolean);
+                setResultExistModelTask(aBoolean);
             }
         }.execute(new String[]{model});
     }
@@ -311,7 +311,7 @@ public class ProductFragment extends Fragment {
 
         outState.putString(KeyState.KEY_COST, editTextCost.getText().toString());
         outState.putString(KeyState.KEY_DESCRIPTION, editTextDescription.getText().toString() );
-        outState.putBoolean(KeyState.KEY_IS_ACTIVE_PRODUCT, checkBoxActiveProduct.isChecked() );
+        outState.putBoolean(KeyState.KEY_IS_ACTIVE_PRODUCT, checkBoxActiveProduct.isChecked());
         outState.putString( KeyState.KEY_MODEL , editTextModel.getText().toString() );
         outState.putParcelable( KeyState.KEY_PATH_FILE, uriImage );
         outState.putString( KeyState.KEY_PRICE , editTextPrice.getText().toString() );
@@ -363,6 +363,12 @@ public class ProductFragment extends Fragment {
 
                 ProductModel model =  ProductCreator.getProductModelFromCursor(cursor);
 
+                originalModel = model.getModel();
+
+                uriImage = model.getImagePath();
+
+                updateProduct = true;
+
                 cursor.close();
 
                 return model;
@@ -400,15 +406,16 @@ public class ProductFragment extends Fragment {
 
     }
 
-    private void setResultExistTask(boolean existModel){
+    private void setResultExistModelTask(boolean existModel){
 
-        if(!existModel){
+        if( !existModel && !updateProduct ){
             onAddProductEvent();
         }
-        else
-        {
+        else if ( !existModel && updateProduct ){
+            onUpdateProductEvent();
+        }
+        else{
             editTextModel.setError(getString(R.string.validation_model_duplicated));
-
         }
 
     }
@@ -433,8 +440,6 @@ public class ProductFragment extends Fragment {
 
     }
 
-
-
     public  ProductModel createProductModel(){
         description = editTextDescription.getText().toString();
 
@@ -447,7 +452,7 @@ public class ProductFragment extends Fragment {
         isActiveProduct = checkBoxActiveProduct.isChecked();
 
         ProductModel productModel = new ProductModel();
-        productModel.setIdProduct( idProduct > 0 ? idProduct : 0);
+        productModel.setIdProduct( idProduct > 0 && updateProduct  ? idProduct : 0 );
         productModel.setDescription(description);
         productModel.setModel(model);
         productModel.setDateOperation(OpenClothesContract.getDbDateString(new Date()));

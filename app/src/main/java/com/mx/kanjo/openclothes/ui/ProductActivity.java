@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.engine.CatalogueManager;
 import com.mx.kanjo.openclothes.model.ProductModel;
+import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 import com.mx.kanjo.openclothes.ui.fragments.ProductFragment;
 
 
@@ -94,8 +95,24 @@ public class ProductActivity extends ActionBarActivity implements ProductFragmen
 
     }
 
+    @Override
+    public void onUpdateProduct(ProductModel productModel) {
+
+        int rows = catalogueManager.updateProduct(productModel);
+        Uri uriProductId = OpenClothesContract.Product.buildProductUri(productModel.getIdProduct());
+        setResult( RESULT_OK,  makeUpdateProductIntent(uriProductId));
+        finish();
+
+    }
+
     public Intent makeAddProductIntent(Uri uri)
     {
+        Intent intent = new Intent();
+        intent.setData(uri);
+        return intent;
+    }
+
+    public Intent makeUpdateProductIntent(Uri uri){
         Intent intent = new Intent();
         intent.setData(uri);
         return intent;

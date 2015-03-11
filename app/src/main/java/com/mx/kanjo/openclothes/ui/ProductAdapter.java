@@ -45,8 +45,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         this.context = context;
     }
 
-
-
     public ProductAdapter(Context context, ArrayList<LeanProductModel> products, ConfigImageHelper configImageHelper){
         this.context = context;
         leanProductModelList = products;
@@ -124,6 +122,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public int getItemCount() {
         return itemsCount;
+    }
+
+    public void updateProduct(int position ,LeanProductModel productModel){
+
+        leanProductModelList.set(position,productModel);
+        notifyItemChanged(position);
     }
 
      public static interface OnItemClickListener {

@@ -197,6 +197,45 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
             getLoaderManager().restartLoader(LOADER_PRODUCT, null, this);
 
         }
+        if ( requestCode == REQUEST_UPDATE_PRODUCT ){
+            updateAdapter(data);
+        }
+    }
+
+    private void updateAdapter(Intent data) {
+        Uri uri = data.getData();
+        if(uri ==null){return;}
+
+        LeanProductModel lean = getLeanProduct(uri);
+
+        if(null == lean){return;}
+
+        if(positionUpdated > -1 ) {
+            adapter.updateProduct(positionUpdated, lean);
+            positionUpdated = -1;
+        }
+
+    }
+
+    private LeanProductModel getLeanProduct(Uri uri){
+
+        Cursor cursor =  getActivity().getContentResolver().query(uri,
+                ProductColumns.COLUMNS,
+                null,
+                null,
+                null);
+
+        //Error
+        if(!cursor.moveToFirst())
+            return null;
+        if(cursor.getCount()<=0)
+            return null;
+
+        LeanProductModel model = getFromCursor( cursor );
+
+        cursor.close();
+
+        return model;
     }
 
     @Override
