@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         tools:text="CB002"
         android:layout_gravity="center"
-        style="@android:style/TextAppearance.Medium"
-        />
+        style="@android:style/TextAppearance.Medium"/>
 
 </LinearLayout>

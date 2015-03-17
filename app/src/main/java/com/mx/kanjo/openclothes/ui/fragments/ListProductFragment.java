@@ -196,6 +196,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
             this.onLoaderReset(null);
             getLoaderManager().restartLoader(LOADER_PRODUCT, null, this);
 
+
         }
         if ( requestCode == REQUEST_UPDATE_PRODUCT ){
             updateAdapter(data);
@@ -266,11 +267,10 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
             sizeImage = new Pair<>(168,168);
             configImageHelper = new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
                                                                             .build();
-            //setContentView(R.layout.main_activity_tablet);
         } else {
-            //setContentView(R.layout.main_activity);
+
             mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER ;
-            sizeImage = new Pair<>(48,48);
+            sizeImage = new Pair<>(72,72);
             configImageHelper = new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
                                                                             .withRoundImage(true)
                                                                             .build();

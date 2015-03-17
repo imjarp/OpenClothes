@@ -1,18 +1,13 @@
 package com.mx.kanjo.openclothes.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.ui.fragments.NewSaleFragment;
-import com.mx.kanjo.openclothes.util.UiUtils;
 
 public class NewSaleActivity extends ActionBarActivity {
 
@@ -35,9 +30,7 @@ public class NewSaleActivity extends ActionBarActivity {
         Toolbar mainToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle(getString(R.string.title_add_new_sale));
-        if(UiUtils.isTablet(this)) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
@@ -61,21 +54,5 @@ public class NewSaleActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_new_sale, container, false);
-            return rootView;
-        }
     }
 }

@@ -1,10 +1,11 @@
 package com.mx.kanjo.openclothes.ui;
 
 
-import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,6 +19,7 @@ import com.mx.kanjo.openclothes.ui.fragments.ListProductFragment;
 import com.mx.kanjo.openclothes.ui.fragments.ListSalesFragment;
 import com.mx.kanjo.openclothes.ui.fragments.ListStockFragment;
 import com.mx.kanjo.openclothes.ui.fragments.NavigationFragment;
+import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogAddStockItem;
 
 public class MainActivity2 extends ActionBarActivity implements
         NavigationFragment.NavigationDrawerCallbacks {
@@ -40,6 +42,21 @@ public class MainActivity2 extends ActionBarActivity implements
 
         configureToolbar();
         configureDrawer();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     private void configureToolbar() {
@@ -104,11 +121,27 @@ public class MainActivity2 extends ActionBarActivity implements
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    private void removeFragments(){
+
+
+        int stackEntryCount = getSupportFragmentManager().getFragments().size();
+        if( stackEntryCount < 1 )
+            return;
+
+        FragmentManager fm = getSupportFragmentManager();
+       for(int i  = stackEntryCount ; i>=1;i--){
+           if(fm.findFragmentByTag(DialogAddStockItem.TAG) !=null ){
+               fm.beginTransaction().remove(fm.findFragmentByTag(DialogAddStockItem.TAG)).commit();
+           }
+       }
+        fm.executePendingTransactions();
+
+    }
+
     @Override
     public void onNavigationDrawerSelectedItem(int position) {
 
         mDrawerLayout.closeDrawers();
-
         if(position == 0)
         {
 
@@ -137,7 +170,7 @@ public class MainActivity2 extends ActionBarActivity implements
         {
 
             ListSalesFragment listSalesFragment = ListSalesFragment.newInstance("", "");
-            FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction().addToBackStack(null);
             transaction.replace(R.id.sample_content_fragment, listSalesFragment);
             transaction.commit();
             return;
@@ -152,10 +185,7 @@ public class MainActivity2 extends ActionBarActivity implements
             startActivity(new Intent(this,ConfigurationActivity.class));
             return;
         }
-        FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
-        ListProductFragment fragment = ListProductFragment.newInstance("", "");
-        transaction.replace(R.id.sample_content_fragment, fragment);
-        transaction.commit();
+
     }
 
 

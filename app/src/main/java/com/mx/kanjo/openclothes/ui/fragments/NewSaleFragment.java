@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,7 +28,9 @@ import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 import com.mx.kanjo.openclothes.provider.OpenClothesDatabase;
-import com.mx.kanjo.openclothes.ui.SaleItemAdapter;
+import com.mx.kanjo.openclothes.ui.adapters.SaleItemAdapter;
+import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogAddNewSaleItem;
+import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogAddStockItem;
 import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.Lists;
 import com.mx.kanjo.openclothes.util.UiUtils;
@@ -380,7 +383,18 @@ public class NewSaleFragment extends Fragment {
     private void showFragment(android.support.v4.app.DialogFragment dialogFragment, String TAG, int requestCode) {
         android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
         dialogFragment.setTargetFragment(this, requestCode);
-        dialogFragment.show(fm, TAG);
+
+        if(UiUtils.isTablet(mContext)) {
+            dialogFragment.show(fm, TAG);
+        }
+        else
+        {
+
+            FragmentTransaction transaction =  fm.beginTransaction();
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            transaction.add(android.R.id.content, dialogFragment)
+                    .addToBackStack(null).commit();
+        }
     }
 
     private void updateTotal(){

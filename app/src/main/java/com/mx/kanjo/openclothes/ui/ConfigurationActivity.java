@@ -22,6 +22,9 @@ import com.mx.kanjo.openclothes.model.IncomeType;
 import com.mx.kanjo.openclothes.model.OutcomeType;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.ui.fragments.ListConfigurationFragment;
+import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogIncomeTypeFragment;
+import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogOutcomeTypeFragment;
+import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogSizeFragment;
 
 import java.util.ArrayList;
 import java.util.Iterator;

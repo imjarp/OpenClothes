@@ -49,11 +49,7 @@ public class ProductActivity extends ActionBarActivity implements ProductFragmen
 
             idProduct = args.getInt(KEY_ID_PRODUCT,idProduct);
 
-
         }
-
-
-
 
         if (savedInstanceState == null) {
             if(idProduct>0){
@@ -80,6 +76,8 @@ public class ProductActivity extends ActionBarActivity implements ProductFragmen
         Toolbar mainToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle(getString(R.string.title_activity_product));
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 

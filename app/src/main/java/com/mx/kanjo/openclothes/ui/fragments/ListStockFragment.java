@@ -1,12 +1,14 @@
 package com.mx.kanjo.openclothes.ui.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -33,7 +35,9 @@ import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 import com.mx.kanjo.openclothes.provider.OpenClothesDatabase;
-import com.mx.kanjo.openclothes.ui.StockAdapter;
+import com.mx.kanjo.openclothes.ui.adapters.StockAdapter;
+import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogAddStockItem;
+import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogInventoryOperation;
 import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.Lists;
 import com.mx.kanjo.openclothes.util.UiUtils;
@@ -47,7 +51,6 @@ import butterknife.OnClick;
 
 public class ListStockFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
-
 
     private interface StockColumns{
         public static String [] COLUMNS = {
@@ -76,8 +79,8 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
     private static final int LOADER_STOCK = 998;
 
-    private static final int REQUEST_NEW_STOCK = 1;
-    private static final int REQUEST_REMOVE_STOCK = 2;
+    private static final int REQUEST_NEW_STOCK = 12;
+    private static final int REQUEST_REMOVE_STOCK = 14;
 
     private static final String TAG = ListStockFragment.class.getSimpleName();
 
@@ -93,6 +96,8 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     private LinearLayoutManager mLinearLayoutManager;
 
     protected RecyclerView.LayoutManager mLayoutManager;
+
+    private Context mContext;
 
     private StockAdapter adapter;
 
@@ -181,11 +186,17 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(Activity.RESULT_OK != resultCode)
+        if(Activity.RESULT_OK != resultCode){
+            removeFragmentsDialogFragments();
+
             return;
+        }
+
 
         processResult(requestCode, data);
     }
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -210,6 +221,8 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        mContext = activity;
         /*try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -303,7 +316,7 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         }
         else
         {
-            sizeImage = new Pair<>(48, 48);
+            sizeImage = new Pair<>(72, 72);
 
             return new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
                     .withRoundImage(true)
@@ -328,7 +341,29 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     {
         android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
         dialogFragment.setTargetFragment(this, requestCode);
-        dialogFragment.show(fm, TAG);
+        if(UiUtils.isTablet(mContext)){
+            dialogFragment.show(fm, TAG);
+        }
+        else
+        {
+
+            FragmentTransaction transaction =  fm.beginTransaction();
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            transaction.add(android.R.id.content, dialogFragment,TAG)
+                    .addToBackStack(null).commit();
+        }
+
+    }
+
+    private  void removeFragment(String TAG){
+
+        android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+        if (null ==fm.findFragmentByTag(TAG))
+            return;
+        fm.beginTransaction().remove(fm.findFragmentByTag(TAG)).commitAllowingStateLoss();
+        fm.executePendingTransactions();
+        fm.popBackStackImmediate();
+
 
     }
 
@@ -369,6 +404,7 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         insertNewStockItem(idProduct, size, qty, manager);
         insertIncomeType( idProduct, size , qty, idIncomeType, manager);
 
+        removeFragment(DialogAddStockItem.TAG);
     }
 
     private void insertNewStockItem(int idProduct, int idSize, int qty, InventoryManager manager) {
@@ -429,6 +465,8 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         removeStockItem(idProduct, size, qty, manager);
         insertOutcomeType(idProduct, size, qty, idIncomeType, manager);
 
+        removeFragment(DialogInventoryOperation.TAG);
+
     }
 
     private void removeStockItem(int idProduct, int idSize, int qty, InventoryManager manager) {
@@ -482,6 +520,12 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
         getLoaderManager().restartLoader(LOADER_STOCK, null, this);
 
+    }
+
+    //Call if necessary
+    private void removeFragmentsDialogFragments() {
+        removeFragment(DialogInventoryOperation.TAG);
+        removeFragment(DialogAddStockItem.TAG);
     }
 
 }

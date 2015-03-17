@@ -1,8 +1,14 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fff">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:background="#fff">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -28,12 +34,16 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="12dp"
         android:layout_marginBottom="24dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:gravity="bottom"
-        >
+        android:layout_marginLeft="@dimen/space_horizontal"
+        android:layout_marginRight="@dimen/space_horizontal"
+        android:gravity="bottom">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/remove_stock_item_title_type_outcome_operation"
+            style="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_marginTop="6dp"/>
 
         <Spinner
             android:id="@+id/spin_type"
@@ -44,6 +54,12 @@
 
             />
 
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/new_stock_item_title_model"
+            style="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_marginTop="6dp"/>
         <Spinner
             android:id="@+id/spin_model"
             style="@style/Widget.IOSched.HeaderBar.Spinner"
@@ -52,7 +68,12 @@
             android:layout_margin="6dp"
 
             />
-
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/new_stock_item_title_size"
+            style="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_marginTop="6dp"/>
         <Spinner
             android:id="@+id/spin_size"
             style="@style/Widget.IOSched.HeaderBar.Spinner"
@@ -61,17 +82,18 @@
             android:layout_margin="6dp"
             />
 
+        <com.mx.kanjo.openclothes.ui.FloatingLabelLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            app:floatLabelTextAppearance="@style/TextAppearance.OpenClothes.FloatLabel">
         <EditText
             android:id="@+id/et_quantity"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:hint="@string/hint_quantity_stock"
             android:gravity="center_vertical"
-            android:inputType="numberDecimal"
-            android:layout_marginRight="6dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginBottom="6dp"
+            android:inputType="numberDecimal"/>
+            </com.mx.kanjo.openclothes.ui.FloatingLabelLayout>
 
             />
     </LinearLayout>
@@ -79,9 +101,9 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:layout_marginLeft="4dip"
-        android:layout_marginRight="4dip"
+        android:layout_height="2dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         android:background="?android:attr/dividerHorizontal"
         android:layout_alignParentTop="true"/>
     <LinearLayout
@@ -90,14 +112,11 @@
         android:orientation="horizontal"
         android:gravity="center_vertical|right">
 
-
-
-
         <Button
             android:id="@+id/btn_add_outcome"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:text="@string/add_action_title"
+            android:text="@string/remove_action_title"
             android:background="?android:attr/selectableItemBackground"
             android:minWidth="@dimen/button_min_width"
             android:paddingLeft="12dp"
@@ -121,4 +140,5 @@
 
     </LinearLayout>
 
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

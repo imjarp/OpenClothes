@@ -53,6 +53,7 @@
     <!--Titles for dialogs that has only two actions add or discard-->
     <string name="discard_action_title">Discard</string>
     <string name="add_action_title">Add</string>
+    <string name="remove_action_title">Remove</string>
 
     <!--Dialog add size-->
     <string name="title_add_new_size">Add Size</string>
@@ -96,15 +97,20 @@
     <string name="hint_quantity_stock">Quantity</string>
     <string name="choose_title">Choose :</string>
     <string name="message_quantity_validation">Please enter a valid quantity</string>
+    <string name="new_stock_item_title_type_income_operation">Type income operation :</string>
+    <string name="new_stock_item_title_model">Model :</string>
+    <string name="new_stock_item_title_size">Size :</string>
+    <string name="new_stock_item_title_quantity">Quantity:</string>
 
     <!--Menu stock list actions-->
     <string name="title_income_stock">Income</string>
-    <string name="title_outgoing_stock">Outgoing</string>
+    <string name="title_outgoing_stock">Remove</string>
     <string name="menu_add_product_title">Add</string>
 
     <!--Dialog remove stock item-->
     <string name="title_remove_dialog_stock">Remove Stock Item</string>
     <string name="title_activity_new_sale">NewSaleActivity</string>
+    <string name="remove_stock_item_title_type_outcome_operation">Outcome operation :</string>
 
     <!--Dialog add sale item-->
     <string name="title_add_dialog_new_sale">New sale item</string>
@@ -115,7 +121,7 @@
     <string name="title_fragment_products">My products</string>
     <string name="title_sales_fragment">My sales</string>
     <string name="update_action">Update</string>
-
+    <string name="error_quantity_greater_than_inventory">Current pieces (%1$d) in inventory .</string>
 
 
 </resources>

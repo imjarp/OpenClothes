@@ -108,7 +108,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         SetOnItemClickListener(mItemClickListener);
         holder.textViewModel.setText(tempModelProduct.Model);
-        holder.textViewPrice.setText(" $ " + tempModelProduct.Price);
+        holder.textViewPrice.setText("$ " + tempModelProduct.Price);
         holder.bindProduct(tempModelProduct);
 
     }

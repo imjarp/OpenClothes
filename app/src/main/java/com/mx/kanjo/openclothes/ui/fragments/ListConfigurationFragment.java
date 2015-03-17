@@ -17,9 +17,9 @@ import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
 import com.mx.kanjo.openclothes.model.IncomeType;
 import com.mx.kanjo.openclothes.model.OutcomeType;
 import com.mx.kanjo.openclothes.model.SizeModel;
-import com.mx.kanjo.openclothes.ui.DialogIncomeTypeFragment;
-import com.mx.kanjo.openclothes.ui.DialogOutcomeTypeFragment;
-import com.mx.kanjo.openclothes.ui.DialogSizeFragment;
+import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogIncomeTypeFragment;
+import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogOutcomeTypeFragment;
+import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogSizeFragment;
 
 import java.util.ArrayList;
 
@@ -166,7 +166,7 @@ public class ListConfigurationFragment extends ListFragment implements AdapterVi
             return true;
         }
         if(currentConfigType == INCOME_CONFIG){
-            showDialogFragment(DialogIncomeTypeFragment.createInstaceForUpdate(), DialogIncomeTypeFragment.TAG, REQUEST_INCOME_TYPE);
+            showDialogFragment(DialogIncomeTypeFragment.createInstanceForUpdate(), DialogIncomeTypeFragment.TAG, REQUEST_INCOME_TYPE);
             return true;
 
         }

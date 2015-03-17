@@ -16,4 +16,6 @@
     <dimen name="margin_right_dialog">24dp</dimen>
     <dimen name="add_width_button">240dp</dimen>
 
+
+    <dimen name="space_horizontal">24dp</dimen>
 </resources>

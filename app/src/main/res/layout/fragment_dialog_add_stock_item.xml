@@ -1,121 +1,143 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fff">
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="72dp"
-        android:gravity="center"
-        android:background="@color/primary">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_add_dialog_stock"
-            android:textColor="@color/text_color"/>
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:gravity="bottom">
+        android:background="#fff">
 
-        <Spinner
-            style="@style/Widget.IOSched.HeaderBar.Spinner"
-            android:id="@+id/spin_type_incoming"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="72dp"
+                android:gravity="center"
+                android:background="@color/primary">
+        
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_add_dialog_stock"
+                    android:textColor="@color/text_color"/>
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/space_horizontal"
+                android:paddingRight="@dimen/space_horizontal">
+        
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:gravity="bottom">
+                
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/new_stock_item_title_type_income_operation"
+                    style="@style/Base.TextAppearance.AppCompat.Small"/>
+        
+                <Spinner
+                    style="@style/Widget.IOSched.HeaderBar.Spinner"
+                    android:id="@+id/spin_type_incoming"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"/>
 
-        <Spinner
-            style="@style/Widget.IOSched.HeaderBar.Spinner"
-            android:id="@+id/spin_model"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            />
+                <TextView
+                    android:layout_marginTop="4dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/new_stock_item_title_model"
+                    style="@style/Base.TextAppearance.AppCompat.Small"/>
+                <Spinner
+                    style="@style/Widget.IOSched.HeaderBar.Spinner"
+                    android:id="@+id/spin_model"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"/>
 
-        <Spinner
-            style="@style/Widget.IOSched.HeaderBar.Spinner"
-            android:id="@+id/spin_size"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            />
+                <TextView
+                    android:layout_marginTop="4dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/new_stock_item_title_size"
+                    style="@style/Base.TextAppearance.AppCompat.Small"/>
 
-        <EditText
-            android:id="@+id/et_quantity"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:hint="@string/hint_quantity_stock"
-            android:gravity="center_vertical"
-            android:inputType="numberDecimal"
-            android:layout_marginRight="6dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginBottom="6dp"
+                <Spinner
+                    style="@style/Widget.IOSched.HeaderBar.Spinner"
+                    android:id="@+id/spin_size"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    />
 
-            />
+                <com.mx.kanjo.openclothes.ui.FloatingLabelLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    app:floatLabelTextAppearance="@style/TextAppearance.OpenClothes.FloatLabel">
+                    <EditText
+                        android:id="@+id/et_quantity"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:hint="@string/hint_quantity_stock"
+                        android:gravity="center_vertical"
+                        android:inputType="numberDecimal"
+                        android:textSize="@dimen/text.field.single.line.size.text"
+                        />
+                </com.mx.kanjo.openclothes.ui.FloatingLabelLayout>
+
+            </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="12dp"
+                android:background="?android:attr/dividerHorizontal"
+                android:layout_alignParentTop="true"/>
+        
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical|right">
+        
+        
+        
+        
+                <Button
+                    android:id="@+id/btn_add_stock_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="@string/add_action_title"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:minWidth="@dimen/button_min_width"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:textColor="@color/primary"
+                    android:textStyle="bold"/>
+        
+                <Button
+                    android:id="@+id/btn_discard_stock_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="@string/discard_action_title"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:minWidth="@dimen/button_min_width"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:textColor="@color/secondary_text"/>
+        
+        
+            </LinearLayout>
+        
     </LinearLayout>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:layout_marginLeft="4dip"
-        android:layout_marginRight="4dip"
-        android:background="?android:attr/dividerHorizontal"
-        android:layout_alignParentTop="true"/>
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical|right">
-
-
-
-
-        <Button
-            android:id="@+id/btn_add_stock_item"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:text="@string/add_action_title"
-            android:background="?android:attr/selectableItemBackground"
-            android:minWidth="@dimen/button_min_width"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:textColor="@color/primary"
-            android:textStyle="bold"/>
-
-        <Button
-            android:id="@+id/btn_discard_stock_item"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:text="@string/discard_action_title"
-            android:background="?android:attr/selectableItemBackground"
-            android:minWidth="@dimen/button_min_width"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:textColor="@color/secondary_text"
-
-            />
-
-
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

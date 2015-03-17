@@ -42,6 +42,8 @@
             android:name=".ui.ProductActivity"
             android:label="@string/title_activity_product"
             android:windowSoftInputMode="stateVisible|adjustResize|adjustPan" >
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mx.kanjo.openclothes.ui.MainActivity2"/>
         </activity>
         <activity
             android:name=".ui.NewSaleActivity"

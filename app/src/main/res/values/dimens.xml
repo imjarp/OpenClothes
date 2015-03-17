@@ -16,4 +16,20 @@
     <dimen name="margin_right_dialog">4dp</dimen>
     <dimen name="add_width_button">72dp</dimen>
 
+    <!--Subheader-->
+    <dimen name="subheader_margin_left">16dp</dimen>
+    <dimen name="subheader_height">48dp</dimen>
+    <dimen name="subheader_fontsize">14sp</dimen>
+    
+    <!--LineItem for Products & stock-->
+    <dimen name="line_item_height">72dp</dimen>
+    <dimen name="space_horizontal">16dp</dimen>
+
+    <!--Text Field Single Line -->
+    <dimen name="text.field.single.line.size.text">16sp</dimen>
+    <dimen name="text.field.single.line.height">48dp</dimen>
+    <dimen name="text.field.single.line.padding.top">16dp</dimen>
+    <dimen name="text.field.single.line.padding.bottom">16dp</dimen>
+
+
 </resources>
