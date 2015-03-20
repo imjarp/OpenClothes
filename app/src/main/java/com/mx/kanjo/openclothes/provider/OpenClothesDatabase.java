@@ -152,6 +152,8 @@ public class OpenClothesDatabase extends SQLiteOpenHelper {
                 + OpenClothesContract.SaleItemColumns.ID_PRODUCT + " INTEGER NOT NULL " + References.PRODUCT_ID + ","
                 + OpenClothesContract.SaleItemColumns.ID_SIZE + " INTEGER NOT NULL " + References.SIZE_ID + ","
                 + OpenClothesContract.SaleItemColumns.SALE_ID + " INTEGER NOT NULL " + References.SALE_ID + ","
+                + OpenClothesContract.SaleItemColumns.MODEL_PRODUCT + " TEXT NOT NULL " + ","
+                + OpenClothesContract.SaleItemColumns.SIZE + " TEXT NOT NULL " + ","
                 + OpenClothesContract.SaleItemColumns.QUANTITY + " INTEGER NOT NULL,"
                 + "UNIQUE (" + BaseColumns._ID + "," +  OpenClothesContract.SaleItemColumns.ID_PRODUCT + ","
                         + OpenClothesContract.SaleItemColumns.ID_SIZE + ","

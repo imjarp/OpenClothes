@@ -27,7 +27,7 @@ import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 import com.mx.kanjo.openclothes.ui.ProductActivity;
-import com.mx.kanjo.openclothes.ui.ProductAdapter;
+import com.mx.kanjo.openclothes.ui.adapters.ProductAdapter;
 import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.UiUtils;
 

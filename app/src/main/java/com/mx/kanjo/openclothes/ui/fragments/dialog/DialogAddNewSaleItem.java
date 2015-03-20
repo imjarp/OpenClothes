@@ -36,6 +36,7 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.mx.kanjo.openclothes.R;
+import com.mx.kanjo.openclothes.engine.InventoryManager;
 import com.mx.kanjo.openclothes.model.LeanProductModel;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
@@ -82,8 +83,9 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
     private Context context;
 
     private ArrayList<SizeModel> listSize  = Lists.newArrayList();
-    private Dictionary<Integer,SizeModel> sizeModelDictionary;
+    private Dictionary<Integer,SizeModel> sizeModelDictionary ;
     private ArrayList<StockItem> listStockItems = Lists.newArrayList();
+    InventoryManager mInventoryManager;
     StockItem selectedStockItem  = null;
     public static final String TAG ="com.mx.kanjo.openclothes.ui.fragments.dialog.DialogAddStockItem";
     private static final int LOADER_STOCK = 999;
@@ -431,6 +433,8 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         mEditTextQuantity.addTextChangedListener(textQuantityWatcher);
         mSpinnerSize.setOnItemSelectedListener(sizeItemClickListener);
 
+        mInventoryManager = new InventoryManager(context);
+
         Animation in = AnimationUtils.loadAnimation(context,android.R.anim.fade_in);
         Animation out = AnimationUtils.loadAnimation(context,android.R.anim.fade_out);
 
@@ -461,7 +465,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
     private  void populateSizeSpinner(int idProduct)
     {
-
+        if (sizeModelDictionary == null){ sizeModelDictionary = new Hashtable<>();}
         //Fetch all stock that have that id Product
         ArrayList<String> simpleList = Lists.newArrayList();
         SizeModel size;
@@ -496,7 +500,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
     private void findStockItem(String item)
     {
 
-        ArrayList<SizeModel> listSize = Collections.list(sizeModelDictionary.elements());
+        listSize = Collections.list(sizeModelDictionary.elements());
 
         SizeModel selectedSize = null;
 
@@ -562,6 +566,10 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
             showMessage();
             return;
         }
+
+
+        if(!validateInventory(textQty))
+            return;
 
         Intent i  = getIntentExtras();
 
@@ -639,6 +647,26 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
         sizeModel.setSizeDescription(data.getString(SizeColumnsOrder.COL_SIZE_DESCRIPTION));
 
         return sizeModel;
+    }
+
+    private boolean validateInventory(String textQty) {
+
+
+        int idProduct = (int) mSpinnerProduct.getSelectedItemId();
+
+        int idSize = listSize.get(mSpinnerSize.getSelectedItemPosition()).getIdSize();
+
+        StockItem item =  mInventoryManager.getStockItemByProductAndSize(idProduct,idSize);
+
+        int qtyInteger = Integer.valueOf(textQty);
+
+        //Validation that you are removing less than the currently inventory
+        if( item.getQuantity() >= qtyInteger ){
+            return true;
+        }
+        mEditTextQuantity.setError(getString(R.string.error_quantity_greater_than_inventory,item.getQuantity()));
+
+        return false;
     }
 
 

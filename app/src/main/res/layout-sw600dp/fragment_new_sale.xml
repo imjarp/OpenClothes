@@ -19,6 +19,7 @@
         android:layout_marginLeft="48dp">
 
         <EditText
+            android:id="@+id/et_customer_name"
             android:layout_width="220dp"
             android:layout_height="36dp"
             android:text="Customer name"

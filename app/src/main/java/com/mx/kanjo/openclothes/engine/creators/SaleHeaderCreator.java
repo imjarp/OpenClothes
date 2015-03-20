@@ -1,13 +1,9 @@
 package com.mx.kanjo.openclothes.engine.creators;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.mx.kanjo.openclothes.model.ProductModel;
 import com.mx.kanjo.openclothes.model.SaleModel;
-import com.mx.kanjo.openclothes.model.SizeModel;
-import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 
 /**
@@ -21,6 +17,7 @@ public class SaleHeaderCreator {
         values.put(OpenClothesContract.Sale._ID,saleModel.getId());
         values.put(OpenClothesContract.Sale.DATE,saleModel.getDate());
         values.put(OpenClothesContract.Sale.TOTAL, PromiseHeaderCreator.getTotal(saleModel.getSaleItems()));
+        values.put(OpenClothesContract.Sale.CUSTOMER, saleModel.getCustomer());
         return values;
     }
 
@@ -31,18 +28,18 @@ public class SaleHeaderCreator {
         int idx = cursor.getColumnIndex(OpenClothesContract.Sale._ID);
         int idxDate = cursor.getColumnIndex(OpenClothesContract.Sale.DATE);
         int idxTotal = cursor.getColumnIndex(OpenClothesContract.Sale.TOTAL);
-        //TODO:implement this column
-        //int idxCustomer = cursor.getColumnIndex(OpenClothesContract.Sale.CUSTOMER);
+        int idxCustomer = cursor.getColumnIndex(OpenClothesContract.Sale.CUSTOMER);
 
 
         int id = cursor.getInt(idx);
         String date = cursor.getString(idxDate);
         int total = cursor.getInt(idxTotal);
-        //String customer = cursor.getString(idxCustomer);
+        String customer = cursor.getString(idxCustomer);
 
         saleModel.setId(id);
         saleModel.setDate(date);
         saleModel.setTotal(idxTotal);
+        saleModel.setCustomer(customer);
 
         return saleModel;
     }

@@ -35,6 +35,7 @@ public class OpenClothesContract {
         String ID_PRODUCT="idProduct";
         String ID_SIZE="idSize";
         String QUANTITY="idQuantity";
+
     }
 
     interface SaleItemColumns
@@ -43,12 +44,15 @@ public class OpenClothesContract {
         String ID_SIZE= "idSize";
         String QUANTITY="idQuantity";
         String SALE_ID = "idSale";
+        String MODEL_PRODUCT = "model";
+        String SIZE = "size";
     }
 
     interface SaleColumns
     {
         String DATE = "date";
         String TOTAL = "total";
+        String CUSTOMER = "customer";
     }
 
     interface IncomeTypeColumns

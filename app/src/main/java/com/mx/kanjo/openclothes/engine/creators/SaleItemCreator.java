@@ -17,10 +17,13 @@ public class SaleItemCreator {
     public static ContentValues createSaleModel ( StockItem item, int idSale)
     {
         ContentValues values = new ContentValues();
-        values.put(OpenClothesContract.SaleItem.ID_PRODUCT, item.getIdProduct());
+        if( idSale>0 )
         values.put(OpenClothesContract.SaleItem.SALE_ID, idSale);
+        values.put(OpenClothesContract.SaleItem.ID_PRODUCT, item.getIdProduct());
         values.put(OpenClothesContract.SaleItem.ID_SIZE, item.getSize().getIdSize());
         values.put(OpenClothesContract.SaleItem.QUANTITY, item.getQuantity());
+        values.put(OpenClothesContract.SaleItem.MODEL_PRODUCT,item.getModel());
+        values.put(OpenClothesContract.SaleItem.SIZE,item.getSize().getSizeDescription());
 
         return values;
     }

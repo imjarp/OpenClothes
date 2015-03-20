@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NavUtils;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,9 +20,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mx.kanjo.openclothes.R;
+import com.mx.kanjo.openclothes.model.SaleModel;
 import com.mx.kanjo.openclothes.model.SizeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
@@ -33,9 +35,12 @@ import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogAddNewSaleItem;
 import com.mx.kanjo.openclothes.ui.fragments.dialog.DialogAddStockItem;
 import com.mx.kanjo.openclothes.util.ConfigImageHelper;
 import com.mx.kanjo.openclothes.util.Lists;
+import com.mx.kanjo.openclothes.util.Maps;
 import com.mx.kanjo.openclothes.util.UiUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -72,6 +77,7 @@ public class NewSaleFragment extends Fragment {
 
     //TODO : Refactor for textswicther
     @InjectView(R.id.text_total_sale) TextView mTextViewTotalSale;
+    @InjectView(R.id.et_customer_name) EditText mCustomerName;
 
     SaleItemAdapter mSaleItemAdapter ;
 
@@ -113,6 +119,14 @@ public class NewSaleFragment extends Fragment {
 
     }
 
+    private SaveSaleCallback mListener;
+
+    public interface SaveSaleCallback{
+
+        public void onSaveSaleListener(SaleModel saleModel);
+
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -121,7 +135,7 @@ public class NewSaleFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment NewSaleFragment.
      */
-    // TODO: Rename and change types and number of parameters
+    // TODO: Rename and chge types and number of parameters
     public static NewSaleFragment newInstance(String param1, String param2) {
         NewSaleFragment fragment = new NewSaleFragment();
         Bundle args = new Bundle();
@@ -136,23 +150,14 @@ public class NewSaleFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if( Activity.RESULT_OK != resultCode)
-            return;
-
-        parseResult(requestCode,data);
-    }
-
-    private void parseResult(int requestCode, Intent data) {
-
-
-        if(requestCode == REQUEST_SALE_ITEM){
-
-            addSaleItemToForm(data);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (SaveSaleCallback) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement SaveSaleCallback");
         }
-
-
     }
 
     @Override
@@ -198,6 +203,16 @@ public class NewSaleFragment extends Fragment {
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if( Activity.RESULT_OK != resultCode) {
+            removeFragment(DialogAddNewSaleItem.TAG);
+            return;
+        }
+
+        parseResult(requestCode,data);
+    }
 
     @Override
     public void onDestroyView() {
@@ -205,16 +220,6 @@ public class NewSaleFragment extends Fragment {
         ButterKnife.reset(this);
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            //mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
 
     @Override
     public void onDetach() {
@@ -245,7 +250,16 @@ public class NewSaleFragment extends Fragment {
 
     private void saveSale() {
 
-        NavUtils.navigateUpFromSameTask(getActivity());
+        SaleModel saleModel= new SaleModel();
+        
+        Map<Integer,StockItem> temp = Maps.newHashMap();
+        for(StockItem item : mSaleItemAdapter.getSaleItems()){temp.put(item.getStockItemId(),item);}
+        saleModel.setSaleItems(temp);
+        saleModel.setDate(OpenClothesContract.getDbDateString(new Date()));
+        if(null == mListener)
+            return;
+        saleModel.setCustomer(mCustomerName.getText().toString());
+        mListener.onSaveSaleListener(saleModel);
 
     }
 
@@ -262,7 +276,7 @@ public class NewSaleFragment extends Fragment {
         }
         else
         {
-            sizeImage = new Pair<>(24, 24);
+            sizeImage = new Pair<>(72, 72);
 
             return new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
                     .withRoundImage(true)
@@ -271,15 +285,17 @@ public class NewSaleFragment extends Fragment {
         }
     }
 
+    private  void removeFragment(String TAG){
 
-    /*@OnClick(R.id.btnAddNewSaleItem)
-    public void onClickListener(View view)
-    {
-        if( R.id.btnAddNewSaleItem == view.getId())
-        {
-            showFragment(DialogAddNewSaleItem.newInstance("",""), DialogAddStockItem.TAG, REQUEST_SALE_ITEM);
-        }
-    }*/
+        android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+        if (null ==fm.findFragmentByTag(TAG))
+            return;
+        fm.beginTransaction().remove(fm.findFragmentByTag(TAG)).commitAllowingStateLoss();
+        fm.executePendingTransactions();
+        fm.popBackStackImmediate();
+
+
+    }
 
     private void addSaleItemToForm(Intent data) {
 
@@ -288,12 +304,27 @@ public class NewSaleFragment extends Fragment {
         int idSize = data.getIntExtra( DialogAddNewSaleItem.EXTRA_ID_SIZE, -1 );
         int quantity = data.getIntExtra( DialogAddNewSaleItem.EXTRA_QTY, -1 );
 
+        if(idStock<=0)
+            return;
+
         try {
-            StockItem item = createStockItem(idStock, idSize, quantity, idProduct);
+
+            StockItem item = createStockItem(idStock, idSize, quantity, idProduct,true);
+            StockItem currentAvailability = createStockItem(idStock,idSize,0,idProduct,false);
+
+            if(!hasEnoughProductInventory(item,currentAvailability,quantity))
+            {
+                Toast.makeText(mContext, "Error model has exceed the pzd in inventory", Toast.LENGTH_SHORT ).show();
+                return;
+            }
+
             mSaleItemAdapter.addSaleItem(item);
+
             //mSalesItems.add(item);
+
             totalSale += (item.getQuantity() * item.getPrice());
             updateTotal();
+            removeFragment(DialogAddNewSaleItem.TAG);
 
         } catch (Exception e) {
 
@@ -301,7 +332,33 @@ public class NewSaleFragment extends Fragment {
 
     }
 
-    public StockItem createStockItem(int idStock, int sizeId, int quantity,int idProduct) throws Exception {
+    public boolean hasEnoughProductInventory(StockItem newSaleItem,StockItem currentAvailability, int quantityToSale){
+
+        int totalItems = 0;
+
+        if(mSaleItemAdapter.getSaleItems().size() == 0)
+            return true;
+
+        for(StockItem s : mSaleItemAdapter.getSaleItems()){
+            if( newSaleItem.getStockItemId() == s.getStockItemId()
+                && newSaleItem.getIdProduct() == s.getIdProduct()
+                && newSaleItem.getSize().getIdSize() == s.getSize().getIdSize()){
+
+                totalItems +=s.getQuantity();
+            }
+        }
+
+        totalItems += quantityToSale;
+
+        if( currentAvailability.getQuantity() > totalItems )
+            return true;
+
+        return false;
+    }
+
+
+
+    public StockItem createStockItem(int idStock, int sizeId, int quantity,int idProduct, boolean setQty) throws Exception {
 
         Uri stockItemUri = OpenClothesContract.Stock.buildStockUriProductSize();
 
@@ -324,7 +381,9 @@ public class NewSaleFragment extends Fragment {
 
         StockItem saleItem = getStockFromCursor(cursor);
 
-        saleItem.setQuantity(quantity);
+        if(setQty) {
+            saleItem.setQuantity(quantity);
+        }
 
         //TODO : Check if the values are constant??
 
@@ -400,6 +459,17 @@ public class NewSaleFragment extends Fragment {
     private void updateTotal(){
 
         mTextViewTotalSale.setText("$ " + String.valueOf(totalSale));
+
+    }
+
+    private void parseResult(int requestCode, Intent data) {
+
+
+        if(requestCode == REQUEST_SALE_ITEM){
+
+            addSaleItemToForm(data);
+        }
+
 
     }
 }

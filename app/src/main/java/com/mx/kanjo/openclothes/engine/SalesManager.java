@@ -16,7 +16,6 @@ import com.mx.kanjo.openclothes.model.NotificationOrderRequest;
 import com.mx.kanjo.openclothes.model.OutcomeModel;
 import com.mx.kanjo.openclothes.model.OutcomeType;
 import com.mx.kanjo.openclothes.model.OutcomeTypeSale;
-import com.mx.kanjo.openclothes.model.ProductModel;
 import com.mx.kanjo.openclothes.model.PromiseSale;
 import com.mx.kanjo.openclothes.model.SaleModel;
 import com.mx.kanjo.openclothes.model.StockItem;
@@ -79,7 +78,7 @@ public class SalesManager {
         //TODO : Add a status to sale, so we will not remove the promise
 
         //Create Sale
-        SaleModel saleModel = new SaleModel(promiseSale.getStockItems(),today,0,0);
+        SaleModel saleModel = new SaleModel(promiseSale.getStockItems(),today,0,0,promiseSale.getCustomer());
 
         NotificationOrderRequest result = this.createNewSale(saleModel, resolver, configurationOrder, true);
 

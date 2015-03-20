@@ -3,44 +3,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
-    android:layout_margin="4dp"
-    android:padding="2dp">
+    android:layout_height="@dimen/line_item_height"
+    android:paddingLeft="@dimen/space_horizontal"
+    android:paddingRight="@dimen/space_horizontal">
 
     <RelativeLayout
         android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_weight="10"
-        android:orientation="horizontal"
-        android:paddingLeft="2dp">
+        android:layout_height="wrap_content"
+        android:layout_weight="12">
 
         <ImageView
             android:id="@+id/image_view_product"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            tools:src="@drawable/cb_002" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            tools:src="@drawable/cb_002"
+            android:layout_centerVertical="true"/>
 
         <TextView
             android:id="@+id/text_view_model"
-            android:layout_marginLeft="6dp"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            tools:text="CB-011"
+            android:layout_height="30dp"
+            tools:text="supperlofasddsjkldsfkjldsfkljdsfkjldskljdsfsjklsd"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:gravity="center|left"
             android:layout_toRightOf="@+id/image_view_product"
-            android:layout_above="@+id/text_view_size"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="4dp"/>
+            android:layout_alignTop="@+id/image_view_product"
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:paddingLeft="@dimen/space_horizontal"/>
         <TextView
             android:id="@+id/text_view_size"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_height="30dp"
             tools:text="Small"
-            android:gravity="center"
             android:layout_toRightOf="@+id/image_view_product"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="6dp"/>
+            android:layout_below="@+id/text_view_model"
+            android:gravity="center_vertical|top"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:paddingLeft="@dimen/space_horizontal"/>
 
         </RelativeLayout>
 

@@ -88,7 +88,6 @@ public class SaleItemAdapter extends RecyclerView.Adapter<SaleItemAdapter.SaleIt
                 picasso.load(tempSaleItem.getImagePath())
                         .resize((int)widthPx, (int)heightPx)
                         .transform(mCircleTransform)
-                        //.fit()
                         .centerInside()
                         .placeholder(PictureUtils.getImageClotheDefaultRounded(context))
                         .into(holder.imageViewModel);
@@ -101,11 +100,11 @@ public class SaleItemAdapter extends RecyclerView.Adapter<SaleItemAdapter.SaleIt
             }
         }
 
-        holder.textViewModel.setText("Model : " + tempSaleItem.getModel());
+        holder.textViewModel.setText(tempSaleItem.getModel());
         holder.textViewSize.setText( tempSaleItem.getSize().getSizeDescription() );
         holder.textViewQuantity.setText( String.valueOf( tempSaleItem.getQuantity() ) );
-        holder.textViewPrice.setText("$ " + tempSaleItem.getPrice());
-        holder.textViewTotal.setText( "$ " +  String.valueOf( tempSaleItem.getQuantity() * tempSaleItem.getPrice()) );
+        holder.textViewPrice.setText(" $" + tempSaleItem.getPrice());
+        holder.textViewTotal.setText( " $ " +  String.valueOf( tempSaleItem.getQuantity() * tempSaleItem.getPrice()) );
 
     }
 
@@ -117,6 +116,10 @@ public class SaleItemAdapter extends RecyclerView.Adapter<SaleItemAdapter.SaleIt
     @Override
     public int getItemCount() {
         return mSaleItems.size();
+    }
+
+    public ArrayList<StockItem> getSaleItems(){
+        return mSaleItems;
     }
 
     public static class SaleItemHolder extends RecyclerView.ViewHolder

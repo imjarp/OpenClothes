@@ -20,6 +20,7 @@
         >
 
         <EditText
+            android:id="@+id/et_customer_name"
             android:layout_width="fill_parent"
             android:layout_height="36dp"
             android:hint ="Customer name"
