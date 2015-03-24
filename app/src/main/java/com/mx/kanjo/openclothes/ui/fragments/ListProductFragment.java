@@ -12,10 +12,12 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +36,9 @@ import com.mx.kanjo.openclothes.util.UiUtils;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,6 +74,12 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
     ProductAdapter adapter;
 
+    protected LayoutManagerType mCurrentLayoutManagerType;
+
+    protected RecyclerView.LayoutManager mLayoutManager;
+
+    private static final int SPAN_COUNT = 5;
+
     private interface ProductColumns{
         public static String [] COLUMNS = {
                 OpenClothesContract.Product._ID,
@@ -87,6 +97,8 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         public static final int COL_PRICE = 3;
 
     }
+
+    @Optional @InjectView(R.id.card_header_view)CardView cardViewHeader;
 
 
     /**
@@ -186,58 +198,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         }
     };
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(Activity.RESULT_OK != resultCode)
-            return;
-
-        if( requestCode == REQUEST_NEW_PRODUCT )
-        {
-            this.onLoaderReset(null);
-            getLoaderManager().restartLoader(LOADER_PRODUCT, null, this);
-
-
-        }
-        if ( requestCode == REQUEST_UPDATE_PRODUCT ){
-            updateAdapter(data);
-        }
-    }
-
-    private void updateAdapter(Intent data) {
-        Uri uri = data.getData();
-        if( uri ==null ){return;}
-
-        LeanProductModel lean = getLeanProduct(uri);
-
-        if( null == lean ){return;}
-
-        if( positionUpdated > -1 ) {
-            adapter.updateProduct( positionUpdated, lean );
-            positionUpdated = -1;
-        }
-
-    }
-
-    private LeanProductModel getLeanProduct(Uri uri){
-
-        Cursor cursor =  getActivity().getContentResolver().query(uri,
-                ProductColumns.COLUMNS,
-                null,
-                null,
-                null);
-
-        //Error
-        if(!cursor.moveToFirst())
-            return null;
-        if(cursor.getCount()<=0)
-            return null;
-
-        LeanProductModel model = getFromCursor( cursor );
-
-        cursor.close();
-
-        return model;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -247,7 +208,10 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         setHasOptionsMenu(true);
+
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -257,6 +221,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         view.setTag(TAG);
 
         mRecyclerViewProducts = (RecyclerView) view.findViewById(R.id.recycle_view_list_product);
+        mRecyclerViewProducts.setOnScrollListener(onScrollListener);
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
 
@@ -344,11 +309,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         LINEAR_LAYOUT_MANAGER
     }
 
-    protected LayoutManagerType mCurrentLayoutManagerType;
 
-    protected RecyclerView.LayoutManager mLayoutManager;
-
-    private static final int SPAN_COUNT = 5;
 
     public ListProductFragment() {
         // Required empty public constructor
@@ -400,5 +361,92 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_fragment_products));
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(Activity.RESULT_OK != resultCode)
+            return;
+
+        if( requestCode == REQUEST_NEW_PRODUCT )
+        {
+            addItemAdapter(data);
+        }
+        if ( requestCode == REQUEST_UPDATE_PRODUCT ){
+            updateAdapter(data);
+        }
+    }
+
+    private void addItemAdapter(Intent data){
+        Uri uri = data.getData();
+        if( uri ==null ){return;}
+
+        LeanProductModel lean = getLeanProduct(uri);
+
+        if( null == lean ){return;}
+
+        adapter.addProduct(lean);
+
+    }
+
+    private void updateAdapter(Intent data) {
+        Uri uri = data.getData();
+        if( uri ==null ){return;}
+
+        LeanProductModel lean = getLeanProduct(uri);
+
+        if( null == lean ){return;}
+
+        if( positionUpdated > -1 ) {
+            adapter.updateProduct( positionUpdated, lean );
+            positionUpdated = -1;
+        }
+
+    }
+
+    private LeanProductModel getLeanProduct(Uri uri){
+
+        Cursor cursor =  getActivity().getContentResolver().query(uri,
+                ProductColumns.COLUMNS,
+                null,
+                null,
+                null);
+
+        //Error
+        if(!cursor.moveToFirst())
+            return null;
+        if(cursor.getCount()<=0)
+            return null;
+
+        LeanProductModel model = getFromCursor( cursor );
+
+        cursor.close();
+
+        return model;
+    }
+
+    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
+            boolean isIdle = newState == RecyclerView.SCROLL_STATE_IDLE;
+            if(!UiUtils.isTablet(getActivity())) {
+
+                boolean isOnTop =((LinearLayoutManager) mLayoutManager).findFirstCompletelyVisibleItemPosition() ==0;
+
+                cardViewHeader.setUseCompatPadding(true);
+
+                if(isIdle && isOnTop){
+                    cardViewHeader.setCardElevation(0);
+                }
+                else if(cardViewHeader.getCardElevation()==0 && !isIdle){
+                    cardViewHeader.setCardElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getActivity().getResources().getDisplayMetrics()));
+                }
+            }
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {}
+    };
+
 
 }
+

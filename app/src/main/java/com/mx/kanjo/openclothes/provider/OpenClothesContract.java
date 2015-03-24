@@ -23,6 +23,7 @@ public class OpenClothesContract {
         String IMAGE_PATH ="path";
         String PRICE = "price";
         String COST = "cost";
+        String DESCRIPTION = "description";
     }
 
     interface SizeColumns

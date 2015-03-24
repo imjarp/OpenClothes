@@ -6,7 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
@@ -40,6 +43,7 @@ import com.mx.kanjo.openclothes.util.UiUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -60,6 +64,9 @@ public class NewSaleFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private static final String TAG = ListSalesFragment.class.getSimpleName();
+
+    private final static String KEY_BUNDLE_CUSTOMER = "KEY_BUNDLE_CUSTOMER";
+    private final static String KEY_BUNDLE_SALE_ITEMS = "KEY_LIST_SALE_ITEMS ";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -82,6 +89,8 @@ public class NewSaleFragment extends Fragment {
     SaleItemAdapter mSaleItemAdapter ;
 
     ArrayList<StockItem> mSalesItems = Lists.newArrayList();
+
+    private AsyncTask<List<StockParcel>,Void,ArrayList<StockItem>> mGetStocksTask;
 
     int totalSale = 0;
 
@@ -175,6 +184,7 @@ public class NewSaleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_new_sale, container, false);
 
         view.setTag(TAG);
@@ -191,14 +201,96 @@ public class NewSaleFragment extends Fragment {
 
         mContext = getActivity();
 
-
         mSaleItemAdapter = new SaleItemAdapter(mContext,mSalesItems,buildConfiguration());
 
         mRecyclerView.setAdapter(mSaleItemAdapter);
 
         ButterKnife.inject(this,view);
 
+        if(null!= savedInstanceState){
+            restoreFragmentData(savedInstanceState);
+        }
+
         return view;
+
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveInstanceState(outState);
+
+    }
+
+    private void saveInstanceState(Bundle outState) {
+
+        outState.putParcelableArrayList(KEY_BUNDLE_SALE_ITEMS,createStockParcel());
+
+        outState.putString(KEY_BUNDLE_CUSTOMER,mCustomerName.getText().toString());
+
+    }
+
+    private ArrayList<StockParcel> createStockParcel(){
+
+        ArrayList<StockParcel> stockList = Lists.newArrayList();
+
+        for(StockItem item : mSaleItemAdapter.getSaleItems()){
+            stockList.add(createStockParcelInstance(item));
+        }
+        return stockList;
+
+    }
+
+    private StockParcel createStockParcelInstance(StockItem stockItem){
+
+        StockParcel s = new StockParcel();
+        s.idProduct = stockItem.getIdProduct();
+        s.idStock = stockItem.getStockItemId();
+        s.idSize = stockItem.getSize().getIdSize();
+        s.quantity = stockItem.getQuantity();
+        return s;
+    }
+
+    private void restoreFragmentData(Bundle savedInstanceState) {
+
+        List<StockParcel> stockParcels = savedInstanceState.getParcelableArrayList(KEY_BUNDLE_SALE_ITEMS);
+
+        String customerName = savedInstanceState.getString(KEY_BUNDLE_CUSTOMER);
+
+        mCustomerName.setText(customerName);
+
+        mGetStocksTask = new AsyncTask<List<StockParcel>, Void, ArrayList<StockItem>>() {
+
+            @Override
+            protected ArrayList<StockItem> doInBackground(List<StockParcel>... params) {
+
+                List<StockParcel> itemsToRestore = params[0];
+
+                ArrayList<StockItem> items = Lists.newArrayList();
+
+                for(StockParcel parcel : itemsToRestore){
+                    try {
+
+                        items.add(createStockItem(parcel.idStock, parcel.idSize, parcel.idProduct, parcel.quantity, true));
+                    }
+                    catch(Exception e){
+
+                    }
+                }
+                return  items;
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<StockItem> stockItems) {
+                int total = 0;
+                for(StockItem item : stockItems){
+                    mSaleItemAdapter.addSaleItem(item);
+                    total += ( item.getPrice() * item.getQuantity() );
+                }
+                mTextViewTotalSale.setText("Total $" +String.valueOf(total));
+            }
+        }.execute(stockParcels);
 
 
     }
@@ -356,8 +448,6 @@ public class NewSaleFragment extends Fragment {
         return false;
     }
 
-
-
     public StockItem createStockItem(int idStock, int sizeId, int quantity,int idProduct, boolean setQty) throws Exception {
 
         Uri stockItemUri = OpenClothesContract.Stock.buildStockUriProductSize();
@@ -472,4 +562,52 @@ public class NewSaleFragment extends Fragment {
 
 
     }
+
+    class StockParcel implements Parcelable {
+
+
+        int idStock ;
+        int idProduct;
+        int idSize ;
+        int quantity ;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(idStock);
+            dest.writeInt(idProduct);
+            dest.writeInt(idSize);
+            dest.writeInt(quantity);
+
+        }
+
+        public final Parcelable.Creator<StockParcel> CREATOR =  new Parcelable.Creator<StockParcel>() {
+
+        @Override
+        public StockParcel createFromParcel(Parcel parcel) {
+            return new StockParcel(parcel);
+        }
+
+        @Override
+        public StockParcel[] newArray(int i) {
+            return new StockParcel[0];
+        }
+    };
+
+        private StockParcel (Parcel in)
+        {
+            idStock = in.readInt();
+            idProduct= in.readInt();
+            idSize = in.readInt();
+            quantity = in.readInt();
+
+        }
+        public StockParcel(){}
+    }
+
+
 }

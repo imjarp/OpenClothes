@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.mx.kanjo.openclothes.ui.MainActivity2"
+            android:name=".ui.MainActivity2"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +33,7 @@
         <activity
             android:name=".ui.ConfigurationActivity"
             android:label="@string/title_activity_configuration"
-            android:parentActivityName=".ui.MainActivity2">
+            android:parentActivityName=".ui.MainActivity2" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mx.kanjo.openclothes.ui.MainActivity2" />
@@ -42,12 +42,21 @@
             android:name=".ui.ProductActivity"
             android:label="@string/title_activity_product"
             android:windowSoftInputMode="stateVisible|adjustResize|adjustPan" >
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mx.kanjo.openclothes.ui.MainActivity2"/>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mx.kanjo.openclothes.ui.MainActivity2" />
         </activity>
         <activity
             android:name=".ui.NewSaleActivity"
             android:label="@string/title_activity_new_sale"
+            android:parentActivityName=".ui.MainActivity2" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mx.kanjo.openclothes.ui.MainActivity2" />
+        </activity>
+        <activity
+            android:name=".ui.SaleActivity"
+            android:label="@string/title_activity_show_sale"
             android:parentActivityName=".ui.MainActivity2" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

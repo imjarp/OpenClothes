@@ -406,7 +406,6 @@ public class ProductFragment extends Fragment {
                 }
             }
         };
-        //.executeOnExecutor(Executors.newSingleThreadExecutor(), Long.valueOf(idProduct));
         fetchProductTask.execute(new Integer[]{idProduct});
 
 
@@ -466,6 +465,7 @@ public class ProductFragment extends Fragment {
         productModel.setActive(isActiveProduct);
         productModel.setPrice(Integer.parseInt(price));
         productModel.setCost( Integer.parseInt( cost ) );
+
 
         return productModel;
 

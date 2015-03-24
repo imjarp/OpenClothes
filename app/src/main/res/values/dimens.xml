@@ -19,7 +19,7 @@
     <!--Subheader-->
     <dimen name="subheader_margin_left">16dp</dimen>
     <dimen name="subheader_height">48dp</dimen>
-    <dimen name="subheader_fontsize">14sp</dimen>
+    <dimen name="subheader_fontsize">16sp</dimen>
     
     <!--LineItem for Products & stock-->
     <dimen name="line_item_height">72dp</dimen>

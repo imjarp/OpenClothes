@@ -14,7 +14,8 @@ public class SaleHeaderCreator {
     public static ContentValues createSaleModel ( SaleModel saleModel)
     {
         ContentValues values = new ContentValues();
-        values.put(OpenClothesContract.Sale._ID,saleModel.getId());
+        if( saleModel.getId() > 0 )
+            values.put(OpenClothesContract.Sale._ID,saleModel.getId());
         values.put(OpenClothesContract.Sale.DATE,saleModel.getDate());
         values.put(OpenClothesContract.Sale.TOTAL, PromiseHeaderCreator.getTotal(saleModel.getSaleItems()));
         values.put(OpenClothesContract.Sale.CUSTOMER, saleModel.getCustomer());

@@ -122,6 +122,10 @@
     <string name="title_sales_fragment">My sales</string>
     <string name="update_action">Update</string>
     <string name="error_quantity_greater_than_inventory">Current pieces (%1$d) in inventory .</string>
+    <string name="title_activity_show_sale">Sale</string>
 
+
+    <!--SaleActivity-->
+    <string name ="title_sale_activity">Sale</string>
 
 </resources>

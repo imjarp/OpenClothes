@@ -123,7 +123,8 @@ public class OpenClothesDatabase extends SQLiteOpenHelper {
                 + OpenClothesContract.ProductColumns.DATE + " TEXT NOT NULL,"
                 + OpenClothesContract.ProductColumns.IMAGE_PATH + " TEXT,"
                 + OpenClothesContract.ProductColumns.IS_ACTIVE + " INTEGER,"
-                + OpenClothesContract.ProductColumns.MODEL + " TEXT,"
+                + OpenClothesContract.ProductColumns.MODEL + " TEXT NOT NULL,"
+                + OpenClothesContract.ProductColumns.DESCRIPTION + " TEXT,"
                 + OpenClothesContract.ProductColumns.PRICE + " INT NOT NULL,"
                 + OpenClothesContract.ProductColumns.COST + " INT NOT NULL,"
                 + "UNIQUE (" + OpenClothesContract.ProductColumns.MODEL +") ON CONFLICT REPLACE )" );
@@ -145,6 +146,7 @@ public class OpenClothesDatabase extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + Tables.SALE + "( "
                 + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + OpenClothesContract.SaleColumns.DATE + " TEXT NOT NULL ,"
+                + OpenClothesContract.SaleColumns.CUSTOMER + " TEXT NOT NULL ,"
                 + OpenClothesContract.SaleColumns.TOTAL + " INTEGER NOT NULL )");
 
         db.execSQL("CREATE TABLE " + Tables.SALE_ITEM + " ("

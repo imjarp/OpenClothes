@@ -26,6 +26,7 @@ import com.mx.kanjo.openclothes.util.Maps;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -123,8 +124,6 @@ public class SalesManager {
 
     }
 
-
-
     private void removePromise(PromiseSale promiseSale) {
 
         deletePromiseItems(promiseSale.getStockItems(), promiseSale.getId());
@@ -200,6 +199,8 @@ public class SalesManager {
             createOutcome(outcomeModel, saleOutcomeType, today, item);
 
             inventoryManager.addOutcome(outcomeModel);
+
+            inventoryManager.removeItemFromStock(item.getValue());
 
             result.AvailableProducts.add(item.getValue());
 
@@ -302,8 +303,6 @@ public class SalesManager {
         resolver.insert(OpenClothesContract.PromiseItem.CONTENT_URI,values);
 
     }
-
-
 
     private static SaleModel createSaleHeader ( SaleModel saleModel, ContentResolver resolver)
     {
@@ -432,6 +431,57 @@ public class SalesManager {
 
     }
 
+
+    public SaleModel getSale( int idSale ){
+
+        Uri saleUri = OpenClothesContract.Sale.buildSaleUri(idSale);
+
+        Cursor cursor = resolver.query(saleUri,null,null,null,null);
+
+        cursor.moveToFirst();
+
+        SaleModel saleModel =  SaleHeaderCreator.createSaleHeaderFromCursor(cursor);
+
+        cursor.close();
+
+        ArrayList<StockItem> result = getSaleItem(saleModel.getId());
+
+        Map<Integer, StockItem> saleItems = new HashMap<>();
+
+        int index = 0;
+        for(StockItem i : result){ saleItems.put( index++,i ); }
+
+        saleModel.setSaleItems(saleItems);
+
+        return saleModel;
+
+
+    }
+
+    public ArrayList<StockItem> getSaleItem(int idSale){
+
+        Uri saleItemUri = OpenClothesContract.SaleItem.buildSaleItemHeader(idSale,true);
+
+        ArrayList<StockItem> stockItems = Lists.newArrayList();
+
+        Cursor cursor = resolver.query(saleItemUri,null,null,null,null);
+
+        if(!cursor.moveToFirst())
+            return stockItems;
+
+        if(cursor.getCount() == 0)
+            return  stockItems;
+
+
+        do{
+            stockItems.add(SaleItemCreator.createSaleItemFromCursor(cursor,resolver));
+        }while (cursor.moveToNext());
+
+        cursor.close();
+
+        return stockItems;
+
+    }
 
 
 

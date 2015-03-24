@@ -55,7 +55,7 @@ public class PromiseHeaderCreator {
         int total = 0;
         for(Map.Entry<Integer,StockItem> item : items.entrySet())
         {
-            total += item.getValue().getPrice();
+            total += item.getValue().getPrice() * item.getValue().getQuantity();
         }
         return total;
     }

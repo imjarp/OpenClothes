@@ -32,12 +32,12 @@ public class SaleItemCreator {
     {
         int id = cursor.getColumnIndex(OpenClothesContract.SaleItem._ID);
         int idxProduct = cursor.getColumnIndex(OpenClothesContract.SaleItem.ID_PRODUCT);
-        int idxPromise = cursor.getColumnIndex(OpenClothesContract.SaleItem.SALE_ID);
+        int idxSale = cursor.getColumnIndex(OpenClothesContract.SaleItem.SALE_ID);
         int idxSize = cursor.getColumnIndex(OpenClothesContract.SaleItem.ID_SIZE);
         int idxQuantity = cursor.getColumnIndex(OpenClothesContract.SaleItem.QUANTITY);
 
         int idProduct = cursor.getInt(idxProduct);
-        int idSale = cursor.getInt(idxPromise);
+        int idSale = cursor.getInt(idxSale);
         int idSize = cursor.getInt(idxSize);
         int quantity = cursor.getInt(idxQuantity);
 

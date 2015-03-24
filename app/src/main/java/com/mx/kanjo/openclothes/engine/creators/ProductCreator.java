@@ -28,6 +28,7 @@ public class ProductCreator {
         values.put(OpenClothesContract.Product.IMAGE_PATH, CreatorUtils.UriToString(productModel.getImagePath()));
         values.put(OpenClothesContract.Product.PRICE,productModel.getPrice());
         values.put(OpenClothesContract.Product.COST,productModel.getCost());
+        values.put(OpenClothesContract.Product.DESCRIPTION,productModel.getDescription());
 
 
         return values;
@@ -39,7 +40,7 @@ public class ProductCreator {
 
         int idxIdProduct = cursor.getColumnIndex(OpenClothesContract.Product._ID);
         int idxName = cursor.getColumnIndex(OpenClothesContract.Product.NAME);
-        //int idxDescription = cursor.getColumnIndex(OpenClothesContract.Product.DATE);
+        int idxDescription = cursor.getColumnIndex(OpenClothesContract.Product.DESCRIPTION);
         int idxModel = cursor.getColumnIndex(OpenClothesContract.Product.MODEL);
         int idxDate = cursor.getColumnIndex(OpenClothesContract.Product.DATE);
         int idxImage = cursor.getColumnIndex(OpenClothesContract.Product.IMAGE_PATH);
@@ -55,6 +56,7 @@ public class ProductCreator {
         model.setActive( cursor.getInt(idxIsActive) > 0 ? true : false );
         model.setPrice(cursor.getInt(idxPrice));
         model.setCost(cursor.getInt(idxCost));
+        model.setDescription(cursor.getString(idxDescription) );
 
         return model;
     }

@@ -130,6 +130,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         notifyItemChanged(position);
     }
 
+     public void addProduct(LeanProductModel newProduct){
+
+         leanProductModelList.add(newProduct);
+
+
+         if(leanProductModelList.size()>1)
+            notifyItemInserted(leanProductModelList.size()-1);
+         notifyDataSetChanged();
+
+
+     }
+
      public static interface OnItemClickListener {
          public void onItemClick(View view , int position, long id);
      }
