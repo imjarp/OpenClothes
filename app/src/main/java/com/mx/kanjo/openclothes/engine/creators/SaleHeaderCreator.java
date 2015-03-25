@@ -39,7 +39,7 @@ public class SaleHeaderCreator {
 
         saleModel.setId(id);
         saleModel.setDate(date);
-        saleModel.setTotal(idxTotal);
+        saleModel.setTotal(total);
         saleModel.setCustomer(customer);
 
         return saleModel;

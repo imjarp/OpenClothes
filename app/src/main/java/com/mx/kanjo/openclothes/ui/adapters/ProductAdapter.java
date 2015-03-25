@@ -32,7 +32,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     private Context context;
     private int lastAnimatedPosition = -1;
-    private int itemsCount = 0;
     private List<LeanProductModel> leanProductModelList;
     private static LeanProductModel tempModelProduct = null;
     Picasso picasso;
@@ -48,7 +47,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public ProductAdapter(Context context, ArrayList<LeanProductModel> products, ConfigImageHelper configImageHelper){
         this.context = context;
         leanProductModelList = products;
-        itemsCount = products.size();
         picasso = Picasso.with(context);
         this.mConfigImageHelper = configImageHelper;
         mCircleTransform = new CircleTransform();
@@ -121,7 +119,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     @Override
     public int getItemCount() {
-        return itemsCount;
+        return leanProductModelList.size();
     }
 
     public void updateProduct(int position ,LeanProductModel productModel){

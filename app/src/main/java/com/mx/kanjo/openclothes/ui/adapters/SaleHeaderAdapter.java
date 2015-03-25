@@ -29,7 +29,6 @@ public class SaleHeaderAdapter extends RecyclerView.Adapter<SaleHeaderAdapter.Sa
 
     private Context mContext;
     private int lastAnimatedPosition = -1;
-    private int itemsCount = 0;
     private List<SaleModel> saleList;
     private static SaleModel tempSale = null;
     Picasso picasso;
@@ -47,7 +46,6 @@ public class SaleHeaderAdapter extends RecyclerView.Adapter<SaleHeaderAdapter.Sa
     public SaleHeaderAdapter(Context context, ArrayList<SaleModel> stockItems, ConfigImageHelper configImageHelper){
         mContext = context;
         saleList = stockItems;
-        itemsCount = stockItems.size();
         picasso = Picasso.with(context);
         this.mConfigImageHelper = configImageHelper;
         mCircleTransform = new CircleTransform();
@@ -96,7 +94,7 @@ public class SaleHeaderAdapter extends RecyclerView.Adapter<SaleHeaderAdapter.Sa
 
     @Override
     public int getItemCount() {
-        return itemsCount;
+        return saleList.size();
     }
 
     public static interface OnItemClickListener {

@@ -250,7 +250,6 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
         @Override
         public void onItemClick(View view, int position, long id) {
 
-            Toast.makeText(getActivity(),"On click " + id ,Toast.LENGTH_SHORT ).show();
 
             startActivity( SaleActivity.createIntentShowSaleActivity((int) id, mContext) );
         }

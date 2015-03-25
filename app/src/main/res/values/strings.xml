@@ -28,7 +28,7 @@
         <item>Stock</item>
         <item>Products</item>
         <item>Sales</item>
-        <item>Promise Sales</item>
+        <!--item>Promise Sales</item-->
         <item>Configuration</item>
     </array>
 
