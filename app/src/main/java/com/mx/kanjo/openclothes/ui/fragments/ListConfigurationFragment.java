@@ -217,7 +217,8 @@ public class ListConfigurationFragment extends ListFragment implements AdapterVi
             {
                 newValue = data.getStringExtra(DialogSizeFragment.EXTRA_SIZE);
 
-                mConfigurationInventoryManager.modifySize(s.getIdSize(),newValue);
+                if(!TextUtils.isEmpty(newValue))
+                    mConfigurationInventoryManager.modifySize(s.getIdSize(),newValue);
             }
 
         }
@@ -227,7 +228,8 @@ public class ListConfigurationFragment extends ListFragment implements AdapterVi
             if( null != i  ){
 
                 newValue = data.getStringExtra(DialogIncomeTypeFragment.EXTRA_INCOME_TYPE);
-                mConfigurationInventoryManager.modifyIncomeType(i.getIdIncome(),newValue);
+                if(!TextUtils.isEmpty(newValue))
+                    mConfigurationInventoryManager.modifyIncomeType(i.getIdIncome(),newValue);
             }
 
 
@@ -238,12 +240,13 @@ public class ListConfigurationFragment extends ListFragment implements AdapterVi
             if( null != o  ){
 
                 newValue = data.getStringExtra(DialogIncomeTypeFragment.EXTRA_INCOME_TYPE);
-                mConfigurationInventoryManager.modifyOutcomeType(o.getIdOutcome(), newValue);
+                if(!TextUtils.isEmpty(newValue))
+                    mConfigurationInventoryManager.modifyOutcomeType(o.getIdOutcome(), newValue);
             }
 
         }
 
-        if( null != newValue)
+        if( null != newValue && !TextUtils.isEmpty(newValue))
         {
             configurationItems.set(positionItemOnLongClick-1,newValue);
 

@@ -4,11 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    tools:context="com.mx.kanjo.openclothes.ui.ConfigurationActivity$PlaceholderFragment"
-    >
-
-
-
+    tools:context="com.mx.kanjo.openclothes.ui.ConfigurationActivity$PlaceholderFragment">
 
 
     <LinearLayout

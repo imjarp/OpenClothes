@@ -94,7 +94,7 @@ public class NewSaleFragment extends Fragment {
 
     int totalSale = 0;
 
-    int SPAN_COUNT = 0;
+    int SPAN_COUNT = 1;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -345,6 +345,11 @@ public class NewSaleFragment extends Fragment {
         SaleModel saleModel= new SaleModel();
         
         Map<Integer,StockItem> temp = Maps.newHashMap();
+
+        if(mSaleItemAdapter.getSaleItems().size() ==0 ){
+            Toast.makeText(mContext,"Please add some items",Toast.LENGTH_SHORT).show();
+            return;
+        }
         for(StockItem item : mSaleItemAdapter.getSaleItems()){temp.put(item.getStockItemId(),item);}
         saleModel.setSaleItems(temp);
         saleModel.setDate(OpenClothesContract.getDbDateString(new Date()));
@@ -442,7 +447,7 @@ public class NewSaleFragment extends Fragment {
 
         totalItems += quantityToSale;
 
-        if( currentAvailability.getQuantity() > totalItems )
+        if( currentAvailability.getQuantity() >= totalItems )
             return true;
 
         return false;

@@ -58,6 +58,7 @@ public class NewSaleActivity extends ActionBarActivity implements NewSaleFragmen
     @Override
     public void onSaveSaleListener(SaleModel saleModel) {
 
+
         ConfigurationOrder c = new ConfigurationOrder();
 
         c.TransactIncompleteOrder = false;

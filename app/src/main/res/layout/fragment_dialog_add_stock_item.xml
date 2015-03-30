@@ -57,8 +57,8 @@
                     android:text="@string/new_stock_item_title_model"
                     style="@style/Base.TextAppearance.AppCompat.Small"/>
                 <Spinner
-                    style="@style/Widget.IOSched.HeaderBar.Spinner"
                     android:id="@+id/spin_model"
+                    style="@style/Widget.IOSched.HeaderBar.Spinner"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"/>
 
@@ -76,7 +76,7 @@
                     android:layout_height="wrap_content"
                     />
 
-                <com.mx.kanjo.openclothes.ui.FloatingLabelLayout
+                <com.mx.kanjo.openclothes.ui.widgets.FloatingLabelLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     app:floatLabelTextAppearance="@style/TextAppearance.OpenClothes.FloatLabel">
@@ -89,7 +89,7 @@
                         android:inputType="numberDecimal"
                         android:textSize="@dimen/text.field.single.line.size.text"
                         />
-                </com.mx.kanjo.openclothes.ui.FloatingLabelLayout>
+                </com.mx.kanjo.openclothes.ui.widgets.FloatingLabelLayout>
 
             </LinearLayout>
             </LinearLayout>

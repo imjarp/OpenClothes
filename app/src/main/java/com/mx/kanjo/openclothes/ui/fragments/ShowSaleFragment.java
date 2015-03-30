@@ -62,7 +62,7 @@ public class ShowSaleFragment extends Fragment {
 
     protected RecyclerView.LayoutManager mLayoutManager;
 
-    private int SPAN_COUNT = 2;
+    private int SPAN_COUNT = 1;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,

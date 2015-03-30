@@ -85,7 +85,8 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
 
         setImage(holder);
 
-        holder.textViewSize.setText( tempStock.getSize().getSizeDescription() );
+        holder.textViewSize.setText(tempStock.getSize().getSizeDescription());
+
 
         holder.textViewModel.setText( tempStock.getModel() );
 
@@ -158,7 +159,6 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ProductViewH
 
         @InjectView(R.id.text_model)
         TextView textViewModel;
-
 
         @InjectView(R.id.image_model)
         ImageView imageViewModel;

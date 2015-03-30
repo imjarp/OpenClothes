@@ -33,6 +33,9 @@ public class OpenClothesDatabase extends SQLiteOpenHelper {
         String PRODUCT_JOIN_STOCK = "product "
                 + "INNER JOIN stock ON product._id = stock.idProduct ";
 
+        String STOCK_JOIN_PRODUCT= "stock "
+                + "INNER JOIN product ON product._id = stock.idProduct ";
+
         String STOCK_JOIN_PRODUCT_JOIN_SIZE = "stock "
                 + "INNER JOIN product ON product._id = stock.idProduct "
                 + "INNER JOIN size ON size._id = stock.idSize ";;

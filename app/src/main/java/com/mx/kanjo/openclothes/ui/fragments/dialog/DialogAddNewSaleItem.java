@@ -556,8 +556,13 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
             return;
 
         if(Activity.RESULT_CANCELED == resultCode ) {
-            getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, null);
+
             dismiss();
+
+            getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, null);
+
+            return;
+
         }
 
         String textQty = mEditTextQuantity.getText().toString();
@@ -573,9 +578,11 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
         Intent i  = getIntentExtras();
 
+        dismiss();
+
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
 
-        dismiss();
+
 
     }
 
@@ -654,7 +661,7 @@ public class DialogAddNewSaleItem extends DialogFragment implements  LoaderManag
 
         int idProduct = (int) mSpinnerProduct.getSelectedItemId();
 
-        int idSize = listSize.get(mSpinnerSize.getSelectedItemPosition()).getIdSize();
+        int idSize = selectedStockItem.getSize().getIdSize();//listSize.get(mSpinnerSize.getSelectedItemPosition()).getIdSize();
 
         StockItem item =  mInventoryManager.getStockItemByProductAndSize(idProduct,idSize);
 

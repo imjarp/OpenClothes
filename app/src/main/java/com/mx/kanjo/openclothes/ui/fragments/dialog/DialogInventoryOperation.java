@@ -264,8 +264,9 @@ public class DialogInventoryOperation extends DialogFragment {
             return;
 
         if( Activity.RESULT_CANCELED == resultCode ){
-            getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, null);
             dismiss();
+            getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, null);
+
             return;
         }
 
@@ -283,9 +284,10 @@ public class DialogInventoryOperation extends DialogFragment {
 
         Intent i = getIntentExtras();
 
+        dismiss();
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
 
-        dismiss();
+
 
     }
 

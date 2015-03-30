@@ -3,15 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
-    <com.saulmm.material.views.widgets.SlidingTabLayout
-        android:id="@+id/sliding_tabs"
+    <com.mx.kanjo.openclothes.ui.widgets.SlidingTabLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="10dp"
-        />
+        android:layout_height="wrap_content"/>
 
     <View
         android:layout_width="match_parent"

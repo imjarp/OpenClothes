@@ -132,12 +132,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
          leanProductModelList.add(newProduct);
 
-
          if(leanProductModelList.size()>1)
             notifyItemInserted(leanProductModelList.size()-1);
-         notifyDataSetChanged();
-
-
      }
 
      public static interface OnItemClickListener {

@@ -15,6 +15,7 @@ import com.mx.kanjo.openclothes.model.OutcomeModel;
 import com.mx.kanjo.openclothes.model.StockItem;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +50,40 @@ public class InventoryManager {
     public void addOutcome(OutcomeModel outcome){
 
         addOutcome(outcome,resolver);
+    }
+
+
+    public ArrayList<StockItem> getStockGroupByModel(){
+
+       Uri uri = OpenClothesContract.Stock.buildStockUriGroupProduct();
+
+       String selection =  OpenClothesContract.Stock.QUANTITY  + " > 0";
+
+        Cursor cursor = resolver.query(uri, null, selection , null, null);
+
+        ArrayList<StockItem> stockItems = new ArrayList<>();
+
+        int i = 0 ;
+
+        try {
+
+            if (!cursor.moveToFirst())
+            {
+                return  stockItems;
+            }
+            do
+            {
+                stockItems.add( StockItemCreator.fromCursor(cursor, resolver) );
+            } while ( cursor.moveToNext() );
+
+        } finally {
+            cursor.close();
+
+        }
+
+        return stockItems;
+
+
     }
 
     public Set<StockItem> getStock()

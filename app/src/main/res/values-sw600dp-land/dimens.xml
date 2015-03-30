@@ -1,0 +1,17 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    
+    
+    <!--Configuration Activity Land-->
+    <dimen name="config.act.list.config.margin.right">48dp</dimen>
+    <dimen name="config.act.container.padding.right">120dp</dimen>
+
+    <!--Recycle Fragment -->
+    <dimen name="recycle_view_list.padding.left">144dp</dimen>
+    <dimen name="recycle_view_list.padding.right">144dp</dimen>
+    
+    
+    <!--Dimen Fragment List Stock -->
+    <dimen name="adapter.stock.item.left.margin">96dp</dimen>
+    
+</resources>

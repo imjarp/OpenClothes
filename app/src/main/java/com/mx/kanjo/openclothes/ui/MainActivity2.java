@@ -16,7 +16,6 @@ import android.view.View;
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.ui.fragments.ListProductFragment;
 import com.mx.kanjo.openclothes.ui.fragments.ListSalesFragment;
-import com.mx.kanjo.openclothes.ui.fragments.ListStockFragment;
 import com.mx.kanjo.openclothes.ui.fragments.NavigationFragment;
 
 public class MainActivity2 extends ActionBarActivity implements
@@ -127,11 +126,17 @@ public class MainActivity2 extends ActionBarActivity implements
         if(position == 0)
         {
 
-            ListStockFragment listStockFragment = ListStockFragment.newInstance("", "");
+            Intent intent = new Intent(this,StockActivity.class);
+
+            startActivity(intent);
+            return;
+
+
+            /*ListStockFragment listStockFragment = ListStockFragment.newInstance("", "");
             FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.sample_content_fragment, listStockFragment);
             transaction.commit();
-            return;
+            return;*/
 
 
         }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,8 +26,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.mx.kanjo.openclothes.R;
+import com.mx.kanjo.openclothes.engine.CatalogueManager;
+import com.mx.kanjo.openclothes.engine.ConfigurationInventoryManager;
 import com.mx.kanjo.openclothes.engine.InventoryManager;
 import com.mx.kanjo.openclothes.model.IncomeModel;
 import com.mx.kanjo.openclothes.model.IncomeType;
@@ -44,13 +49,19 @@ import com.mx.kanjo.openclothes.util.UiUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class ListStockFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
+public class ListStockFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+                                                                                        SearchView.OnQueryTextListener
 {
+
+
+    private SearchView searchView;
 
     private interface StockColumns{
         public static String [] COLUMNS = {
@@ -80,6 +91,7 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     private static final int LOADER_STOCK = 998;
 
     private static final int REQUEST_NEW_STOCK = 12;
+
     private static final int REQUEST_REMOVE_STOCK = 14;
 
     private static final String TAG = ListStockFragment.class.getSimpleName();
@@ -101,7 +113,15 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
     private StockAdapter adapter;
 
+    String mQuery;
+
     private ArrayList<StockItem> stockItems = Lists.newArrayList();
+
+    private CatalogueManager mCatalogueManager ;
+
+    private ConfigurationInventoryManager mConfigurationInventoryManager ;
+
+    private AsyncTask <Void,Void,String> checkProductAndSizeTask;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -111,6 +131,8 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    String messageStockIsNotReady;
 
     /**
      * Use this factory method to create a new instance of
@@ -161,6 +183,11 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         setHasOptionsMenu(true);
+
+        checkProductAndSizeTask = new CheckCatalogueTask();
+
+        checkProductAndSizeTask.execute();
+
     }
 
     @Override
@@ -192,7 +219,6 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
             return;
         }
 
-
         processResult(requestCode, data);
     }
 
@@ -216,6 +242,9 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+
+        if(checkProductAndSizeTask.isCancelled())
+            checkProductAndSizeTask.cancel(true);
     }
 
     @Override
@@ -237,12 +266,27 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         //mListener = null;
     }
 
-    @Override
+    /*@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
         inflater.inflate(R.menu.menu_stock_list,menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }*/
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_stock_fragment_find,menu);
+
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        if(null != searchView) {
+            searchView.setIconifiedByDefault(false);
+            searchView.setOnQueryTextListener(this);
+
+        }
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -270,6 +314,13 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
         //Active
         String [] selectionArgs = null;// { "1" };
+
+        if ( !TextUtils.isEmpty(mQuery) ){
+
+            selection =  StockColumns.COLUMNS[ StockColumnsOrder.COL_PRODUCT_MODEL ]
+                    + " LIKE  '%"+mQuery+"%'";
+
+        }
 
 
         return new CursorLoader( getActivity(),
@@ -303,6 +354,18 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        mQuery = s;
+        getLoaderManager().restartLoader(LOADER_STOCK,null,this);
+        return true;
+    }
+
     private ConfigImageHelper buildConfiguration() {
         Pair<Integer,Integer>sizeImage;
 
@@ -327,7 +390,6 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
         stockItems.clear();
     }
 
@@ -339,6 +401,11 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
     private void showFragment(android.support.v4.app.DialogFragment dialogFragment, String TAG, int requestCode)
     {
+
+        if(!TextUtils.isEmpty(messageStockIsNotReady)) {
+            showMessage(messageStockIsNotReady);
+            return;
+        }
         android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
         dialogFragment.setTargetFragment(this, requestCode);
         if(UiUtils.isTablet(mContext)){
@@ -526,6 +593,57 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     private void removeFragmentsDialogFragments() {
         removeFragment(DialogInventoryOperation.TAG);
         removeFragment(DialogAddStockItem.TAG);
+    }
+
+    private void showMessage(String message){
+        Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
+
+    }
+
+    class CheckCatalogueTask  extends AsyncTask<Void,Void,String >{
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            String message = "";
+
+            mCatalogueManager = new CatalogueManager(mContext);
+
+            mConfigurationInventoryManager = new ConfigurationInventoryManager(mContext);
+
+            Set set =  mCatalogueManager.getCatalogue();
+
+            if(set == null || set.size()==0)
+            {
+                message = "Please add some products";
+            }
+
+            List listSize =  mConfigurationInventoryManager.getSizeCatalogue();
+
+            if(listSize == null || listSize.size() == 0){
+
+                if(!TextUtils.isEmpty(message)){
+
+                    message += " and at least one size.";
+                }else{
+
+                    message = "Please add at least one size.";
+                }
+
+            }
+            return  message;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if(TextUtils.isEmpty(s)){
+                return;
+            }
+            messageStockIsNotReady = s;
+            showMessage(messageStockIsNotReady);
+
+        }
     }
 
 }

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/stock_item_view"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="108dp">
+
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="108dp"
+       android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="5"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="12dp"
+        android:layout_marginLeft="@dimen/adapter.stock.item.left.margin">
+
+    <ImageView
+        android:id="@+id/image_model"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        tools:src="@drawable/cb_002"
+        android:layout_margin="4dp"
+        />
+
+    <TextView
+        android:id="@+id/text_model"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        tools:text="CB002lkjdsfjkasdjkfasdljfkjhasfjkhfasjkdhf"
+        android:gravity="center|left"
+        style="@android:style/TextAppearance.Medium"
+        android:layout_marginLeft="48dp"
+
+        />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="3"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="12dp">
+
+        <!--TextView
+            android:id="@+id/text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Small"
+            android:layout_gravity="center"
+            style="@android:style/TextAppearance.Medium"
+            /-->
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="3"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/text_qty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="4"
+            android:layout_gravity="center"
+            style="@android:style/TextAppearance.Medium"
+            />
+
+    </LinearLayout>
+   </LinearLayout>
+
+    <View xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_marginTop="4dp"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:background="#dfdfdf"
+        android:layout_height="1dp"
+        />
+</LinearLayout>

@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.mx.kanjo.openclothes.ui.FloatingLabelLayout
+                <com.mx.kanjo.openclothes.ui.widgets.FloatingLabelLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="12dp"
@@ -66,7 +66,7 @@
                     android:singleLine="true"
                     android:nextFocusDown="@id/edit_product_cost"
                     />
-                </com.mx.kanjo.openclothes.ui.FloatingLabelLayout>
+                </com.mx.kanjo.openclothes.ui.widgets.FloatingLabelLayout>
 
                 <ProgressBar
                     android:id="@+id/progress_model"
@@ -100,7 +100,7 @@
             android:paddingBottom="15dp"
 
             />
-        <com.mx.kanjo.openclothes.ui.FloatingLabelLayout
+        <com.mx.kanjo.openclothes.ui.widgets.FloatingLabelLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             app:floatLabelTextAppearance="@style/TextAppearance.OpenClothes.FloatLabel">
@@ -117,7 +117,7 @@
                 android:inputType="numberDecimal"
                 android:nextFocusDown="@id/edit_product_price"
                 />
-                </com.mx.kanjo.openclothes.ui.FloatingLabelLayout>
+                </com.mx.kanjo.openclothes.ui.widgets.FloatingLabelLayout>
             </LinearLayout>
 
         <LinearLayout
@@ -138,7 +138,7 @@
                 android:paddingBottom="15dp"
 
                 />
-            <com.mx.kanjo.openclothes.ui.FloatingLabelLayout
+            <com.mx.kanjo.openclothes.ui.widgets.FloatingLabelLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 app:floatLabelTextAppearance="@style/TextAppearance.OpenClothes.FloatLabel">
@@ -154,10 +154,10 @@
                 android:inputType="numberDecimal"
                 android:nextFocusDown="@id/edit_product_description"
                 />
-            </com.mx.kanjo.openclothes.ui.FloatingLabelLayout>
+            </com.mx.kanjo.openclothes.ui.widgets.FloatingLabelLayout>
             </LinearLayout>
 
-            <com.mx.kanjo.openclothes.ui.FloatingLabelLayout
+            <com.mx.kanjo.openclothes.ui.widgets.FloatingLabelLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
@@ -175,7 +175,7 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 />
-            </com.mx.kanjo.openclothes.ui.FloatingLabelLayout>
+            </com.mx.kanjo.openclothes.ui.widgets.FloatingLabelLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"

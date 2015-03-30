@@ -326,9 +326,11 @@ public class DialogAddStockItem extends DialogFragment implements AdapterView.On
 
         Intent i  = getIntentExtras();
 
+        dismiss();
+
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
 
-        dismiss();
+
 
     }
 

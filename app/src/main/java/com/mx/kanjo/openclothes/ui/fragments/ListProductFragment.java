@@ -162,11 +162,17 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
         productList.clear();
 
-        if( data.getCount() == 0 )
-            return;
 
-        if (!data.moveToFirst())
+
+        if( data.getCount() == 0 ) {
+            adapter = new ProductAdapter(getActivity(), productList,configImageHelper);
             return;
+        }
+
+        if (!data.moveToFirst()) {
+            adapter = new ProductAdapter(getActivity(), productList,configImageHelper);
+            return;
+        }
         do
         {
             productList.add(getFromCursor(data));
@@ -221,6 +227,7 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         view.setTag(TAG);
 
         mRecyclerViewProducts = (RecyclerView) view.findViewById(R.id.recycle_view_list_product);
+
         mRecyclerViewProducts.setOnScrollListener(onScrollListener);
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity());

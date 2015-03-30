@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
 
@@ -39,6 +40,7 @@ public class OpenClothesProvider extends ContentProvider {
     private static final int STOCK_PRODUCT = 304;
     private static final int STOCK_PRODUCT_SIZE = 305;
     private static final int STOCK_PRODUCT_SIZE_ALL = 306;
+    private static final int STOCK_GROUP_BY_MODEL = 307;
 
     private static final int SALE = 400;
     private static final int SALE_ID = 401;
@@ -91,10 +93,12 @@ public class OpenClothesProvider extends ContentProvider {
         //Stock
         matcher.addURI(authority, "stock", STOCK);
         matcher.addURI(authority, "stock/modelAndSize", STOCK_PRODUCT_SIZE_ALL);
+        matcher.addURI(authority, "stock/bymodel", STOCK_GROUP_BY_MODEL);
         matcher.addURI(authority, "stock/#", STOCK_ID);
         matcher.addURI(authority, "stock/#/idProduct",  STOCK_PRODUCT);
         matcher.addURI(authority, "stock/*/model", STOCK_MODEL);
         matcher.addURI(authority, "stock/#/idProduct/#/idSize", STOCK_PRODUCT_SIZE);
+
 
 
 
@@ -278,6 +282,30 @@ public class OpenClothesProvider extends ContentProvider {
 
 
               break;
+
+            case  STOCK_GROUP_BY_MODEL :
+
+                SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+
+                queryBuilder.setTables(OpenClothesDatabase.Tables.STOCK_JOIN_PRODUCT);
+
+                    cursor = queryBuilder.query(dbReadableDatabase,
+                                                        projection,
+                                                        selection,
+                                                        selectionArgs,
+                                                        OpenClothesContract.StockColumns.ID_PRODUCT,
+                                                        null,
+                                                       sortOrder);
+
+                /*cursor = dbReadableDatabase.query(OpenClothesDatabase.Tables.PRODUCT,projection,
+                                                                                     OpenClothesContract.Product.MODEL + " LIKE '%" + OpenClothesContract.Product.getModelFromUri(uri) + "%'",
+                                                                                     null,
+                                                                                     null,
+                                                                                     null,
+                                                                                     sortOrder);*/
+
+
+                break;
 
 
             // "stock/#/idProduct"
@@ -518,6 +546,8 @@ public class OpenClothesProvider extends ContentProvider {
                 return  OpenClothesContract.Stock.CONTENT_ITEM_TYPE;
             case  STOCK_MODEL :
                 return  OpenClothesContract.Stock.CONTENT_ITEM_TYPE;
+            case  STOCK_GROUP_BY_MODEL :
+                return  OpenClothesContract.Stock.CONTENT_TYPE;
             case STOCK_PRODUCT_SIZE:
                 return OpenClothesContract.Product.CONTENT_ITEM_TYPE;
             case  SALE :

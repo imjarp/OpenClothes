@@ -72,7 +72,7 @@
     <string name="hint_outcome_type">Income type</string>
     <string name="title_section_configuration">Configuration</string>
 
-    <string name="title_tool_bar_config_activity">Open clothes configuration</string>
+    <string name="title_tool_bar_config_activity">Configuration</string>
 
     <!--Menu configuration Activity-->
     <string name="menu_add_size_title">Add size</string>
@@ -127,5 +127,11 @@
 
     <!--SaleActivity-->
     <string name ="title_sale_activity">Sale</string>
+    <string name="title_activity_stock">Stock</string>
+    <string name="title_activity_delete">deleteActivity</string>
+    
+    <!--Searchable-->
+    <string name="search_label">Search</string>
+    <string name="search_hint">Please </string>
 
 </resources>

@@ -181,6 +181,11 @@ public class OpenClothesContract {
             return CONTENT_URI.buildUpon().appendPath("modelAndSize").build();
         }
 
+        public static Uri buildStockUriGroupProduct()
+        {
+            return CONTENT_URI.buildUpon().appendPath("bymodel").build();
+        }
+
         public static Uri buildStockUriWithModel(String model)
         {
             return CONTENT_URI.buildUpon().appendPath(model).appendPath("model").build();
