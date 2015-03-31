@@ -21,6 +21,8 @@ import com.mx.kanjo.openclothes.ui.fragments.NavigationFragment;
 public class MainActivity2 extends ActionBarActivity implements
         NavigationFragment.NavigationDrawerCallbacks {
 
+    int lastSelectedPosition;
+
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     Toolbar mainToolbar;
@@ -130,14 +132,6 @@ public class MainActivity2 extends ActionBarActivity implements
 
             startActivity(intent);
             return;
-
-
-            /*ListStockFragment listStockFragment = ListStockFragment.newInstance("", "");
-            FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.sample_content_fragment, listStockFragment);
-            transaction.commit();
-            return;*/
-
 
         }
 

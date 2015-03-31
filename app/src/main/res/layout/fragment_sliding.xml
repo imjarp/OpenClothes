@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <com.mx.kanjo.openclothes.ui.widgets.SlidingTabLayout
         android:id="@+id/sliding_tabs"

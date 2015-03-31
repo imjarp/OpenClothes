@@ -20,7 +20,7 @@ class SlidingTabStrip extends LinearLayout {
     private static final int DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS = 2;
     private static final byte DEFAULT_BOTTOM_BORDER_COLOR_ALPHA = 0x26;
     private static final int SELECTED_INDICATOR_THICKNESS_DIPS = 3;
-    private static final int DEFAULT_SELECTED_INDICATOR_COLOR = 0xFF33B5E5;
+    private static final int DEFAULT_SELECTED_INDICATOR_COLOR = 0x00b0ff;
 
     private static final int DEFAULT_DIVIDER_THICKNESS_DIPS = 1;
     private static final byte DEFAULT_DIVIDER_COLOR_ALPHA = 0x20;
@@ -54,7 +54,7 @@ class SlidingTabStrip extends LinearLayout {
         final float density = getResources().getDisplayMetrics().density;
 
         TypedValue outValue = new TypedValue();
-        context.getTheme().resolveAttribute(R.color.primary , outValue, true);
+        context.getTheme().resolveAttribute(R.color.accent , outValue, true);
         final int themeForegroundColor =  outValue.data;
 
         TypedValue backgroundValue = new TypedValue();
@@ -65,8 +65,11 @@ class SlidingTabStrip extends LinearLayout {
         context.getTheme().resolveAttribute(R.color.accent, outValue, true);
         final int accentColor =  outValue.data;
 
-        mDefaultBottomBorderColor = setColorAlpha(accentColor,
-                DEFAULT_BOTTOM_BORDER_COLOR_ALPHA);
+
+        /*mDefaultBottomBorderColor = setColorAlpha(accentColor,
+                DEFAULT_BOTTOM_BORDER_COLOR_ALPHA);*/
+
+        mDefaultBottomBorderColor = accentColor;
 
         mDefaultTabColorizer = new SimpleTabColorizer();
         mDefaultTabColorizer.setIndicatorColors(accentColor);
