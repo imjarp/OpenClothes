@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mx.kanjo.openclothes" >
 
-    <!-- Product Activity -->
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- pick photos -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
@@ -11,71 +13,52 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
         <activity
-            android:name=".ui.MainActivity2"
-            android:label="@string/app_name" >
+            android:name=".ui.ProductGeneralActivity"
+            android:label="@string/title_activity_product" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <provider
-            android:name=".provider.OpenClothesProvider"
-            android:authorities="@string/content_authority" >
-        </provider>
-
-        <activity
-            android:name=".ui.MainActivity"
-            android:label="@string/title_activity_main_activity2" >
-        </activity>
         <activity
             android:name=".ui.ConfigurationActivity"
             android:label="@string/title_activity_configuration"
-            android:parentActivityName=".ui.MainActivity2" >
+            android:parentActivityName=".ui.ProductGeneralActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mx.kanjo.openclothes.ui.MainActivity2" />
+                android:value="com.mx.kanjo.openclothes.ui.ProductGeneralActivity" />
         </activity>
+
         <activity
             android:name=".ui.ProductActivity"
             android:label="@string/title_activity_product"
             android:windowSoftInputMode="stateVisible|adjustResize|adjustPan" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mx.kanjo.openclothes.ui.MainActivity2" />
         </activity>
+
         <activity
             android:name=".ui.NewSaleActivity"
-            android:label="@string/title_activity_new_sale"
-            android:parentActivityName=".ui.MainActivity2" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mx.kanjo.openclothes.ui.MainActivity2" />
+            android:label="@string/title_activity_new_sale">
         </activity>
+
         <activity
             android:name=".ui.SaleActivity"
-            android:label="@string/title_activity_show_sale"
-            android:parentActivityName=".ui.MainActivity2" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mx.kanjo.openclothes.ui.MainActivity2" />
+            android:label="@string/title_activity_show_sale">
         </activity>
+
         <activity
-            android:name=".ui.StockActivity"
+            android:name=".ui.StockGeneralActivity"
             android:label="@string/title_activity_stock" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mx.kanjo.openclothes.ui.MainActivity2" />
         </activity>
+
         <activity
-            android:name=".ui.deleteActivity"
-            android:label="@string/title_activity_delete" >
-
+            android:name=".ui.SalesGeneralActivity"
+            android:label="@string/title_activity_sale" >
         </activity>
 
-        <activity android:name=".ui.SearchActivity"
+        <!--activity android:name=".ui.SearchActivity"
                       android:label="Search">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -89,7 +72,12 @@
                 android:resource="@xml/searchable"
                 />
 
-        </activity>
+        </activity-->
+
+        <provider
+            android:name=".provider.OpenClothesProvider"
+            android:authorities="@string/content_authority" >
+        </provider>
     </application>
 
 </manifest>

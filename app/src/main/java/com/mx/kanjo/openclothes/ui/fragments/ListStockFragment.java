@@ -223,7 +223,6 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
     }
 
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 

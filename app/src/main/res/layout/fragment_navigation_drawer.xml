@@ -13,9 +13,9 @@
 
     <ListView
         android:id="@+id/list_ops"
+        android:choiceMode="singleChoice"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        >
+        android:layout_height="fill_parent">
 
         </ListView>
 

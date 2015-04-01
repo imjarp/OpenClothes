@@ -16,6 +16,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -47,7 +48,8 @@ import butterknife.Optional;
  * Use the {@link ListProductFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ListProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        SearchView.OnQueryTextListener{
 
 
 
@@ -79,6 +81,10 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
     protected RecyclerView.LayoutManager mLayoutManager;
 
     private static final int SPAN_COUNT = 5;
+
+    private SearchView searchView;
+
+    String mQuery = "";
 
     private interface ProductColumns{
         public static String [] COLUMNS = {
@@ -148,6 +154,18 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         //Active
         String [] selectionArgs = { "1" };
 
+        if( !TextUtils.isEmpty( mQuery )){
+
+
+            selection =  OpenClothesContract.Product.IS_ACTIVE   + " =   1 ";
+            selection += " AND "
+                    + ProductColumns.COLUMNS[ ProductColumnsOrder.COL_PRODUCT_MODEL ]
+                    + " LIKE  '%"+mQuery+"%'";
+
+            selectionArgs = null;
+
+        }
+
         return new CursorLoader( getActivity(),
                                  productsUri,
                                  ProductColumns.COLUMNS,
@@ -195,15 +213,17 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
     }
 
-    ProductAdapter.OnItemClickListener adapterClickListener = new ProductAdapter.OnItemClickListener() {
-        @Override
-        public void onItemClick(View view, int position, long id) {
-            positionUpdated = position;
-            Intent intent = ProductActivity.createIntentForUpdate( getActivity(), (int) id);
-            startActivityForResult(intent, REQUEST_UPDATE_PRODUCT);
-        }
-    };
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
 
+    @Override
+    public boolean onQueryTextChange(String s) {
+        mQuery  = s ;
+        getLoaderManager().restartLoader(LOADER_PRODUCT,null,this);
+        return true;
+    }
 
 
     @Override
@@ -216,8 +236,6 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         setHasOptionsMenu(true);
 
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -264,8 +282,6 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
         getLoaderManager().initLoader(LOADER_PRODUCT,null,this);
 
-        setTitle();
-        
     }
 
     @Override
@@ -276,7 +292,6 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         }
 
     }
-
 
     @Override
     public void onDestroyView() {
@@ -301,8 +316,18 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+
         inflater.inflate(R.menu.menu_products,menu);
+
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        if(null != searchView) {
+            searchView.setIconifiedByDefault(false);
+            searchView.setOnQueryTextListener(this);
+
+        }
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -310,13 +335,10 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         return super.onOptionsItemSelected(item);
     }
 
-
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
-
-
 
     public ListProductFragment() {
         // Required empty public constructor
@@ -355,17 +377,12 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
     }
 
     @OnClick(R.id.btnCreateProduct)
-    public void onClickCreateProduct(View view)
-    {
+    public void onClickCreateProduct(View view) {
 
         Intent intentNewProduct = new Intent(getActivity(), ProductActivity.class);
 
         startActivityForResult(intentNewProduct, REQUEST_NEW_PRODUCT);
 
-    }
-
-    private void setTitle() {
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_fragment_products));
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -454,6 +471,14 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {}
     };
 
+    ProductAdapter.OnItemClickListener adapterClickListener = new ProductAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(View view, int position, long id) {
+            positionUpdated = position;
+            Intent intent = ProductActivity.createIntentForUpdate( getActivity(), (int) id);
+            startActivityForResult(intent, REQUEST_UPDATE_PRODUCT);
+        }
+    };
 
 }
 

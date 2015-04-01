@@ -18,14 +18,14 @@ import com.mx.kanjo.openclothes.R;
 public class NavigationFragment extends Fragment implements ListView.OnItemClickListener {
 
     private NavigationDrawerCallbacks mCallbacks;
-
+    ListView mListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 
         View v = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-        ListView mListView = (ListView) v.findViewById(R.id.list_ops);
+        mListView = (ListView) v.findViewById(R.id.list_ops);
 
         mListView.setOnItemClickListener(this);
 
@@ -40,6 +40,12 @@ public class NavigationFragment extends Fragment implements ListView.OnItemClick
 
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override
