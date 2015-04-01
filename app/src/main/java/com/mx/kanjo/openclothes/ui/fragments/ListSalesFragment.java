@@ -167,7 +167,7 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
 
         getLoaderManager().initLoader(LOADER_SALE, null, this);
 
-        setTitle();
+
     }
 
     @Override
@@ -326,8 +326,5 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
         startActivity(newSaleIntent);
     }
 
-    private void setTitle() {
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_sales_fragment));
-    }
 
 }
