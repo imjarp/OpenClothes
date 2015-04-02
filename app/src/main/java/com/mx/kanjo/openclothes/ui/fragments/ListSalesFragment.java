@@ -12,7 +12,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +21,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.model.SaleModel;
@@ -62,15 +60,11 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
 
     }
 
-    private static final int LOADER_SALE = 998;
-
     private static final String TAG = ListSalesFragment.class.getSimpleName();
 
     private static final int SPAN_COUNT = 1;
-
-    private static final String ARG_PARAM1 = "param1";
-
-    private static final String ARG_PARAM2 = "param2";
+    private static final int LOADER_SALE = 998;
+    private static final int CREATE_SALE_REQUEST = 1;
 
     private RecyclerView mRecyclerView;
 
@@ -89,25 +83,17 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
         LINEAR_LAYOUT_MANAGER
     }
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private Context mContext;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment StockFragment.
      */
-    public static ListSalesFragment newInstance(String param1, String param2) {
+    public static ListSalesFragment newInstance() {
         ListSalesFragment fragment = new ListSalesFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -126,13 +112,10 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
         return sale;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
         setHasOptionsMenu(true);
 
@@ -157,8 +140,6 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
 
         return view;
     }
-
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -197,7 +178,6 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -246,11 +226,27 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
 
     }
 
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        saleItems.clear();
+        mRecyclerView.swapAdapter(null,true);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(resultCode == Activity.RESULT_OK){
+            if(requestCode==CREATE_SALE_REQUEST){
+                this.onLoaderReset(null);
+                getLoaderManager().restartLoader(LOADER_SALE,null,this);
+            }
+        }
+
+    }
+
     SaleHeaderAdapter.OnItemClickListener adapterOnClickListener = new SaleHeaderAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(View view, int position, long id) {
-
-
             startActivity( SaleActivity.createIntentShowSaleActivity((int) id, mContext) );
         }
     } ;
@@ -276,13 +272,6 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
 
         }
     }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-        saleItems.clear();
-    }
-
 
     private void showFragment(android.support.v4.app.DialogFragment dialogFragment, String TAG, int requestCode)
     {
@@ -323,8 +312,9 @@ public class ListSalesFragment extends Fragment implements LoaderManager.LoaderC
     public void onClickButton(View view){
 
         Intent newSaleIntent = new Intent(mContext, NewSaleActivity.class);
-        startActivity(newSaleIntent);
-    }
 
+        startActivityForResult(newSaleIntent,CREATE_SALE_REQUEST);
+
+    }
 
 }

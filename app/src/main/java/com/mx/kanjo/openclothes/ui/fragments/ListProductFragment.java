@@ -11,7 +11,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -111,16 +110,11 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment ProductFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ListProductFragment newInstance(String param1, String param2) {
+    public static ListProductFragment newInstance() {
         ListProductFragment fragment = new ListProductFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -132,10 +126,10 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         model.Model = cursor.getString(ProductColumnsOrder.COL_PRODUCT_MODEL);
         model.Price  = cursor.getInt( ProductColumnsOrder.COL_PRICE);
         model.ImagePath =  cursor.isNull(ProductColumnsOrder.COL_IMAGE_PATH) ?
-                           null :
-                           TextUtils.isEmpty(cursor.getString(ProductColumnsOrder.COL_IMAGE_PATH)) ?
-                           null :
-                           Uri.parse(cursor.getString(ProductColumnsOrder.COL_IMAGE_PATH));
+                null :
+                TextUtils.isEmpty(cursor.getString(ProductColumnsOrder.COL_IMAGE_PATH)) ?
+                        null :
+                        Uri.parse(cursor.getString(ProductColumnsOrder.COL_IMAGE_PATH));
 
 
 
@@ -167,11 +161,11 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         }
 
         return new CursorLoader( getActivity(),
-                                 productsUri,
-                                 ProductColumns.COLUMNS,
-                                 selection,
-                                 selectionArgs,
-                                 sortOrder );
+                productsUri,
+                ProductColumns.COLUMNS,
+                selection,
+                selectionArgs,
+                sortOrder );
 
     }
 
@@ -179,8 +173,6 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         productList.clear();
-
-
 
         if( data.getCount() == 0 ) {
             adapter = new ProductAdapter(getActivity(), productList,configImageHelper);
@@ -211,6 +203,8 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
         productList.clear();
 
+        mRecyclerViewProducts.swapAdapter(null,false);
+
     }
 
     @Override
@@ -224,7 +218,6 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
         getLoaderManager().restartLoader(LOADER_PRODUCT,null,this);
         return true;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -256,14 +249,14 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
             mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER ;
             sizeImage = new Pair<>(168,168);
             configImageHelper = new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
-                                                                            .build();
+                    .build();
         } else {
 
             mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER ;
             sizeImage = new Pair<>(72,72);
             configImageHelper = new ConfigImageHelper.ConfigImageHelpBuilder(sizeImage)
-                                                                            .withRoundImage(true)
-                                                                            .build();
+                    .withRoundImage(true)
+                    .build();
         }
 
 
@@ -392,7 +385,9 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
 
         if( requestCode == REQUEST_NEW_PRODUCT )
         {
-            addItemAdapter(data);
+            //addItemAdapter(data);
+            this.onLoaderReset(null);
+            getLoaderManager().restartLoader(LOADER_PRODUCT,null,this);
         }
         if ( requestCode == REQUEST_UPDATE_PRODUCT ){
             updateAdapter(data);
@@ -481,4 +476,3 @@ public class ListProductFragment extends Fragment implements LoaderManager.Loade
     };
 
 }
-

@@ -14,7 +14,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -215,13 +214,11 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
         if(Activity.RESULT_OK != resultCode){
             removeFragmentsDialogFragments();
-
             return;
         }
 
         processResult(requestCode, data);
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -230,11 +227,6 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
         getLoaderManager().initLoader(LOADER_STOCK, null, this);
 
-        setTitle();
-    }
-
-    private void setTitle() {
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_fragment_stock));
     }
 
     @Override
@@ -251,12 +243,7 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         super.onAttach(activity);
 
         mContext = activity;
-        /*try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
+
     }
 
     @Override
@@ -265,12 +252,6 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         //mListener = null;
     }
 
-    /*@Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        inflater.inflate(R.menu.menu_stock_list,menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }*/
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_stock_fragment_find,menu);
@@ -286,7 +267,6 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -299,7 +279,6 @@ public class ListStockFragment extends Fragment implements LoaderManager.LoaderC
 
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

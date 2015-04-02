@@ -23,7 +23,7 @@ public class SalesGeneralActivity extends BaseActivity {
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            ListSalesFragment fragment = ListSalesFragment.newInstance("","");
+            ListSalesFragment fragment = ListSalesFragment.newInstance();
             transaction.replace(R.id.container, fragment);
             transaction.commit();
         }

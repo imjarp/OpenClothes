@@ -16,7 +16,6 @@ import com.mx.kanjo.openclothes.ui.fragments.NewSaleFragment;
 
 public class NewSaleActivity extends ActionBarActivity implements NewSaleFragment.SaveSaleCallback {
 
-
     SalesManager mSalesManager;
 
     @Override
@@ -67,6 +66,7 @@ public class NewSaleActivity extends ActionBarActivity implements NewSaleFragmen
 
         if(result.isCompleteOrder()){
             Toast.makeText(this,"New Sale Created ! ",Toast.LENGTH_SHORT).show();
+            setResult(RESULT_OK);
             finish();
         }
 

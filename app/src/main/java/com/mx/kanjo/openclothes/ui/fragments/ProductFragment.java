@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,8 +29,9 @@ import com.mx.kanjo.openclothes.engine.CatalogueManager;
 import com.mx.kanjo.openclothes.engine.creators.ProductCreator;
 import com.mx.kanjo.openclothes.model.ProductModel;
 import com.mx.kanjo.openclothes.provider.OpenClothesContract;
-import com.mx.kanjo.openclothes.util.PictureUtils;
 import com.mx.kanjo.openclothes.util.StorageUtil;
+import com.mx.kanjo.openclothes.util.UiUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,9 +45,6 @@ import butterknife.OnClick;
  * A placeholder fragment containing a simple view.
  */
 public class ProductFragment extends Fragment {
-
-    //TODO : check why is the image flip on small device
-    //TODO : validate model in another thread (UI thread)
 
     public final static String KEY_ID_PRODUCT = "idProduct";
     private static final int REQUEST_PICK_IMAGE = 1001;
@@ -73,11 +72,15 @@ public class ProductFragment extends Fragment {
 
     @InjectView(R.id.check_product_active) CheckBox checkBoxActiveProduct;
 
-    @InjectView(R.id.img_new_product) ImageButton imageProduct;
+    @InjectView(R.id.img_new_product)ImageButton imageProduct;
 
     @InjectView(R.id.progress_model) ProgressBar progressModel;
 
     Button mBtnMenuAction;
+
+    Picasso picasso ;
+
+    float dimen ;
 
 
     private interface  KeyState{
@@ -111,6 +114,7 @@ public class ProductFragment extends Fragment {
 
     @Override
     public void onAttach(Activity activity){
+
         super.onAttach(activity);
 
         mCatalogueManager = new CatalogueManager(activity);
@@ -123,6 +127,11 @@ public class ProductFragment extends Fragment {
                     + " must implement OnFragmentProductListener");
         }
 
+        picasso  = Picasso.with(mContext);
+
+        int imageViewDimension = UiUtils.isTablet(mContext) ?  192 : 144 ;
+
+        dimen  = TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, imageViewDimension, getResources().getDisplayMetrics() );
 
     }
 
@@ -242,7 +251,6 @@ public class ProductFragment extends Fragment {
         mProductListener.onUpdateProduct(createProductModel());
     }
 
-
     public void validateProductModel(){
 
         Notification resultValidation = new Notification();
@@ -348,8 +356,12 @@ public class ProductFragment extends Fragment {
 
         pathFile = StorageUtil.getPath(mContext, uri);
 
-        //TODO: Validate image
-        PictureUtils.setImageScaled(mContext, imageProduct, pathFile, PictureUtils.SizeImage.IMAGE_192x192);
+        picasso.load(uri)
+                .resize((int)dimen,(int) dimen)
+                .centerInside()
+                .into(imageProduct);
+
+
     }
 
     private void fetchProduct(final View rootView, int idProduct){

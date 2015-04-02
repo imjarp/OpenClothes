@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.mx.kanjo.openclothes.R;
 import com.mx.kanjo.openclothes.ui.fragments.ShowSaleFragment;
@@ -14,6 +12,7 @@ import com.mx.kanjo.openclothes.ui.fragments.ShowSaleFragment;
 public class SaleActivity extends ActionBarActivity {
 
     int idSale = 0;
+
     private static String EXTRA_ID_SALE="EXTRA_ID_SALE";
 
     public static Intent createIntentShowSaleActivity(int idSale, Context context){

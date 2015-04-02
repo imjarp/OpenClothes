@@ -21,7 +21,7 @@ public class ProductGeneralActivity extends BaseActivity {
         overridePendingTransition(0, 0);
 
         if (savedInstanceState == null) {
-            ListProductFragment listProductFragment = ListProductFragment.newInstance("", "");
+            ListProductFragment listProductFragment = ListProductFragment.newInstance();
             FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.sample_content_fragment, listProductFragment);
             transaction.commit();
