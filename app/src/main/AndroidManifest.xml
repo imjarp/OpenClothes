@@ -35,12 +35,20 @@
         <activity
             android:name=".ui.ProductActivity"
             android:label="@string/title_activity_product"
-            android:windowSoftInputMode="stateVisible|adjustResize|adjustPan" >
+            android:windowSoftInputMode="stateVisible|adjustResize|adjustPan"
+            android:parentActivityName=".ui.ProductGeneralActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mx.kanjo.openclothes.ui.ProductGeneralActivity" />
         </activity>
 
         <activity
             android:name=".ui.NewSaleActivity"
-            android:label="@string/title_activity_new_sale">
+            android:label="@string/title_activity_new_sale"
+            android:parentActivityName=".ui.SalesGeneralActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mx.kanjo.openclothes.ui.SalesGeneralActivity" />
         </activity>
 
         <activity

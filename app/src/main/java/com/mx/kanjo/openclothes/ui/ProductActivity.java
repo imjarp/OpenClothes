@@ -64,7 +64,7 @@ public class ProductActivity extends ActionBarActivity implements ProductFragmen
             }
         }
 
-        //configureToolbar();
+       configureToolbar();
 
         catalogueManager = new CatalogueManager(this);
 
